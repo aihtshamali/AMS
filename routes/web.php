@@ -26,4 +26,7 @@ Route::group(['middleware'=>'auth'],function(){
       }
     ]);
     Route::resource('role','RoleController');
+    Route::resource('category','CategoryController');
+    Route::resource('city','CityController');
+    Route::resource('region','RegionController');
 });
