@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Region;
+
 use Illuminate\Http\Request;
 
-class RegionsController extends Controller
+class DriverController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +23,7 @@ class RegionsController extends Controller
      */
     public function create()
     {
-        return view('region.create');
+        //
     }
 
     /**
@@ -34,12 +34,7 @@ class RegionsController extends Controller
      */
     public function store(Request $request)
     {
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type= $request->type;
-        $region->category= $request->category;
-        $region->save();
-        return redirect()->route('home')->withMessage('Inserted Successfully');
+        //
     }
 
     /**
@@ -73,13 +68,7 @@ class RegionsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Region::find($id)->delete();
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type= $request->type;
-        $region->category= $request->category;
-        $region->save();
-        return redirect()->route('home')->withMessage('Updated Successfully');
+        //
     }
 
     /**
@@ -90,8 +79,6 @@ class RegionsController extends Controller
      */
     public function destroy($id)
     {
-        Region::find($id)->delete();
-        return redirect()->route('home')->withMessage('Deleted Successfully');
-
+        //
     }
 }

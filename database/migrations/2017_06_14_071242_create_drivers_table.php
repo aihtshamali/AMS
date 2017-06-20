@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRegionsTable extends Migration
+class CreateDriversTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreateRegionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('drivers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->int('category');
-            $table->string('type');
-            $table->int('is_active');
+            $table->integer('region_id');
+            $table->string('is_active');
             $table->timestamps();
-            $table->foreign('category')->references('id')->on('categories')
-                ->onUpdate('cascade');
         });
     }
 
@@ -32,6 +29,6 @@ class CreateRegionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('regions');
+        Schema::dropIfExists('drivers');
     }
 }

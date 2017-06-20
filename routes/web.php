@@ -29,4 +29,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::resource('category','CategoryController');
     Route::resource('city','CityController');
     Route::resource('region','RegionController');
+    Route::resource('customer','CustomerController');
+    Route::resource('item','ItemController');
+    Route::resource('dispatch','DispatchController');
 });

@@ -23,6 +23,10 @@ body{
 	-webkit-filter: blur(5px);
 	z-index: 0;
 }
+.dispatchHeader table >tr{
+	border: none;
+}
+
 
 .grad{
 	position: absolute;

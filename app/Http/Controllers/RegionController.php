@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\City;
 use App\Region;
 use Illuminate\Http\Request;
+use Session;
 
-class CityController extends Controller
+class RegionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,8 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities= City::all();
-        $regions=Region::all();
-        return view('city.index',compact(['cities','regions']));
+        $regions= Region::all();
+        return view('region.index',compact('regions'));
     }
 
     /**
@@ -26,8 +25,7 @@ class CityController extends Controller
      */
     public function create()
     {
-        $regions=Region::all();
-       return view('city.create',compact('regions'));
+        return view('region.create');
     }
 
     /**
@@ -38,15 +36,13 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
+        $region= new Region();
+        $region->name= $request->name;
+        $region->type= $request->type;
+        $region->category= $request->category;
 
-        $city= new City();
-        $city->name= $request->name;
-        if( $request->regions!="No Location") {
-            $city->region_id = $request->regions;
-            $city->region()->associate($request->regions);
-        }
-        $city->save();
-        return redirect()->route('city.index')->withMessage('Inserted Successfully');
+        $region->save();
+        return redirect()->route('region.index')->withMessage('Inserted Successfully');
     }
 
     /**
@@ -68,7 +64,8 @@ class CityController extends Controller
      */
     public function edit($id)
     {
-        //
+        $region=Region::find($id);
+        return view('region.edit',compact('region'));
     }
 
     /**
@@ -80,12 +77,15 @@ class CityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        City::find($id)->delete();
-        $city= new City();
-        $city->name= $request->name;
-        $city->region= $request-region;
-        $city->save();
-        return redirect()->route('city.index')->withMessage('Updated Successfully');
+        Region::find($id)->delete();
+        $region= new Region();
+        $region->name= $request->name;
+        $region->type = $request->type;
+        $region->category= $request->category;
+        $region->is_active= $request->is_active;
+
+        $region->save();
+        return redirect()->route('region.index')->withMessage('Updated Successfully');
     }
 
     /**
@@ -96,8 +96,9 @@ class CityController extends Controller
      */
     public function destroy($id)
     {
-        City::find($id)->delete();
-        return redirect()->route('city.index')->withMessage('Deleted Successfully');
+        Region::find($id)->delete();
+
+        return redirect()->route('region.index')->withMessage('Deleted Successfully');
 
     }
 }

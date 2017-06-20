@@ -17,6 +17,19 @@
     height: 550px;
 
 }
+.table-wrapper {
+    overflow-x:scroll;
+    overflow-y:visible;
+    width:1000px;
+}
+
+.table-wrapper table tr td {
+    background-color: #1e2253;;
+}
+th{
+    color:#FFF1FF;
+    background-color:#bd2355;
+}
 header{
     margin-bottom: 13px;
 }
@@ -2389,7 +2402,7 @@ caption {
 }
 .table {
     width: 100%;
-    margin-bottom: 22px
+    /*margin-bottom: 22px*/
 }
 .table>tbody>tr>td,
 .table>tbody>tr>th,
@@ -2399,7 +2412,7 @@ caption {
 .table>thead>tr>th {
     padding: 8px;
     line-height: 1.6;
-    vertical-align: top;
+    /*vertical-align: top;*/
     border-top: 1px solid #ddd
 }
 .table>thead>tr>th {

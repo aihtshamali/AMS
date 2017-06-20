@@ -13,7 +13,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories= Category::all();
+        return view('category.index',compact('categories'));
     }
 
     /**
@@ -39,7 +40,7 @@ class CategoryController extends Controller
         $category->code= $request->code;
         $category->is_active= $request->is_active;
         $category->save();
-        return redirect()->route('home')->withMessage('Inserted Successfully');
+        return redirect()->route('category.index')->withMessage('Inserted Successfully');
     }
 
     /**
@@ -61,7 +62,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category= Category::find($id);
+        return view('category.edit',compact('category'));
     }
 
     /**
@@ -79,7 +81,7 @@ class CategoryController extends Controller
         $category->code= $request->code;
         $category->is_active= $request->is_active;
         $category->save();
-        return redirect()->route('home')->withMessage('Updated Successfully');
+        return redirect()->route('category.index')->withMessage('Updated Successfully');
     }
 
     /**
@@ -91,6 +93,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::find($id)->delete();
-        return redirect()->view('home')->withMessage('Deleted Successfully');
+        return redirect()->route('category.index')->withMessage('Deleted Successfully');
     }
 }

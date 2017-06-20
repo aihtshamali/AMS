@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\City;
-use App\Region;
+
+use App\Dispatch;
+use App\Driver;
+use App\Vehicle;
 use Illuminate\Http\Request;
 
-class CityController extends Controller
+class DispatchController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +16,8 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities= City::all();
-        $regions=Region::all();
-        return view('city.index',compact(['cities','regions']));
+        $dispatches=Dispatch::all();
+        return view('dispatch.index',compact('dispatches'));
     }
 
     /**
@@ -26,8 +27,9 @@ class CityController extends Controller
      */
     public function create()
     {
-        $regions=Region::all();
-       return view('city.create',compact('regions'));
+        $drivers=Driver::all();
+        $vehicles=Vehicle::all();
+       return view('dispatch.create',compact(['drivers','vehicles']));
     }
 
     /**
@@ -38,15 +40,8 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
-
-        $city= new City();
-        $city->name= $request->name;
-        if( $request->regions!="No Location") {
-            $city->region_id = $request->regions;
-            $city->region()->associate($request->regions);
-        }
-        $city->save();
-        return redirect()->route('city.index')->withMessage('Inserted Successfully');
+        foreach ($request->customer as $c)
+            dd($request->customer);
     }
 
     /**
@@ -80,12 +75,7 @@ class CityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        City::find($id)->delete();
-        $city= new City();
-        $city->name= $request->name;
-        $city->region= $request-region;
-        $city->save();
-        return redirect()->route('city.index')->withMessage('Updated Successfully');
+        //
     }
 
     /**
@@ -96,8 +86,6 @@ class CityController extends Controller
      */
     public function destroy($id)
     {
-        City::find($id)->delete();
-        return redirect()->route('city.index')->withMessage('Deleted Successfully');
-
+        //
     }
 }

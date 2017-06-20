@@ -12,8 +12,8 @@
                 </a>
                 <!-- Sub menu -->
                 <ul>
-                    {{-- <li class="sub-menu"><a href="{{route('user.index')}}"><i class="glyphicon glyphicon-home"></i> --}}
-                            {{-- Users</a></li> --}}
+                     <li class="sub-menu"><a href="#"><i class="glyphicon glyphicon-home"></i>
+                             Users</a></li>
                 </ul>
                 <!-- Sub menu -->
                 <ul>
@@ -22,6 +22,12 @@
                 </ul>
             </li>
 
+
+
         </ul>
+        <ul>
+            <li class=""><a href="">Categories</a></li>
+        </ul>
+
     </div>
 </div> <!-- ADMIN SIDE NAV-->
