@@ -79,6 +79,7 @@ class DriverController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Driver::find($id)->delete();
+        return redirect()->back()->withMessage('Deleted Successfully');
     }
 }

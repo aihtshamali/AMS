@@ -12,7 +12,7 @@
             </div>
             <div class="form-group">
                 <label for="display_name">Name</label>
-                <input type="text" class="form-control" name="name" id="" placeholder="name" required>
+                <input type="text" class="form-control" name="name" id="itemName" placeholder="name" required>
             </div>
 
             <div class="form-group">
@@ -51,4 +51,5 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
         </form>
     </div>
+
 @endsection

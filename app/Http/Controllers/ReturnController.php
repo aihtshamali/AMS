@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Returns;
+use App\Customer;
 use App\Region;
+use App\Driver;
+use App\Returns_Detail;
+use App\Vehicle;
 use Illuminate\Http\Request;
-use Session;
-
-class RegionController extends Controller
+use App\Item;
+class ReturnController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +18,9 @@ class RegionController extends Controller
      */
     public function index()
     {
-        $regions= Region::all();
-        return view('region.index',compact('regions'));
+
+        $returns=Returns_Detail::all();
+        return view('returns.index',compact('returns'));
     }
 
     /**
@@ -25,7 +30,25 @@ class RegionController extends Controller
      */
     public function create()
     {
-        return view('region.create');
+        $doc_no = 0;
+
+        if (Returns::all()->last()) {
+            $doc_no = Returns::all()->last();
+            $part = explode(".",$doc_no);
+//            dd($part);
+            $no = intval($part[1]);
+            $no++;
+            $doc_no = "RET.".substr("000000", 1, 6 - strlen($no)).$no;
+        }
+        else {
+            $doc_no = 'RET.000001';
+        }
+
+        $customers= Customer::all();
+        $drivers=Driver::all();
+        $vehicles=Vehicle::all();
+        $items=Item::all();
+        return view('returns.create',compact(['drivers','customers','vehicles','doc_no','items']));
     }
 
     /**
@@ -36,13 +59,7 @@ class RegionController extends Controller
      */
     public function store(Request $request)
     {
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type= $request->type;
-        $region->category= $request->category;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Inserted Successfully');
+        dd($request->all());
     }
 
     /**
@@ -64,8 +81,7 @@ class RegionController extends Controller
      */
     public function edit($id)
     {
-        $region=Region::find($id);
-        return view('region.edit',compact('region'));
+        //
     }
 
     /**
@@ -77,15 +93,7 @@ class RegionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Region::find($id)->delete();
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type = $request->type;
-        $region->category= $request->category;
-        $region->is_active= $request->is_active;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Updated Successfully');
+        //
     }
 
     /**
@@ -96,8 +104,7 @@ class RegionController extends Controller
      */
     public function destroy($id)
     {
-        Region::find($id)->delete();
-        return redirect()->route('region.index')->withMessage('Deleted Successfully');
-
+        Returns::find($id)->delete();
+        return redirect()->route('return.index')->withMessage('Deleted Successfully');
     }
 }

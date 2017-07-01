@@ -9,7 +9,7 @@
 
                             <input type="email" placeholder="username" value="{{ old('email') }}" name="email" required autofocus><br>
 
-                                @if ($errors->has('email'))
+                                @if ($errors->has('emai l'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>

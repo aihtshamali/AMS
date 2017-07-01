@@ -22,7 +22,7 @@ class CreateItemsTable extends Migration
             $table->integer('for_customer');
             $table->integer('department');
             $table->string('color');
-            $table->integer('is_active');
+            $table->integer('is_active')->default('1');
             $table->timestamps();
         });
     }

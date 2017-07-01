@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDriversTable extends Migration
+class CreateFacultiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,27 @@ class CreateDriversTable extends Migration
      */
     public function up()
     {
-        Schema::create('drivers', function (Blueprint $table) {
+        Schema::create('faculties', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('father_name');
+            $table->string('type');
             $table->integer('region_id')->unsigned();
-            $table->string('is_active')->default('1');
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
 
             $table->foreign('region_id')->references('id')->on('regions');
+            $table->foreign('user_id')->references('id')->on('users');
+
+
+            $table->dropForeign(['user_id']);
             $table->dropForeign(['region_id']);
+
+
             $table->foreign('region_id')
                 ->references('id')->on('regions')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-
-
         });
     }
 
@@ -38,6 +44,6 @@ class CreateDriversTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('drivers');
+        Schema::dropIfExists('faculties');
     }
 }

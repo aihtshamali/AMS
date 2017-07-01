@@ -16,9 +16,17 @@ class CreateVehiclesTable extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('region_id');
-            $table->string('is_active');
+            $table->integer('region_id')->unsigned();
+            $table->string('is_active')->default('1');
             $table->timestamps();
+
+            $table->foreign('region_id')->references('id')->on('regions');
+            $table->dropForeign(['region_id']);
+            $table->foreign('region_id')
+                ->references('id')->on('regions')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
         });
     }
 

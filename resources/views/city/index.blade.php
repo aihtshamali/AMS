@@ -22,7 +22,7 @@
                     <td>{{$city->name}}</td>
                     <td>
                         @if($city->getregion($city->region_id))
-                            {{$city->getregion($city->region_id)>name}}
+                            {{$city->getregion($city->region_id)->name}}
                         @endif
                     </td>
                     <td>{{$city->is_active}}</td>

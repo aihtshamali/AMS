@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
             $table->integer('region_id');
             $table->string('address');
             $table->string('phone');
-            $table->integer('is_active');
+            $table->integer('is_active')->default('1');
             $table->timestamps();
         });
     }

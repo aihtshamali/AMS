@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Region;
+use App\Driver;
+use App\Vehicle;
+use App\Transfer;
 use Illuminate\Http\Request;
-use Session;
 
-class RegionController extends Controller
+class TransferController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,8 @@ class RegionController extends Controller
      */
     public function index()
     {
-        $regions= Region::all();
-        return view('region.index',compact('regions'));
+        $transfers= Transfer::all();
+        return view('transfer.index',compact('transfers'));
     }
 
     /**
@@ -25,7 +26,19 @@ class RegionController extends Controller
      */
     public function create()
     {
-        return view('region.create');
+        if (Transfer::all()->last()) {
+            $doc_no = Transfer::all()->last()->pluck('reference');
+            $part = explode(".",$doc_no);
+            $no = intval($part[1]);
+            $no++;
+            $doc_no = "DOC.".substr("000000", 1, 6 - strlen($no)).$no;
+        }
+        else {
+            $doc_no = 'DOC.000001';
+        }
+        $drivers=Driver::all();
+        $vehicles =Vehicle::all();
+        return view('transfer.shipped',compact(['drivers','vehicles','doc_no']));
     }
 
     /**
@@ -36,13 +49,7 @@ class RegionController extends Controller
      */
     public function store(Request $request)
     {
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type= $request->type;
-        $region->category= $request->category;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Inserted Successfully');
+        //
     }
 
     /**
@@ -64,8 +71,7 @@ class RegionController extends Controller
      */
     public function edit($id)
     {
-        $region=Region::find($id);
-        return view('region.edit',compact('region'));
+        //
     }
 
     /**
@@ -77,15 +83,7 @@ class RegionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Region::find($id)->delete();
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type = $request->type;
-        $region->category= $request->category;
-        $region->is_active= $request->is_active;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Updated Successfully');
+        //
     }
 
     /**
@@ -96,8 +94,7 @@ class RegionController extends Controller
      */
     public function destroy($id)
     {
-        Region::find($id)->delete();
-        return redirect()->route('region.index')->withMessage('Deleted Successfully');
-
+        Transfer::find($id)->delete();
+        return redirect()->route('transfer.index')->withMessage('Deleted Successfully');
     }
 }

@@ -115,7 +115,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        City::find($id)->delete();
+        Customer::find($id)->delete();
         return redirect()->route('Customer.index')->withMessage('Customer Data Deleted Successfully');
     }
 }

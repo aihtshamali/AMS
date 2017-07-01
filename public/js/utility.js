@@ -1,30 +1,76 @@
 /**
  * Created by Administrator on 6/15/2017.
  */
+$(document).ready(function() {
 
+    // $(function () {
+        // $(':input').on('input',function(){
+        //
+        //     $('input[id=' + parseInt($(this).attr('id')) + 'customer]').prop('required', true);
+        //     $('input[id=' + parseInt($(this).attr('id')) + 'sales]').prop('required', true);
+        //     $('input[id=' + parseInt($(this).attr('id')) + 'total]').prop('required', true);
+        //
+        //
+        // });
+    //     $('.greenqty , .yellowqty').on('input', function () {
+    //         var total = 0;
+    //         var t1 = 0, t2 = 0;
+    //         var id = parseInt($(this).attr('id'));
+    //
+    //         if ($('input[id=' + id + 'greenqty]').val()) {
+    //             t2 = parseInt($('input[id=' + id + 'greenqty][class="greenqty"]').val());
+    //         }
+    //         if ($('input[id=' + id + 'yellowqty]').val()) {
+    //             t1 = parseInt($('input[id=' + id + 'yellowqty][class="yellowqty"]').val());
+    //         }
+    //         total = t1 + t2;
+    //         $('input[id=' + id + 'total]').val(total);
+    //
+    //     });
+    // });
 
-$(function(){
-    $(':input').on('input',function(){
-        if ($('input[id=' + $(this).attr('id') + ']').val()) {
-            $('input[id=' + $(this).attr('id') + ']').prop('required', true);
-            $('input[id=total' + $(this).attr('id')+']').val('0');
-        }
-        else {
+    $('select.freezerlocation').on('change',
+        function(){
+            $('input[class="freezerqty"]').val(1);
+            if (!$('select.freezerlocation').val()){
+                $('input[class="freezerqty"]').val();
+            }
+        });
 
-            $('input[id=total' + $(this).attr('id') + ']').val('');
+    $("input#itemName").on({
+        keydown: function(e) {
+            if (e.which === 32)
+                return false;
+        },
+        change: function() {
+            this.value = this.value.replace(/\s/g, "");
         }
     });
-    $('.greenqty , .yellowqty').on('input',function(){
 
-        if ($('.greenqty , .yellowqty').val()) {
-           var total=0;
-            total=parseInt($('input[id=' + $(this).attr('id') + '][class="greenqty"]').val())+ $('input[id=total' + $(this).attr('id')+']').val();
-           total= $('input[id=total' + $(this).attr('id')+']').val()+ parseInt($('input[id=' + $(this).attr('id') + ']  input[class=".yellowqty"]').val())
-           alert(total);
-           $('input[id=total' + $(this).attr('id') + ']').val(total);
-        }
-        else {
-            $('input[id=total' + $(this).attr('id') + ']').val('0');
+
+
+
+    });
+
+            // Dispatch Total
+
+function getTotal(ctrl,id)
+{
+    var gTotal=0;
+    $("#"+id+"qtytotal").val(0);
+    $("."+id+"qty").each(function() {
+        if($(this).hasClass(id+'qty') && $(this).val()!=''){
+            gTotal+=parseInt( $(this).val().replace(/\,/g,""));
         }
     });
-});
+    $("#"+id+"qtytotal").val(gTotal);
+}
+
+            // Freeezer Total
+function changeFreezerTotal(ctrl,id){
+    if($(ctrl).val()!="")
+        $("."+id+"freezerqty").val(1);
+    else
+    $("."+id+"freezerqty").val(0);
+}
+

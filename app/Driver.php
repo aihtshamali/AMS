@@ -10,6 +10,6 @@ class Driver extends Model
         return $this->hasOne('App\Vehicle');
     }
     public function dispatch(){
-        return $this->belongsTo('App\Dispatch');
+        return $this->hasMany('App\Dispatch');
     }
 }

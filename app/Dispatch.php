@@ -6,10 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dispatch extends Model
 {
+    public function dispatches_detail(){
+        return $this->hasMany('App\Dispatches_Detail');
+    }
     public function driver(){
-        return $this->hasMany('App\Driver');
+        return $this->belongsTo('App\Driver');
     }
-    public function vehicle(){
-        return $this->hasMany('App\Vehicle');
+    public function region(){
+        return $this->belongsTo('App\Region');
     }
+
+
+
+
+
+
+
+
+//    public function vehicle(){
+//        return $this->hasMany('App\Vehicle');
+//    }
+
 }

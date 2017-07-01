@@ -4,12 +4,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-Schema::enableForeignKeyConstraints();
-Schema::disableForeignKeyConstraints();
-
-class CreateDispatchesTable extends Migration
+class CreatePurchasesTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -17,7 +13,7 @@ class CreateDispatchesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dispatches', function (Blueprint $table) {
+        Schema::create('purchases', function (Blueprint $table) {
             $table->increments('id');
             $table->string('doc_no');
             $table->string('reference');
@@ -66,29 +62,22 @@ class CreateDispatchesTable extends Migration
 
 
         });
-        Schema::create('dispatches_detail', function (Blueprint $table) {
+        Schema::create('purchases_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('customer_id')->unsigned();
             $table->integer('sales_invoice')->unsigned();
             $table->integer('item_id')->unsigned();
             $table->integer('quantity')->unsigned();
-            $table->integer('dispatch_id')->unsigned();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('item_id')->references('id')->on('items');
-            $table->foreign('dispatch_id')->references('id')->on('dispatches');
 
             $table->dropForeign(['customer_id']);
             $table->dropForeign(['item_id']);
-            $table->dropForeign(['dispatch_id']);
 
             $table->foreign('customer_id')
                 ->references('id')->on('customers')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('dispatch_id')
-                ->references('id')->on('dispatches')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->foreign('item_id')
@@ -97,6 +86,7 @@ class CreateDispatchesTable extends Migration
                 ->onUpdate('cascade');
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -104,7 +94,8 @@ class CreateDispatchesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dispatches');
-        Schema::dropIfExists('dispatches_detail');
+        Schema::dropIfExists('purchases');
+        Schema::dropIfExists('purchases_detail');
+
     }
 }

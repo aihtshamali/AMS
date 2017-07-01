@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Vehicle;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
@@ -79,6 +80,7 @@ class VehicleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Vehicle::find($id)->delete();
+        return redirect()->route('vehicle.index')->withMessage('Deleted Successfully');
     }
 }

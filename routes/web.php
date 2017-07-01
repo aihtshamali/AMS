@@ -25,6 +25,9 @@ Route::group(['middleware'=>'auth'],function(){
         return view('admin.index');
       }
     ]);
+
+    Route::get('freezer/return','FreezerController@createReturn')->name('return');
+//    Route::post('freezer/return','FreezerController@storeReturn')->name('return');
     Route::resource('role','RoleController');
     Route::resource('category','CategoryController');
     Route::resource('city','CityController');
@@ -32,4 +35,9 @@ Route::group(['middleware'=>'auth'],function(){
     Route::resource('customer','CustomerController');
     Route::resource('item','ItemController');
     Route::resource('dispatch','DispatchController');
+    Route::resource('returns','ReturnController');
+    Route::resource('freezer','FreezerController');
+    Route::resource('transfer','TransferController');
+    Route::resource('purchase','PurchaseController');
+
 });

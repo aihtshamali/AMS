@@ -12,12 +12,21 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css">
+
+
+
+
+
 </head>
 <body>
     <div id="app">
         <header ><h1  style="display: inline;"><strong >Assets Management System</strong></h1>
             <span class="pull-right">
-                <h6>Welcome: User-Name</h6>
+
+                {{--<h6>Welcome: <span style="font-weight: bold;margin-right: 10px">{{Auth::User()->name}}</span></h6>--}}
+
                 <h6 style="display: block">Location: Location</h6>
             </span>
         </header>
@@ -36,30 +45,30 @@
                 </div>
                 <div class="collapse navbar-collapse"  id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
+                        <li class="active"><a href="{{route('home')}}">Home</a></li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dispatch
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Add Dispatch</a></li>
-                                <li><a href="#">All Dispatch</a></li>
+                                <li><a href="{{route('dispatch.create')}}">Add Dispatch</a></li>
+                                <li><a href="{{route('dispatch.index')}}">All Dispatch</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Freezer
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Add Freezer</a></li>
-                                <li><a href="#">All Freezer</a></li>
-                                <li><a href="#">Return</a></li>
+                                <li><a href="{{route('freezer.create')}}">Add Freezer</a></li>
+                                <li><a href="{{route('freezer.index')}}">All Freezer</a></li>
+
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Return
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Add Return</a></li>
-                                <li><a href="#">All Return</a></li>
+                                <li><a href="{{route('returns.create')}}">Add Return</a></li>
+                                <li><a href="{{route('returns.index')}}">All Return</a></li>
 
                             </ul>
                         </li>
@@ -67,11 +76,11 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Transfer Shiped</a></li>
-                                <li><a href="#">Transfer in Transit</a></li>
+                                <li><a href="{{route('transfer.create')}}">Transfer Shiped</a></li>
+                                <li><a href="{{route('transfer.index')}}">Transfer in Transit</a></li>
                                 <li><a href="#">Transfer Recieved</a></li>
-                                <li><a href="#">Purchases</a></li>
-                                <li><a href="#">All Purchases</a></li>
+                                <li><a href="{{route('purchase.create')}}">Purchases</a></li>
+                                <li><a href="{{route('purchase.index')}}">All Purchases</a></li>
 
                             </ul>
                         </li>
@@ -100,7 +109,7 @@
                         @else
                             <li class="dropdown ">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{--{{ Auth::user()->name }} <span class="caret"></span>--}}
                                 </a>
 
                                 <ul class="dropdown-menu " role="menu">
@@ -130,5 +139,11 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/utility.js') }}"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/i18n/defaults-*.min.js"></script>--}}
+
 </body>
 </html>

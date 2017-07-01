@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Region;
-use Illuminate\Http\Request;
-use Session;
 
-class RegionController extends Controller
+use Illuminate\Http\Request;
+
+class FacultyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +13,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        $regions= Region::all();
-        return view('region.index',compact('regions'));
+        //
     }
 
     /**
@@ -25,7 +23,7 @@ class RegionController extends Controller
      */
     public function create()
     {
-        return view('region.create');
+        //
     }
 
     /**
@@ -36,13 +34,7 @@ class RegionController extends Controller
      */
     public function store(Request $request)
     {
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type= $request->type;
-        $region->category= $request->category;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Inserted Successfully');
+        //
     }
 
     /**
@@ -64,8 +56,7 @@ class RegionController extends Controller
      */
     public function edit($id)
     {
-        $region=Region::find($id);
-        return view('region.edit',compact('region'));
+        //
     }
 
     /**
@@ -77,15 +68,7 @@ class RegionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Region::find($id)->delete();
-        $region= new Region();
-        $region->name= $request->name;
-        $region->type = $request->type;
-        $region->category= $request->category;
-        $region->is_active= $request->is_active;
-
-        $region->save();
-        return redirect()->route('region.index')->withMessage('Updated Successfully');
+        //
     }
 
     /**
@@ -96,8 +79,6 @@ class RegionController extends Controller
      */
     public function destroy($id)
     {
-        Region::find($id)->delete();
-        return redirect()->route('region.index')->withMessage('Deleted Successfully');
-
+        //
     }
 }
