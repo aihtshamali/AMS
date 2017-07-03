@@ -60,11 +60,11 @@ class DispatchController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-        //    TODO
+
 
     public function store(Request $request)
     {
-
+//        dd($request->all());
         $dispatch= new Dispatch();
         $dispatch->doc_no= $request->doc_no;
         $dispatch->reference= $request->reference;
@@ -78,30 +78,33 @@ class DispatchController extends Controller
         $dispatch->driver_id=$request->driver_id;
         $counter=0;
         $dispatch->save();
+        $it_co=0;
+        foreach ($request->item as $it){
 
-        foreach ($request->customer as $cust) {
-//            dd($request->customer);
-            if($cust==null)
-                break;
-            $dispatch_detail = new Dispatches_Detail();
-//            $customer=Customer::where('id',$cust)->get();
-//            dd($customer);
-            $dispatch_detail->customer()->associate($cust);
+            foreach ($request->customer as $cust) {
+                if ($cust == null)
+                    break;
+                for ($i = 0; $i < count($request->getid); $i++) {
+//                    if ($i > 0)
+//                        dd($request->getid);
+                    if ($it[$request->getid[$i]]) {
+                        $dispatch_detail = new Dispatches_Detail();
+                        $dispatch_detail->customer()->associate($cust);
+                        $dispatch_detail->quantity = $it[$request->getid[$i]];
 
-
-            foreach($request->item as $i){
-                $dispatch_detail->quantity=$i[$counter];
-                $dispatch_detail->item()->associate($i[$counter]);
+                        $dispatch_detail->item()->associate(Item::find($request->getid[$i]));
+                        $dispatch_detail->sales_invoice = $request->sales_invoice[$counter];
+                        $dispatch_detail->dispatch()->associate($dispatch);
+                        if($counter>1)
+                            dd($dispatch_detail);
+                        $dispatch_detail->save();
+                    }
+                }
             }
-
-
-
-            $dispatch_detail->sales_invoice=$request->sales_invoice[$counter];
-            $dispatch_detail->dispatch()->associate($dispatch);
-            $dispatch_detail->save();
             $counter++;
         }
 
+//        dd($request->all());
         return redirect()->route('dispatch.index')->withMessage('Data Inserted Successfully');
     }
 

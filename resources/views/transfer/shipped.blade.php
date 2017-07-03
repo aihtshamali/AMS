@@ -68,7 +68,7 @@
                </tr>
                 <tr>
                     <td><label for="">Right Up Freezer</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
+                    <td><input name="" type="number" min="0" class="form-control"></td>
                 </tr><tr>
                     <td><label for="">Top Glass (Waves)</label></td>
                     <td><input type="number" min="0" class="form-control"></td>

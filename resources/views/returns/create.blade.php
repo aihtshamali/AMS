@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
     <div class="container" >
-        <h3>Create Return</h3>
+        <h3>Create Dispatch</h3>
 
 
-        <form action="{{route('returns.store')}}" method="post" >
+        <form action="{{route('dispatch.store')}}" method="post" >
             {{csrf_field()}}
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             <select name="vehicle_id" class="selectpicker show-tick">
-                                <option selected disabled hidden ></option>
+                                <option></option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                                 @endforeach
@@ -44,7 +44,7 @@
                             <label for="description">Address</label>    </td>
                         <td>
                             <select name="driver_id" class="selectpicker show-tick">
-                                <option selected disabled hidden> </option>
+                                <option></option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
                                 @endforeach
@@ -64,12 +64,12 @@
                             <label class="col-xs-7" for="name">Customer Information</label>
                         </th>
                         @for($i =0; $i<10 ;$i++)
-                            <td class="col-xs-3">
-                                <select name="customer[]" class="selectpicker " data-live-search="true" id="<?=$i?>customer"   >
+                            <td class="col-xs-3" >
+                                <select name="customer[]" style="height: 30px;width: 200px">
                                     <option></option>
                                     @foreach($customers as $customer)
                                         <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                                    @endforeach
+                                    @endforeach  data-live-search="true" id="<?=$i?>customer"   >
                                 </select>
                             </td>
                         @endfor
@@ -86,15 +86,14 @@
                     </tr>
                     @foreach($items as $item)
 
-                        @if($item->item_group=="CRATE")
+                        @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                             <tr>
                                 <th >
                                     <label  for="name">{{$item->display_name}}</label>
                                 </th>
                                 @for($i=0; $i<10 ;$i++)
                                     <td>
-                                        <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[{{$item->id}}][<?=$i?>]" onchange="getTotal(this,<?=$i?>);"   placeholder="{{$item->name}}">
-
+                                        <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->name}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                                     </td>
                                 @endfor
                             </tr>
@@ -114,7 +113,7 @@
             </div>
 
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" name="submit">Submit</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-warning" id="submit" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>

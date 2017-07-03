@@ -48,13 +48,11 @@ $(document).ready(function() {
     });
 
 
-
-
     });
 
             // Dispatch Total
 
-function getTotal(ctrl,id)
+function getTotal(ctrl,id,item)
 {
     var gTotal=0;
     $("#"+id+"qtytotal").val(0);
@@ -62,10 +60,29 @@ function getTotal(ctrl,id)
         if($(this).hasClass(id+'qty') && $(this).val()!=''){
             gTotal+=parseInt( $(this).val().replace(/\,/g,""));
         }
+
     });
     $("#"+id+"qtytotal").val(gTotal);
 }
 
+function sendData(item){
+    $.ajax({
+        url: 'dispatch/create',
+        type: "post",
+        data:{ _token: "{{csrf_token()}}", it: item},
+        dataType: 'json',
+    });
+}
+
+function appendCustomers(ctrl,id,customers){
+    alert(customers['name']);
+    // $.each(customers.name, function (customers) {
+    //     $('ctrl').append($('<option>', {
+    //         value: customers.id,
+    //         text : customers.name
+    //     }));
+    // });
+}
             // Freeezer Total
 function changeFreezerTotal(ctrl,id){
     if($(ctrl).val()!="")

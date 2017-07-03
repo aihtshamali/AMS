@@ -64,12 +64,12 @@
                            <label class="col-xs-7" for="name">Customer Information</label>
                     </th>
                  @for($i =0; $i<10 ;$i++)
-                    <td class="col-xs-3">
-                        <select name="customer[]" class="selectpicker " data-live-search="true" id="<?=$i?>customer"   >
+                    <td class="col-xs-3" >
+                        <select name="customer[]" style="height: 30px;width: 200px">
                             <option></option>
                             @foreach($customers as $customer)
                                 <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                            @endforeach
+                            @endforeach  data-live-search="true" id="<?=$i?>customer"   >
                         </select>
                     </td>
                  @endfor
@@ -84,16 +84,19 @@
                         </td>
                     @endfor
                 </tr>
+                <?php $j=0; ?>
                 @foreach($items as $item)
 
-                    @if($item->item_group=="CRATE")
+                    @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                     <tr>
                         <th >
                             <label  for="name">{{$item->display_name}}</label>
                         </th>
+                        <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                         @for($i=0; $i<10 ;$i++)
                             <td>
-                                <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[{{$item->id}}][<?=$i?>]" onchange="getTotal(this,<?=$i?>);"   placeholder="{{$item->name}}">
+
+                                <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                             </td>
                         @endfor
                     </tr>
@@ -113,7 +116,7 @@
         </div>
 
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" name="submit">Submit</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-warning" id="submit" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>
