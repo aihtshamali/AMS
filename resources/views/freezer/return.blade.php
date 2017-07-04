@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="container" >
-        <h3>Create Dispatch</h3>
+        <h3>Return Freezer</h3>
 
 
         <form action="{{route('freezer.store')}}" method="post" >
@@ -9,9 +9,9 @@
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
-                        <td>  <label for="ftn_no">RTN Number</label> </td>
+                        <td>  <label for="ftn_no">FTN Number</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="ftn_no" id="ref" value="RTN." readonly>
+                            <input type="text" class="form-control" name="ftn_no" id="ref"  value="RTN." readonly>
                         </td>
                         <td>
                             <label for="reference">Reference num.</label>
@@ -28,7 +28,8 @@
 
                         <td><label for="customer">Customer</label></td>
                         <td>
-                            <select name="customer" class="selectpicker " data-live-search="true"   data-width="" >
+                            <select name="customer" class="selectpicker" data-live-search="true"   data-width="" >
+                                <option selected hidden>Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
                                 @endforeach
@@ -40,14 +41,15 @@
                         <td><input type="text" class="form-control" name="delivery_address" data-width="100%"></td>
                     </tr>
 
-                    <tr style="background-color:rgba(179, 136, 160, 0.5);"><td colspan="5"><label for="" >Freezer Information</label></td></tr>
+                    <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="5"><label for="" >Freezer Information</label></td></tr>
                     <tr>
                         <td><label for="ftn_date">Date of Return</label></td>
                         <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="placement_date" id="" placeholder="Date"> </td>
                         <td><label for="ftn_date">Purpose</label></td>
                         <td>
                             <select name="purpose" class="selectpicker show-tick">
-                                <option selected value="Repairing">Repairing</option>
+                                <option selected disabled hidden>--Choose Purpose--</option>
+                                <option value="repairing">Repairing</option>
                             </select>
                         </td>
                     </tr>
@@ -87,29 +89,18 @@
                     @endfor
                     <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="5"><label for="" >Authorize Information</label></td></tr>
                     <tr>
-                        <td>
-                            <label for="">TSO:</label>
-                        </td><td>
-                            <select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
-                        <td>
-                            <label for="">RSM:</label>
-                        </td><td><select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
-                        <td>
-                            <label for="">NSM:</label></td>
-                        <td>
-                            <select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
+                        <?php $i=0 ?>
+                        @foreach($faculty as $fac)
+                            <td colspan="1">
+                                <label for="">{{$fac->type}}</label>
+                            </td>
+                            <td>
+                                <select class="selectpicker" name="faculty[<?=$i++?>]" id="">
+                                    <option selected hidden value="<?=null?>">Select Faculty</option>
+                                    <option value="{{$fac->id}}">{{$fac->name}}</option>
+                                </select>
+                            </td>
+                        @endforeach
                     </tr>
                 </table>
             </div>

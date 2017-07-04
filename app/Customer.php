@@ -16,11 +16,11 @@ class Customer extends Model
     public function dispatches_detail(){
         return $this->hasMany('App\Dispatches_Detail');
     }
-    public function transfer(){
-        return $this->hasMany('App\Transfer');
+    public function transfers_detail(){
+        return $this->hasMany('App\Transfers_Detail');
     }
-    public function returns(){
-        return $this->hasMany('App\Returns');
+    public function returns_detail(){
+        return $this->hasMany('App\Returns_Detail');
     }
 
 

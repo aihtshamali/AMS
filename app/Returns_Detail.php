@@ -11,6 +11,9 @@ class Returns_Detail extends Model
     public function returns(){
         return $this->belongsTo('App\Returns');
     }
+    public function customer(){
+        return $this->belongsTo('App\Customer');
+    }
     public function region(){
         return $this->belongsTo('App\Region');
     }

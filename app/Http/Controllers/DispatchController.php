@@ -21,8 +21,6 @@ class DispatchController extends Controller
     public function index()
     {
         $dispatches =Dispatch::all();
-
-//        dd($dispatches);
         return view('dispatch.index',compact('dispatches'));
     }
 
@@ -65,46 +63,38 @@ class DispatchController extends Controller
     public function store(Request $request)
     {
 //        dd($request->all());
-        $dispatch= new Dispatch();
-        $dispatch->doc_no= $request->doc_no;
-        $dispatch->reference= $request->reference;
-        $dispatch->cdate=$request->cdate;
-        $dispatch->region_id=2;
+        $dispatch = new Dispatch();
+        $dispatch->doc_no = $request->doc_no;
+        $dispatch->reference = $request->reference;
+        $dispatch->cdate = $request->cdate;
+        $dispatch->region_id = 2;
 
-        $dispatch->to_=1;
-        $dispatch->confirmed_by=0;
-        $dispatch->user_id=Auth::user()->id;
-        $dispatch->vehicle_id=$request->vehicle_id;
-        $dispatch->driver_id=$request->driver_id;
-        $counter=0;
+        $dispatch->to_ = 1;
+        $dispatch->confirmed_by = 0;
+        $dispatch->user_id = Auth::user()->id;
+        $dispatch->vehicle_id = $request->vehicle_id;
+        $dispatch->driver_id = $request->driver_id;
         $dispatch->save();
-        $it_co=0;
-        foreach ($request->item as $it){
-
-            foreach ($request->customer as $cust) {
-                if ($cust == null)
-                    break;
-                for ($i = 0; $i < count($request->getid); $i++) {
-//                    if ($i > 0)
-//                        dd($request->getid);
-                    if ($it[$request->getid[$i]]) {
-                        $dispatch_detail = new Dispatches_Detail();
-                        $dispatch_detail->customer()->associate($cust);
-                        $dispatch_detail->quantity = $it[$request->getid[$i]];
-
-                        $dispatch_detail->item()->associate(Item::find($request->getid[$i]));
-                        $dispatch_detail->sales_invoice = $request->sales_invoice[$counter];
-                        $dispatch_detail->dispatch()->associate($dispatch);
-                        if($counter>1)
-                            dd($dispatch_detail);
-                        $dispatch_detail->save();
+        $counter = 0;
+        foreach ($request->customer as $cust) {
+            if ($cust == null) {
+                break;
+            } else {
+                $it=$request->item[$counter];
+                    for ($i = 0; $i < count($request->getid); $i++) {
+                        if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
+                            $dispatch_detail = new Dispatches_Detail();
+                            $dispatch_detail->customer()->associate($cust);
+                            $dispatch_detail->quantity = $it[$request->getid[$i]];
+                            $dispatch_detail->item()->associate(Item::find($request->getid[$i]));
+                            $dispatch_detail->sales_invoice = $request->sales_invoice[$counter];
+                            $dispatch_detail->dispatch()->associate($dispatch->id);
+                            $dispatch_detail->save();
+                        }
                     }
                 }
-            }
             $counter++;
         }
-
-//        dd($request->all());
         return redirect()->route('dispatch.index')->withMessage('Data Inserted Successfully');
     }
 
@@ -139,7 +129,40 @@ class DispatchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Dispatch::find($id)->delete();
+        $dispatch = new Dispatch();
+        $dispatch->doc_no = $request->doc_no;
+        $dispatch->reference = $request->reference;
+        $dispatch->cdate = $request->cdate;
+        $dispatch->region_id = 2;
+
+        $dispatch->to_ = 1;
+        $dispatch->confirmed_by = 0;
+        $dispatch->user_id = Auth::user()->id;
+        $dispatch->vehicle_id = $request->vehicle_id;
+        $dispatch->driver_id = $request->driver_id;
+        $dispatch->save();
+        $counter = 0;
+        foreach ($request->customer as $cust) {
+            if ($cust == null) {
+                break;
+            } else {
+                $it=$request->item[$counter];
+                for ($i = 0; $i < count($request->getid); $i++) {
+                    if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
+                        $dispatch_detail = new Dispatches_Detail();
+                        $dispatch_detail->customer()->associate($cust);
+                        $dispatch_detail->quantity = $it[$request->getid[$i]];
+                        $dispatch_detail->item()->associate(Item::find($request->getid[$i]));
+                        $dispatch_detail->sales_invoice = $request->sales_invoice[$counter];
+                        $dispatch_detail->dispatch()->associate($dispatch->id);
+                        $dispatch_detail->save();
+                    }
+                }
+            }
+            $counter++;
+        }
+        return redirect()->route('dispatch.index')->withMessage('Data Inserted Successfully');
     }
 
     /**

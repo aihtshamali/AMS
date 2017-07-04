@@ -28,7 +28,8 @@
 
                         <td><label for="customer">Customer</label></td>
                         <td>
-                            <select name="customer" class="selectpicker " data-live-search="true"   data-width="" >
+                            <select name="customer" class="selectpicker" data-live-search="true"   data-width="" >
+                                <option selected hidden>Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
                                 @endforeach
@@ -91,29 +92,18 @@
                     @endfor
                     <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="5"><label for="" >Authorize Information</label></td></tr>
                     <tr>
-                        <td>
-                            <label for="">TSO:</label>
-                        </td><td>
-                            <select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
-                        <td>
-                            <label for="">RSM:</label>
-                        </td><td><select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
-                        <td>
-                            <label for="">NSM:</label></td>
-                        <td>
-                            <select name="faculty" id="">
-                                <option disabled hidden>Select Faculty</option>
-                                <option value="">none</option>
-                            </select>
-                        </td>
+                        <?php $i=0 ?>
+                        @foreach($faculty as $fac)
+                            <td colspan="1">
+                                <label for="">{{$fac->type}}</label>
+                            </td>
+                            <td>
+                                <select class="selectpicker" name="faculty[<?=$i++?>]" id="">
+                                    <option selected hidden value="<?=null?>">Select Faculty</option>
+                                    <option value="{{$fac->id}}">{{$fac->name}}</option>
+                                </select>
+                            </td>
+                        @endforeach
                     </tr>
                 </table>
             </div>

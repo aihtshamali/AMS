@@ -43,19 +43,10 @@ class FreezerController extends Controller
     public function createReturn(){
         $customers= Customer::all();
         $regions= Region::all();
-        return view('freezer.return',compact(['customers','regions']));
+        $faculty= Faculty::all();
+        return view('freezer.return',compact(['customers','regions','faculty']));
     }
 
-    public function storeReturn(Request $request)
-    {
-
-
-//        $driver= Driver::find($request->driver);
-//        $freezer->driver()->associate($driver);
-
-
-        dd($request->all());
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -63,61 +54,96 @@ class FreezerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    private function getdocNo($modelName,$ftn_no){
+        $doc_no = 0;
+        if($modelName=="Transfer") {
+            if (Transfer::all()->last()) {
+                $doc_no = Transfer::all()->last();
+                $part = explode(".", $doc_no);
+                $no = intval($part[1]);
+                $no++;
+                return ($ftn_no . substr("000000", 1, 6 - strlen($no)) . $no);
+            }
+        }
+        elseif ($modelName=="Return"){
+            if (Returns::all()->last()){
+                $doc_no = Returns::all()->last();
+                $part = explode(".", $doc_no);
+                $no = intval($part[1]);
+                $no++;
+                return ($ftn_no.substr("000000", 1, 6 - strlen($no)) . $no);
+            }
+        }
+                return ($ftn_no . '000001');
 
+
+    }
     public function store(Request $request)
     {
+//        dd($request->all());
+//        dd($request->all());
         $doc_no = 0;
+        if ($request->ftn_no == "RTN.") {
+            $freezer = new Returns();
+            $doc_no = $this->getdocNo("Return", $request->ftn_no);
+        } else {
+            $freezer = new Transfer();
+            $doc_no = $this->getdocNo("Transfer", $request->ftn_no);
+        }
 
-        if (Transfer::all()->last()) {
-            $doc_no = Transfer::all()->last();
-            $part = explode(".",$doc_no);
-            $no = intval($part[1]);
-            $no++;
-            $doc_no = $request->ftn_no.substr("000000", 1, 6 - strlen($no)).$no;
-        }
-        else {
-            $doc_no = $request->ftn_no.'.000001';
-        }
-        if($request->ftn_no=="RTN."){
-            $freezer= new Returns();
-        }
-        else
-        {
-            $freezer= new Transfer();
-        }
-        $freezer->ftn_no=$doc_no;
-        $freezer->reference=$request->reference;
-        $freezer->ftn_date=$request->ftn_date;
-        $freezer->customer()->associate($request->customer);
-        $freezer->to_=$request->delivery_address;
-        $freezer->placement_date=$request->placement_date;
-        $freezer->purpose=$request->purpose;
-        $freezer->save();
-        $counter=0;
-        $item= Item::where('item_group','Freezer')->first();
+        //      Default Value
+        $freezer->type = "freezer";
 
-        foreach ($request->region as $r){
-            if($r == null) break;
-            if($request->ftn_no=="RTN."){
-                $transfer_detail= new Returns_Detail();
-                $transfer_detail->returns()->associate($freezer);
+
+        $freezer->ftn_no = $doc_no;
+        $freezer->reference = $request->reference;
+        $freezer->ftn_date = $request->ftn_date;
+        $freezer->to_ = $request->delivery_address;
+
+        $freezer->placement_date = $request->placement_date;
+        $freezer->purpose = $request->purpose;
+
+        // Loop for finding Faculty Type
+        foreach ($request->faculty as $f) {
+            if($fac = Faculty::find($f)) {
+                if ($fac->type == "TSO") {
+                    $freezer->tso_id = $f;
+                } else if ($fac->type == "NSM") {
+                    $freezer->nsm_id = $f;
+                } else if ($fac->type == "RSM") {
+                    $freezer->rsm_id = $f;
+                }
             }
-            else
-            {
-                $transfer_detail= new Transfers_Detail();
+        }
+
+        $freezer->save();
+        $counter = 0;
+        $item = Item::where('item_group', 'Freezer')->first();
+
+        foreach ($request->region as $r) {
+            if ($r == null) break;
+            if ($request->ftn_no == "RTN.") {
+                $transfer_detail = new Returns_Detail();
+                $transfer_detail->returns()->associate($freezer);
+            } else {
+                $transfer_detail = new Transfers_Detail();
                 $transfer_detail->transfer()->associate($freezer);
             }
-
+            $transfer_detail->customer()->associate($request->customer);
             $transfer_detail->region()->associate($r);
             $transfer_detail->item()->associate($item);
-            $transfer_detail->quantity=1;
-            $transfer_detail->type=$request->type[$counter];
-            $transfer_detail->serialNumber=$request->serial_no[$counter];
-
+            $transfer_detail->quantity = 1;
+            $transfer_detail->freezer_type = $request->type[$counter];
+            $transfer_detail->serialNumber = $request->serial_no[$counter];
             $transfer_detail->save();
             $counter++;
         }
-        return redirect()->route('freezer.index')->withMessage('Freezer Dispatched Successfully');
+        if ($counter > 0)
+            return redirect()->route('freezer.index')->withMessage('Freezer '+$request->doc_no +'Successfully');
+        else {
+            Transfer::find($freezer->id)->delete();
+            return redirect()->route('freezer.index')->withMessage('Freezer Does Not '+$request->doc_no );
+        }
     }
 
     /**

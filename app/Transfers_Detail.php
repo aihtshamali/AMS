@@ -10,6 +10,9 @@ class Transfers_Detail extends Model
     public function transfer(){
         return $this->belongsTo('App\Transfer');
     }
+    public function customer(){
+        return $this->belongsTo('App\Customer');
+    }
     public function region(){
         return $this->belongsTo('App\Region');
     }

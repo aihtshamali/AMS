@@ -1,17 +1,17 @@
 @extends('layouts.app')
 @section('content')
     <div class="container" >
-        <h3>Create Dispatch</h3>
+        <h3>Return Request</h3>
 
 
-        <form action="{{route('dispatch.store')}}" method="post" >
+        <form action="{{route('returns.store')}}" method="post" >
             {{csrf_field()}}
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
                         <td>  <label for="name">Document Num.</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="doc_no" id="ref" value="{{$doc_no}}" readonly>
+                            <input type="text" class="form-control" name="ftn_no" id="ref" value="{{$doc_no}}" readonly>
                         </td>
                         <td>
                             <label for="reference">Reference num.</label>
@@ -84,6 +84,7 @@
                             </td>
                         @endfor
                     </tr>
+                    <?php $j=0; ?>
                     @foreach($items as $item)
 
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
@@ -91,9 +92,11 @@
                                 <th >
                                     <label  for="name">{{$item->display_name}}</label>
                                 </th>
+                                <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                                 @for($i=0; $i<10 ;$i++)
                                     <td>
-                                        <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->name}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
+
+                                        <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                                     </td>
                                 @endfor
                             </tr>

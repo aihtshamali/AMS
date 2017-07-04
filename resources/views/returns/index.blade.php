@@ -26,7 +26,7 @@
                     <td>{{$return->returns->ftn_no}}</td>
                     <td>{{$return->returns->ftn_date}}</td>
                     <td>{{$return->returns->reference}}</td>
-                    <td>{{$return->returns->customer_id}}</td>
+                    <td>{{$return->customer->id}}/{{$return->customer->account_name}}</td>
                     <td>{{$return->region->name}}</td>
                     <td>{{$return->type}}</td>
                     <td>{{$return->quantity}}</td>

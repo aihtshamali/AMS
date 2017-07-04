@@ -20,22 +20,39 @@ class CreateTransfersTable extends Migration
             $table->string('reference');
             $table->date('ftn_date');
             $table->integer('customer_id')->unsigned();
+            $table->integer('tso_id')->unsigned();
+            $table->integer('rsm_id')->unsigned();
+            $table->integer('nsm_id')->unsigned();
             $table->string('to_');
             $table->date('placement_date');
             $table->string('purpose');
-
-
+            $table->string('type');
             $table->timestamps();
 
-
             $table->foreign('customer_id')->references('id')->on('customers');
-
+            $table->foreign('tso_id')->references('id')->on('faculties');
+            $table->foreign('rsm_id')->references('id')->on('faculties');
+            $table->foreign('nsm_id')->references('id')->on('faculties');
 
             $table->dropForeign(['customer_id']);
-
+            $table->dropForeign(['nsm_id']);
+            $table->dropForeign(['rsm_id']);
+            $table->dropForeign(['tso_id']);
 
             $table->foreign('customer_id')
                 ->references('id')->on('customers')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('tso_id')
+                ->references('id')->on('faculties')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('rsm_id')
+                ->references('id')->on('faculties')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('nsm_id')
+                ->references('id')->on('faculties')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -46,6 +63,7 @@ class CreateTransfersTable extends Migration
             $table->integer('item_id')->unsigned();
             $table->integer('region_id')->unsigned();
             $table->string('serialNumber');
+            $table->string('freezer_type')->nullable();
             $table->string('type');
             $table->integer('quantity')->unsigned();
             $table->integer('faculty_id')->unsigned();
