@@ -21,5 +21,14 @@ class Region extends Model
     public function dispatch(){
         return $this->hasMany('App\Dispatch');
     }
+    public function user(){
+        return $this->hasMany('App\User');
+    }
+    public function permission_role(){
+        return $this->hasMany('App\Permission_Role');
+    }
+    public function item(){
+        return $this->hasMany('App\Item');
+    }
 }
 

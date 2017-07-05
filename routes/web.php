@@ -18,14 +18,13 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>['auth','acl']],function(){
     Route::get('/admin',[
       'as'=>'admin.index',
       'uses'=>function(){
         return view('admin.index');
       }
     ]);
-
     Route::get('freezer/return','FreezerController@createReturn')->name('return');
 //    Route::post('freezer/return','FreezerController@storeReturn')->name('return');
     Route::resource('role','RoleController');

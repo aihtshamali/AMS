@@ -7,7 +7,7 @@
         <form action="{{route('freezer.store')}}" method="post" >
             {{csrf_field()}}
             <div classs="dispatchHeader">
-                <table class="table-responsive table">
+                <table class="table-responsive table table-sm">
                     <tr>
                         <td>  <label for="ftn_no">FTN Number</label> </td>
                         <td>
@@ -19,9 +19,12 @@
                         <td>
                             <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
                         </td>
+                        <td align="center">
+                            <label for="ftn_date">FTN Date</label>
+                        </td>
                         <td>
-                            <label for="ftn_date">FTN Date</label>    </td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="Date"> </td>
+                            <input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="Date">
+                        </td>
 
                     </tr>
                     <tr>
@@ -35,10 +38,11 @@
                                 @endforeach
                             </select>
                         </td>
+                        <td><label for="customer">Delivery Address</label></td>
+                        <td><input type="text" class="form-control" name="delivery_address" data-width="100%"></td>
                     </tr>
                     <tr>
-                            <td><label for="customer">Delivery Address</label></td>
-                        <td><input type="text" class="form-control" name="delivery_address" data-width="100%"></td>
+
                     </tr>
 
                     <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="5"><label for="" >Freezer Information</label></td></tr>
@@ -91,13 +95,13 @@
                         </tr>
                     @endfor
                     <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="5"><label for="" >Authorize Information</label></td></tr>
-                    <tr>
+                    <tr style="width:40%">
                         <?php $i=0 ?>
                         @foreach($faculty as $fac)
-                            <td colspan="1">
+                            <td align="center" style="padding: 0px;margin:0px">
                                 <label for="">{{$fac->type}}</label>
                             </td>
-                            <td>
+                            <td style="padding: 0px;margin:0px">
                                 <select class="selectpicker" name="faculty[<?=$i++?>]" id="">
                                     <option selected hidden value="<?=null?>">Select Faculty</option>
                                     <option value="{{$fac->id}}">{{$fac->name}}</option>

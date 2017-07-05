@@ -59,6 +59,17 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="region" class="col-md-4 control-label">Select Region</label>
+
+                            <div class="col-md-6">
+                                <select name="region" class="selectpicker" id="" required>
+                                    @foreach($regions as $region)
+                                        <option value="{{$region->id}}">{{$region->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

@@ -13,9 +13,9 @@ class PermissionTableSeeder extends Seeder
     {
       $permissions=[
                  [
-                     'name' => 'role-read',
-                     'display_name' => 'Display Role Listing',
-                     'description' => 'See only Listing Of Role'
+                     'name' => 'dispatch/create',
+                     'display_name' => 'Create Dispatch',
+                     'description' => 'Dispatch'
                  ],
                  [
                      'name' => 'role-create',

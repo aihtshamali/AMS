@@ -15,4 +15,7 @@ class Item extends Model
     public function returns_detail(){
         return $this->hasMany('App\Returns_Detail');
     }
+    public function region(){
+        return $this->belongsTo('App\Region');
+    }
 }

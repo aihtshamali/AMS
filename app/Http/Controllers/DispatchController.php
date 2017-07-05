@@ -20,6 +20,7 @@ class DispatchController extends Controller
      */
     public function index()
     {
+
         $dispatches =Dispatch::all();
         return view('dispatch.index',compact('dispatches'));
     }

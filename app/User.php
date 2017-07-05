@@ -10,8 +10,21 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
 class User extends Authenticatable
 {
 
-        use EntrustUserTrait; // add this trait to your user model
+//        use EntrustUserTrait; // add this trait to your user model
+    public function getRememberToken()
+    {
+        return $this->remember_token;
+    }
 
+    public function setRememberToken($value)
+    {
+        $this->remember_token = $value;
+    }
+
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -30,4 +43,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function region(){
+        return $this->belongsTo('App\Region');
+    }
 }
