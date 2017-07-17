@@ -1,0 +1,49 @@
+body{
+    font-family: inherit;margin: 20px 0px 0px 10px;
+
+}
+.round-border{
+    border-radius: 15px;
+}
+th{
+    padding: 5px 0 0 0;
+}
+table{
+    border: 0;
+    border-collapse: inherit;
+}
+.tbl-data{
+    font-size: 13px;
+}
+.tbl-head{
+    font-size: 16px;
+}
+.header-box tbody tr > td{
+    padding: 5px 0 5px 5px;
+}
+.header-box{
+    padding: 5px;
+}
+.gap{
+    padding: 10px 0 5px 0;
+}
+.freezer_information tbody >tr >td{
+    /*border-bottom: 1px dotted black;*/
+}
+.tr_header{
+    text-align: center;
+}
+.tdb{
+    border-bottom: 2px dotted lightgray;
+    text-align: center;
+    padding: 5px 0 3px 0;
+}
+.thb{
+    border-bottom: 1.5px solid #000000;
+    background-color: #bd2355;
+
+}
+.sub-head{
+ font-weight: bold;
+    margin-top: 10px;
+}

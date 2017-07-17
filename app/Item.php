@@ -18,4 +18,10 @@ class Item extends Model
     public function region(){
         return $this->belongsTo('App\Region');
     }
+    public function  useritem(){
+        return $this->hasMany('App\UserItem');
+    }
+    public function  purchase_detail(){
+        return $this->hasMany('App\Purchase_Detail');
+    }
 }

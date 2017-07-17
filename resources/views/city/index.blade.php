@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container">
+    <div class="">
         <span align="center" >
             @if (Session::has('message'))
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -16,7 +16,7 @@
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
-            {{--Todo--}}
+
             @forelse($cities as $city)
                 <tr>
                     <td>{{$city->name}}</td>

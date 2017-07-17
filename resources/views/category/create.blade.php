@@ -1,6 +1,6 @@
-@extends('layouts\app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container">
+    <div class="">
         <form action="{{route('category.store')}}" method="post">
             <div class="from-group" style="margin: 10px">
                 <input type="text" name="name" required>

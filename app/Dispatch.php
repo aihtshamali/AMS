@@ -15,7 +15,9 @@ class Dispatch extends Model
     public function region(){
         return $this->belongsTo('App\Region');
     }
-
+    public function countDispatchDetails($id){
+        return count(Dispatches_Detail::where('dispatch_id',$id)->get());
+    }
 
 
 

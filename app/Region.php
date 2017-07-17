@@ -24,11 +24,18 @@ class Region extends Model
     public function user(){
         return $this->hasMany('App\User');
     }
-    public function permission_role(){
-        return $this->hasMany('App\Permission_Role');
-    }
+
     public function item(){
         return $this->hasMany('App\Item');
+    }
+    public function faculty(){
+        return $this->hasMany('App\Faculty');
+    }
+    public function customer(){
+        return $this->hasMany('App\Customer');
+    }
+    public function purchase(){
+        return $this->hasMany('App\Purchase');
     }
 }
 

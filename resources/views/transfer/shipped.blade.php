@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
-        <h3>Traansfer Shipped</h3>
+    <div class="">
+        <h3>Transfer Shipped</h3>
 
 
-        <form action="" method="post" >
+        <form action="{{route('transfer.store')}}" method="post" >
             {{csrf_field()}}
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
@@ -16,7 +16,7 @@
 
                         <td>  <label for="name">Date</label> </td>
                         <td>
-                            <input type="date" class="form-control" name="date" >
+                            <input type="date" class="form-control" name="ftn_date" >
                         </td>
 
 
@@ -31,7 +31,18 @@
                     <tr>
                         <td>  <label for="from_">From</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="from_" id="" value="WareHouse" readonly>
+                            <input type="text" class="form-control" style="width:inherit" name="from_" id="" value="{{Auth::user()->region->name}}" readonly>
+                        </td>
+                        <td>
+                            <label for="region_id">TO</label>
+                        </td>
+                        <td>
+                            <select name="region_id" class="selectpicker show-tick">
+                                <option selected disabled hidden ></option>
+                                @foreach($regions as $region)
+                                    <option value="{{$region->id}}">{{$region->name}}</option>
+                                @endforeach
+                            </select>
                         </td>
                         <td>
                             <label for="vehicle_id">Vehicle Num.</label>
@@ -44,6 +55,8 @@
                                 @endforeach
                             </select>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
                             <label for="description">Driver</label>    </td>
                         <td>
@@ -59,54 +72,28 @@
                 </table>
             </div>
             <hr size="3px">
+            <?php $redund=null; $i=0?>     <!--  Forced to appear header only once. and $i is counter -->
            <table class="table-responsive table">
-               <tr style="margin:0px;padding:0px">
-                   <td>
-                       <h3 style="margin:0px;padding:0px;color: #000;">Freezer</h3>
-                   </td>
-                   <td></td>
-               </tr>
-                <tr>
-                    <td><label for="">Right Up Freezer</label></td>
-                    <td><input name="" type="number" min="0" class="form-control"></td>
-                </tr><tr>
-                    <td><label for="">Top Glass (Waves)</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr><tr>
-                    <td><label for="">Right Up (Caravell)</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr>
-               <tr style="margin:0px;padding:0px">
-                   <td>
-                       <h3 style="margin:0px;padding:0px;color: #000;">Pallet</h3>
-                   </td>
-                   <td></td>
-               </tr>
-                <tr>
-                    <td><label for="">Plastic Pallet</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr>
-               <tr>
-                    <td><label for="">Wooden Pallet</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr>
-               <tr style="margin:0px;padding:0px">
-                   <td>
-                       <h3 style="margin:0px;padding:0px;color: #000;" >Crate</h3>
-                   </td>
-                   <td></td>
-               </tr>
-                <tr>
-                    <td><label for="">Green Crate</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr>
-               <tr>
-                    <td><label for="">Yellow With Blue Handle</label></td>
-                    <td><input type="number" min="0" class="form-control"></td>
-                </tr>
+               @foreach($useritems as $alloweditem)
+                   @if($redund!=$alloweditem->item->item_group)
+                   <tr style="margin:0px;padding:0px">
+                       <td>
+                           <?php $redund=$alloweditem->item->item_group?>
+                           <h3 style="margin:0px;padding:0px;color: #000;">{{$alloweditem->item->item_group}}</h3>
+                       </td>
+                       <td></td>
+                   </tr>
+                   @endif
+                   <tr>
+                       <td><label for="">{{$alloweditem->item->display_name}}</label></td>
+                       <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
+                       <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty" onchange="setTotal();"></td>
+                   </tr>
+                    <?php $i++?>
+               @endforeach
                <tr>
                    <td><label for=""><strong style="color: #000;">Total</strong></label></td>
-                   <td><input type="number" min="0" class="form-control"></td>
+                   <td><input type="number" name="total" id="total" min="0" class="form-control total"></td>
                </tr>
            </table>
 

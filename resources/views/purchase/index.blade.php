@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container">
+    <div class="">
         <span align="center" >
             @if (Session::has('message'))
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -14,20 +14,20 @@
                 <th>Document Number</th>
                 <th>Date</th>
                 <th>Reference</th>
-                <th><Driver></Driver></th>
-                <th>From</th>
+                <th>Driver</th>
                 <th>To</th>
                 <th>Actions</th>
                 <th></th>
 
             </tr>
+            {{--{{dd($purchases)}}--}}
             @forelse($purchases as $purchase)
                 <tr>
                     <td>{{$purchase->doc_no}}</td>
                     <td>{{$purchase->cdate}}</td>
-                    <td>{{$purchase->refernce}}</td>
-                    <td>{{$purchase->from_}}</td>
-                    <td>{{$purchase->to_}}</td>
+                    <td>{{$purchase->reference}}</td>
+                    <td>{{$purchase->driver->name}}</td>
+                    <td>{{$purchase->region->name}}</td>
                     <td>
                         <a href="{{route('purchase.edit',$purchase->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
                     </td>

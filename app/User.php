@@ -9,6 +9,9 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
 {
+    public function permission_role(){
+        return $this->hasMany('App\Permission_Role');
+    }
 
 //        use EntrustUserTrait; // add this trait to your user model
     public function getRememberToken()
@@ -45,5 +48,14 @@ class User extends Authenticatable
     ];
     public function region(){
         return $this->belongsTo('App\Region');
+    }
+    public function  useritem(){
+        return $this->hasMany('App\UserItem');
+    }
+    public function faculty(){
+        return $this->hasMany('App\Faculty');
+    }
+    public function purchase(){
+        return $this->hasMany('App\Purchase');
     }
 }

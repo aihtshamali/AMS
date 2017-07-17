@@ -60,24 +60,20 @@ class ReturnController extends Controller
     public function store(Request $request)
     {
 
-
-
         $return = new Returns();
-
         $return->ftn_no = $request->ftn_no;
         $return->reference = $request->reference;
         $return->ftn_date = $request->cdate;
-
+        $return->return_date = $request->cdate;
         //     Return from Customers
         //         To WareHouse
+        $region=Region::where('name',$request->to_)->first()->id;
 
-
-        $return->region_to = 2;
+        $return->region_to = $region;
 //        $return->customer()->associate($request->customer);
 //        $return->to_ = $request->delivery_address;
 //        $return->placement_date = $request->placement_date;
 //        $return->purpose = $request->purpose;
-
         $return->save();
         $counter = 0;
         foreach ($request->customer as $cust) {
@@ -87,11 +83,13 @@ class ReturnController extends Controller
                 if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
 
                     $transfer_detail = new Returns_Detail();
-                    $transfer_detail->customer  ()->associate($cust);
+                    $transfer_detail->customer()->associate($cust);
                     $transfer_detail->quantity = $it[$request->getid[$i]];
                     $transfer_detail->item()->associate(Item::find($request->getid[$i]));
                     $transfer_detail->sales_invoice = $request->sales_invoice[$counter];
-                    $transfer_detail->region_id = 1;
+                    $transfer_detail->region()->associate($region);
+                    $itm=Item::find($request->getid[$i]);
+                    $transfer_detail->type=$itm->item_group;
                     $transfer_detail->returns()->associate($return->id);
                     $transfer_detail->save();
                 }

@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container">
+    <div class="">
     <h3>Edit Region:</h3>
 
     <form action="{{route('region.update',$region->id)}}" method="post" role="form">

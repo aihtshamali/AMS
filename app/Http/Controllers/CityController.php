@@ -16,7 +16,7 @@ class CityController extends Controller
     {
         $cities= City::all();
         $regions=Region::all();
-        return view('city.index',compact(['cities','regions']));
+        return view('city.index',compact(['cities']));
     }
 
     /**

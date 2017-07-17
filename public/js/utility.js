@@ -3,6 +3,37 @@
  */
 $(document).ready(function() {
 
+
+
+        var trigger = $('.hamburger'),
+            overlay = $('.overlay'),
+            isClosed = false;
+
+        trigger.click(function () {
+            hamburger_cross();
+        });
+
+        function hamburger_cross() {
+
+            if (isClosed == true) {
+                overlay.hide();
+                trigger.removeClass('is-open');
+                trigger.addClass('is-closed');
+
+                isClosed = false;
+            } else {
+                overlay.show();
+                trigger.removeClass('is-closed');
+                trigger.addClass('is-open');
+
+                isClosed = true;
+            }
+        }
+
+        $('[data-toggle="offcanvas"]').click(function () {
+            $('#wrapper').toggleClass('toggled');
+        });
+
     // $(function () {
         // $(':input').on('input',function(){
         //
@@ -65,6 +96,18 @@ function getTotal(ctrl,id,item)
     $("#"+id+"qtytotal").val(gTotal);
 }
 
+// Transfer Total
+function setTotal(){
+    var gTotal=0;
+    $("#total").val(0);
+    $(".qty").each(function(){
+       if($(this).val()!=''){
+           gTotal+=parseInt($(this).val().replace(/\,/g,""));
+       }
+    });
+    $("#total").val(gTotal);
+}
+
 function sendData(item){
     $.ajax({
         url: 'dispatch/create',
@@ -74,15 +117,6 @@ function sendData(item){
     });
 }
 
-function appendCustomers(ctrl,id,customers){
-    alert(customers['name']);
-    // $.each(customers.name, function (customers) {
-    //     $('ctrl').append($('<option>', {
-    //         value: customers.id,
-    //         text : customers.name
-    //     }));
-    // });
-}
             // Freeezer Total
 function changeFreezerTotal(ctrl,id){
     if($(ctrl).val()!="")

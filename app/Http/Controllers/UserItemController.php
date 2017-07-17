@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Role;
-use App\Permission;
+
+use App\Item;
+use App\User;
+use App\UserItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-class RoleController extends Controller
+
+class UserItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +16,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles=Role::all();
-        return view('admin.role.index',compact('roles'));
+        $useritems=UserItem::all();
+        return view('admin.useritems.index',compact('useritems'));
     }
 
     /**
@@ -23,11 +25,9 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function create()
     {
-      $permissions=Permission::all();
-      return view('admin.role.create',compact('permissions'));
+        //
     }
 
     /**
@@ -38,12 +38,15 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role=Role::create($request->except(['permsission','_token']));
-        foreach ($request->permission as $key => $value) {
-            $role->attachPermission($value);
-
+        $user= User::find($request->user_id);
+        foreach ($request->useritems as $useritem){
+            $Nuseritem=new UserItem();
+            $item=Item::find($useritem);
+            $Nuseritem->user()->associate($user);
+            $Nuseritem->item()->associate($item);
+            $Nuseritem->save();
         }
-        return redirect()->route('role.index')->withMessage('Role Created Successfully');
+        return redirect()->back()->withMessage("Item Attached Successfully");
     }
 
     /**
@@ -65,11 +68,10 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role= Role::find($id);
-
-        $permissions=Permission::all();
-        $role_permissions=$role->perms()->pluck('id','id')->toArray();
-        return view('admin.role.edit',compact(['role','role_permissions','permissions']));
+        $items=Item::all();
+        $user_items=UserItem::where('user_id',$id)->get();
+        $user=User::find($id);
+        return view('admin.useritems.edit',compact(['items','user_items','user']));
     }
 
     /**
@@ -81,17 +83,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-      $role= Role::find($id);
-      $role->name=$request->name;
-      $role->display_name=$request->display_name;
-      $role->description=$request->description;
-      $role->save();
-      DB::table('permission_role')->where('role_id',$id)->delete();
-      foreach ($request->permission as $key => $value) {
-          $role->attachPermission($value);
-
-      }
-      return redirect()->route('role.index')->withMessage('Role Updated Successfully');
+        //
     }
 
     /**
@@ -102,8 +94,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        Role::find($id)->delete();
-        return redirect()->route('role.index')->withMessage('Role Deleted Successfully');
-
+        UserItem::destroy($id);
+        return redirect()->back()->withMessage('Item detached Successfully');
     }
 }

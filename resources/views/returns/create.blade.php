@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
+    <div class="">
         <h3>Return Request</h3>
 
 
@@ -25,26 +25,26 @@
 
                     </tr>
                     <tr>
-                        <td>  <label for="from_">From</label> </td>
+                        <td>  <label for="from_">To</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="from_" id="" value="WareHouse" readonly>
+                            <input type="text" class="form-control" name="to_" id="" value="{{Auth::user()->region->name}}" readonly>
                         </td>
                         <td>
                             <label for="vehicle_id">Vehicle Num.</label>
                         </td>
-                        <td>
-                            <select name="vehicle_id" class="selectpicker show-tick">
-                                <option></option>
+                        <td >
+                            <select name="vehicle_id" style="width: 80%;" class="selectpicker form-control show-tick">
+                                <option value="">--Select Vehicle--</option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                                 @endforeach
                             </select>
                         </td>
                         <td>
-                            <label for="description">Address</label>    </td>
+                            <label for="description">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" class="selectpicker show-tick">
-                                <option></option>
+                            <select name="driver_id" style="width: 60%;" class="selectpicker form-control show-tick">
+                                <option value="">--Select Driver--</option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
                                 @endforeach
@@ -61,14 +61,14 @@
                 <table class="table">
                     <tr>
                         <th >
-                            <label class="col-xs-7" for="name">Customer Information</label>
+                            <label class="col-xs-7" for="name">From Customer</label>
                         </th>
                         @for($i =0; $i<10 ;$i++)
                             <td class="col-xs-3" >
                                 <select name="customer[]" style="height: 30px;width: 200px">
                                     <option></option>
                                     @foreach($customers as $customer)
-                                        <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
+                                        <option type="text"  value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
                                     @endforeach  data-live-search="true" id="<?=$i?>customer"   >
                                 </select>
                             </td>

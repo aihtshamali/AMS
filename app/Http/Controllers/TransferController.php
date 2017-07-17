@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Driver;
+use App\Item;
+use App\Region;
+use App\Transfers_Detail;
+use App\UserItem;
 use App\Vehicle;
 use App\Transfer;
 use Illuminate\Http\Request;
-
+use Auth;
+use App\Customer;
 class TransferController extends Controller
 {
     /**
@@ -27,18 +32,20 @@ class TransferController extends Controller
     public function create()
     {
         if (Transfer::all()->last()) {
-            $doc_no = Transfer::all()->last()->pluck('reference');
+            $doc_no = Transfer::all()->last()->pluck('ftn_no');
             $part = explode(".",$doc_no);
             $no = intval($part[1]);
             $no++;
-            $doc_no = "DOC.".substr("000000", 1, 6 - strlen($no)).$no;
+            $doc_no = "TO.".substr("000000", 1, 6 - strlen($no)).$no;
         }
         else {
-            $doc_no = 'DOC.000001';
+            $doc_no = 'TO.000001';
         }
         $drivers=Driver::all();
         $vehicles =Vehicle::all();
-        return view('transfer.shipped',compact(['drivers','vehicles','doc_no']));
+        $regions=Region::all();
+        $useritems=UserItem::where('user_id',Auth::user()->id)->get();
+        return view('transfer.shipped',compact(['drivers','vehicles','doc_no','regions','useritems']));
     }
 
     /**
@@ -49,7 +56,33 @@ class TransferController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $transfer = new Transfer();
+        $transfer->customer()->associate(Customer::find($request->customer));
+        $transfer->ftn_no = $request->doc_no;
+        $transfer->reference = $request->reference;
+        $transfer->ftn_date = $request->ftn_date;
+        $transfer->vehicle_id=$request->vehicle_id;
+        $transfer->driver_id=$request->driver_id;
+        $transfer->from_=$request->from_;
+        $transfer->placement_date = $request->placement_date;
+        $transfer->save();
+        $i=0;
+        for(;$i<count($useritems=UserItem::where('user_id',Auth::user()->id)->get());$i++) {
+            if ($request->items[$i] != null) {
+                $transfer_detail = new Transfers_Detail();
+                $transfer_detail->item()->associate($request->getid[$i]);
+                $transfer_detail->region()->associate($request->region_id);
+                $transfer_detail->quantity = $request->items[$i];
+                $transfer_detail->transfer()->associate($transfer);
+                $transfer_detail->save();
+            }
+        }
+        if ($i > 0)
+            return redirect()->route('transfer.index')->withMessage('Items Transfered Successfully');
+        else {
+            Transfer::find($transfer->id)->delete();
+            return redirect()->route('transfer.index')->withMessage('Items Does Not Dispatched');
+        }
     }
 
     /**

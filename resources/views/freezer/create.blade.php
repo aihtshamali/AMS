@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
+    <div class="">
         <h3>Dispatch Freezer</h3>
 
 
@@ -45,7 +45,7 @@
 
                     </tr>
 
-                    <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="5"><label for="" >Freezer Information</label></td></tr>
+                    <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="7"><label for="" >Freezer Information</label></td></tr>
                     <tr>
                         <td><label for="ftn_date">Date of Placement</label></td>
                         <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="placement_date" id="" placeholder="Date"> </td>
@@ -59,11 +59,14 @@
                                 <option value="replacement">Replacement</option>
                             </select>
                         </td>
+
                     </tr>
                     <tr style="background-color: rgb(160, 17, 78);color: white;">
                         <td width="25px">Sr. No.</td>
                         <td width="">Transfer From</td>
                         <td width="">Freezer Type</td>
+                        <td width="">Model</td>
+                        <td width="">Condition</td>
                         <td width="">Serial No.</td>
                         <td width="">Quantity</td>
                     </tr>
@@ -81,9 +84,19 @@
                             <td>
                                 <select name="type[<?=$i?>]" class="selectpicker " data-live-search="true" id="<?=$i?>type"  data-width="100%" >
                                     <option selected disabled hidden style="color:rgb(0,0,0)">Choose Type</option>
-                                    <option type="text"  value="W-Right Up"  >W-Right Up</option>
-                                    <option type="text"  value="Top Glass"  >Top Glass</option>
+                                    <option type="text"  value="RIGHT UP FREEZER (WAVES)"  >RIGHT UP FREEZER (WAVES)</option>
+                                    <option type="text"  value="TOP GLASS (WAVES)"  >TOP GLASS (WAVES)</option>
 
+                                </select>
+                            </td>
+                            <td>
+                                <input name="model[<?=$i?>]" type="text" class="form-control" id="<?=$i?>model"  placeholder="Enter Model..." >
+                            </td>
+                            <td>
+                                <select name="condition[<?=$i?>]" class="selectpicker " data-live-search="true" id="<?=$i?>condition"  data-width="100%" >
+                                    <option selected disabled hidden style="color:rgb(0,0,0)">Choose Condition</option>
+                                    <option type="text"  value="new"  >New</option>
+                                    <option type="text"  value="used">Used</option>
                                 </select>
                             </td>
                             <td>
@@ -94,7 +107,7 @@
                             </td>
                         </tr>
                     @endfor
-                    <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="5"><label for="" >Authorize Information</label></td></tr>
+                    <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="7"><label for="" >Authorize Information</label></td></tr>
                     <tr style="width:40%">
                         <?php $i=0 ?>
                         @foreach($faculty as $fac)

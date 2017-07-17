@@ -5,44 +5,60 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Permission_Role;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
-//use Illuminate\Support\Facades\Auth;
-use Auth;
+use Illuminate\Support\Facades\Route;
+    use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Auth;
+//use Auth;
 
 class RegionMiddleWare
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-//        dd(Auth::user());
-        $current_route =$request->getRequestUri();
-    //    dd($current_route);
 
-//        dd($request);
-//  $current_permissions =$user->region->id;
-//        dd($current_permissions);
+//        $object=Route::getRoutes();
+//        $routes=(array) $object;
+//        foreach ($routes as $key =>$value) {
+//            if ($value == "login")
+//                dd($value);
+//            foreach ($value as $k => $v) {
+//                if ($k == "login") {
+//                    $a=(array)$value;
+//                    dd($value);
+//                }
+//            }
+//        }
+        //$allRoutes = Route::getRoutes();
+//    dd($//allRoutes);
 //
-//allowed = false
+
+//        $allowed = true;
+//        //dd(Route::currentRouteName());
+//        if(Auth::check()) {
+//            $user = Auth::user();
+//            $current_route = Route::currentRouteName();
+//            $allowed = false;
+//            $region_id = $user->region->id;
+//            $current_permissions = Permission_Role::where('user_id', $user)->get();
+//            foreach ($current_permissions as $userpermission) {
 //
-//foreach ( current_permissions as permssion )
-//
-//{
-//    if current-route == permission
-//    allowed = true
-//
-//}
-//
-//if (allowed) {
-//    return next()
-//} else {
-//    redirect(permission-denied)
-//}
+//                if ($current_route == $userpermission->userpermission->name) {
+//                    $allowed = true;
+//                }
+//            }
+//        }
+//        if ($allowed) {
+//            return $next($request);
+//        }
+//        else {
+//            abort(403, 'Unauthorized action - You are not Authorized for this action');
+//        }
         return $next($request);
     }
 }

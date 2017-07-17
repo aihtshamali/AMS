@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container">
+    <div class="">
         <span align="center" >
             @if (Session::has('message'))
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -14,24 +14,29 @@
                 <th>Document Number</th>
                 <th>Date</th>
                 <th>Reference</th>
-                <th><Driver></Driver></th>
+                <th>Driver</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Actions</th>
                 <th></th>
 
             </tr>
+
             @forelse($transfers as $transfer)
                 <tr>
-                    <td>{{$transfer->doc_no}}</td>
-                    <td>{{$transfer->cdate}}</td>
-                    <td>{{$transfer->refernce}}</td>
-                    <td>{{$transfer->from_}}</td>
+
+                    <td>{{$transfer->ftn_no}}</td>
+                    <td>{{$transfer->ftn_date}}</td>
+                    <td>{{$transfer->reference}}</td>
+                    @if($transfer->driver_id)
+                    <td>{{$transfer->driver_id->name}}</td>
+                    @else<td>-</td>
+                    @endif
                     <td>{{$transfer->to_}}</td>
+                    <td>{{$transfer->getRegion($transfer->id)->region->name}}</td>
                     <td>
                         <a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
                     </td>
-
                     <td>
                         <form action="{{route('transfer.destroy',$transfer->id)}}" method="post">
                             {{csrf_field()}}

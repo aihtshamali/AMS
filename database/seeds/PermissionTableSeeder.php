@@ -18,17 +18,17 @@ class PermissionTableSeeder extends Seeder
                      'description' => 'Dispatch'
                  ],
                  [
-                     'name' => 'role-create',
+                     'name' => 'permissions-create',
                      'display_name' => 'Create Role',
                      'description' => 'Create New Role'
                  ],
                  [
-                     'name' => 'role-edit',
+                     'name' => 'permissions-edit',
                      'display_name' => 'Edit Role',
                      'description' => 'Edit Role'
                  ],
                  [
-                     'name' => 'role-delete',
+                     'name' => 'permissions-delete',
                      'display_name' => 'Delete Role',
                      'description' => 'Delete Role'
                  ],

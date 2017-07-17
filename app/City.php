@@ -12,4 +12,8 @@ class City extends Model
     public function getregion($id){
         return Region::findorFail($id);
     }
+    public function customer(){
+        return $this->hasMany('App\Customer');
+    }
+
 }

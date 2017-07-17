@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('admin.layout.admin')
 @section('content')
-    <div class="container">
+    <div class="">
         <span align="center" >
             @if (Session::has('message'))
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -16,7 +16,7 @@
                 <th>Groups</th>
                 <th>Cities</th>
                 <th>Regions</th>
-                <th>Address</th>
+                {{--<th>Address</th>--}}
                 <th>Phone</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -28,9 +28,9 @@
                     <td>{{$customer->account_no}}</td>
                     <td>{{$customer->account_name}}</td>
                     <td>{{$customer->customer_group}}</td>
-                    <td>{{$customer->getcity($customer->city_id)->name}}</td>
-                    <td>{{$customer->getregion($customer->region_id)->name}}</td>
-                    <td>{{$customer->address}}</td>
+                    {{--<td>{{$customer->city->name}}</td>--}}
+{{--                    <td>{{$customer->region->name}}</td>--}}
+                    {{--<td>{{$customer->address}}</td>--}}
                     <td>{{$customer->phone}}</td>
                     <td>{{$customer->is_active=="1" ? "Active" : "Not Active"}}</td>
                     <td>
@@ -46,8 +46,10 @@
                     </td>
                 </tr>
             @empty
-                <td>No customer</td>
+                <td>No Customer</td>
             @endforelse
+            <tr><td colspan="4"><?php echo $customers->render(); ?></td></tr>
         </table>
+
     </div>
 @endsection

@@ -12,4 +12,10 @@ class Driver extends Model
     public function dispatch(){
         return $this->hasMany('App\Dispatch');
     }
+    public function transfer(){
+        return $this->hasMany('App\Transfer');
+    }
+    public function purchase(){
+        return $this->hasMany('App\Purchase');
+    }
 }

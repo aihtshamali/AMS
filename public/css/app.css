@@ -10,12 +10,21 @@
 
 .backgroundimage{
     background: url(../images/loginbg.jpg) no-repeat center center fixed;
+
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    height: 550px;
 
+}
+#bg { position: fixed; top: 0; left: 0;
+    width:100%; }
+.bgwidth { width: 100%; }
+.bgheight { height: 100%; }
+
+.half_body{
+    width: 880px;
+    margin-left: 200px;
 }
 .table-wrapper {
     overflow-x:scroll;
@@ -30,6 +39,7 @@ th{
     color:#FFF1FF;
     background-color:#bd2355;
 }
+
 header{
     margin-bottom: 13px;
 }
@@ -118,7 +128,7 @@ template {
     background:transparent;
  }
 a {
-    background-color: #fff
+    /*background-color: #fff*/
 }
 a:active,
 a:hover {
@@ -2681,6 +2691,8 @@ input[type=radio]:focus {
 output {
     padding-top: 7px
 }
+
+
 .form-control {
     width: 100%;
     height: 36px;

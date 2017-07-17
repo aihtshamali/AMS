@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('admin.layout.admin')
 @section('content')
-    <div class="container " >
+    <div class="">
     <h3>Create Customers</h3>
 
     <form action="{{route('customer.store')}}" method="post" >
@@ -26,7 +26,8 @@
 
         <div class="form-group">
             <label for="description">City Name</label>
-            <select name="city" class="select" id="">
+            <select name="city"  class="form-control" id="" required>
+                <option value="">--Choose City--</option>
                 @foreach($cities as $city)
                     <option value="{{$city->id}}">{{$city->name}}</option>
                 @endforeach
@@ -34,7 +35,8 @@
         </div>
         <div class="form-group">
             <label for="description">Location</label>
-            <select name="region" class="select" id="">
+            <select name="region"  class="form-control" id="" required>
+                <option value="">--Choose Region--</option>
                 @foreach($regions as $region)
                     <option value="{{$region->id}}">{{$region->name}}</option>
                 @endforeach
@@ -42,7 +44,8 @@
         </div>
         <div class="form-group">
             <label for="description">Category</label>
-            <select name="customer_group" class="select" id="">
+            <select name="customer_group" class="form-control" id="" required>
+                <option value="">--Choose Category--</option>
                 @foreach($categories as $category)
                     <option value="{{$category->code}}">{{$category->name}}</option>
                 @endforeach
@@ -50,7 +53,7 @@
         </div>
         <div class="form-group text-left">
             <label for="description">Status</label>
-            <select name="is_active" id="">
+            <select name="is_active" class="form-control" id="" required>
                 <option value="1" selected>Active</option>
                 <option value="0">Not Active</option>
             </select>

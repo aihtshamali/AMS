@@ -7,22 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
 
+    public function region(){
+        return $this->belongsTo('App\Region');
+    }
+    public function dispatches_detail(){
+        return $this->hasMany('App\Dispatches_Detail');
+    }
+    public function transfer(){
+        return $this->hasMany('App\Transfer');
+    }
+    public function returns_detail(){
+        return $this->hasMany('App\Returns_Detail');
+    }
+
+    public function city(){
+        return $this->belongsTo('App\City');
+    }
     public function getregion($id){
         return Region::find($id);
     }
     public function getcity($id){
         return City::find($id);
     }
-    public function dispatches_detail(){
-        return $this->hasMany('App\Dispatches_Detail');
-    }
-    public function transfers_detail(){
-        return $this->hasMany('App\Transfers_Detail');
-    }
-    public function returns_detail(){
-        return $this->hasMany('App\Returns_Detail');
-    }
-
 
 
 

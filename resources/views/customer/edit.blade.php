@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('admin.layout.admin')
 @section('content')
-    <div class="container " >
+    <div class="">
         <h3>Create Customers</h3>
 
         <form action="{{route('customer.update',$customer->id)}}" method="post" >

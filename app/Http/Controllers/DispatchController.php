@@ -6,6 +6,7 @@ use App\Customer;
 use App\Dispatch;
 use App\Dispatches_Detail;
 use App\Driver;
+use App\Faculty;
 use App\Item;
 use App\Vehicle;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class DispatchController extends Controller
     public function index()
     {
 
-        $dispatches =Dispatch::all();
+        $dispatches =Dispatch::paginate(7);
         return view('dispatch.index',compact('dispatches'));
     }
 
@@ -96,6 +97,11 @@ class DispatchController extends Controller
                 }
             $counter++;
         }
+        if($i=0) {
+            Dispatch::find($dispatch->id)->delete();
+            return redirect()->route('dispatch.index')->withMessage("Data Insertion Failed");
+
+        }else
         return redirect()->route('dispatch.index')->withMessage('Data Inserted Successfully');
     }
 
@@ -107,7 +113,8 @@ class DispatchController extends Controller
      */
     public function show($id)
     {
-        //
+        $faculty= Faculty::find($id);
+        return view('faculty.edit',compact('faculty'));
     }
 
     /**
@@ -118,7 +125,13 @@ class DispatchController extends Controller
      */
     public function edit($id)
     {
-        //
+        $dispatch=Dispatch::find($id);
+        $items=Item::all();
+        $customers= Customer::all();
+        $drivers=Driver::all();
+        $vehicles=Vehicle::all();
+        $dispatch_detail=Dispatches_Detail::where('dispatch_id',$dispatch->id)->get();
+       return view('dispatch.edit',compact(['drivers','customers','vehicles','items','dispatch','dispatch_detail']));
     }
 
     /**

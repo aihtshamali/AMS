@@ -1,15 +1,17 @@
-@extends('layouts\app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container text-center" style= "margin-top: 10%">
+    <div class="">
         <form  class="form " action="{{route('city.store')}}" method="post">
             {{csrf_field()}}
             <div class="from-group" style="margin: 10px">
+                <label for="">Enter City name</label>
             <input type="text" name="name" required>
             </div>
             <div class="form-group" style="margin: 10px">
-            <select name="regions" id="">Select Location
-                @forelse($regions as $role)
-                    <option value="{{$role->id}}">{{$role->name}}</option>
+                <label for="">Select Location</label>
+            <select name="regions" id="">
+                @forelse($regions as $r)
+                    <option value="{{$r->id}}">{{$r->name}}</option>
                 @empty
                    <option value="No Location"> No Location Found </option>
                 @endforelse

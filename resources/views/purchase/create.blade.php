@@ -1,12 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
-        <h3>Purchase Shipped</h3>
+    <div class="">
+        <h3 style="color: #000;">Purchase</h3>
 
-
-        <form action="" method="post" >
+        <form action="{{route('purchase.store')}}" method="post" >
             {{csrf_field()}}
-            <div class="">
+            <div classs="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
                         <td>  <label for="name">Document Num.</label> </td>
@@ -16,7 +15,7 @@
 
                         <td>  <label for="name">Date</label> </td>
                         <td>
-                            <input type="date" class="form-control" name="date" >
+                            <input type="date" class="form-control" name="ftn_date" >
                         </td>
 
 
@@ -29,25 +28,27 @@
 
                     </tr>
                     <tr>
-                        <td>  <label for="from_">From</label> </td>
+                        <td>  <label for="to_">To</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="from_" id="" value="WareHouse" readonly>
+                            <input type="text" class="form-control" style="width:inherit" name="region" id="" value="{{Auth::user()->region->name}}" readonly>
                         </td>
                         <td>
-                            <label for="vehicle_id">Vehicle Num.</label>
+                            <label for="vehicle">Vehicle Num.</label>
                         </td>
                         <td>
-                            <select name="vehicle_id" class="selectpicker show-tick">
+                            <select name="vehicle" class="selectpicker show-tick">
                                 <option selected disabled hidden ></option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                                 @endforeach
                             </select>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
-                            <label for="description">Address</label>    </td>
+                            <label for="driver">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" class="selectpicker show-tick">
+                            <select name="driver" class="selectpicker show-tick">
                                 <option selected disabled hidden> </option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
@@ -59,75 +60,37 @@
                 </table>
             </div>
             <hr size="3px">
+        <?php $redund=null; $i=0?>     <!--  Forced to appear header only once. and $i is counter -->
             <table class="table-responsive table">
-                <tr style="margin:0px;padding:0px">
-                    <td>
-                        <h3 style="margin:0px;padding:0px;color: #000;">Freezer</h3>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><label for="">Right Up Freezer</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr><tr>
-                    <td><label for="">Top Glass (Waves)</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr><tr>
-                    <td><label for="">Right Up (Caravell)</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr>
-                <tr style="margin:0px;padding:0px">
-                    <td>
-                        <h3 style="margin:0px;padding:0px;color: #000;">Pallet</h3>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><label for="">Plastic Pallet</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr>
-                <tr>
-                    <td><label for="">Wooden Pallet</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr>
-                <tr style="margin:0px;padding:0px">
-                    <td>
-                        <h3 style="margin:0px;padding:0px;color: #000;" >Crate</h3>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><label for="">Green Crate</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr>
-                <tr>
-                    <td><label for="">Yellow With Blue Handle</label></td>
-                    <td><input type="text" class="form-control"></td>
-                </tr>
+                @foreach($items as $alloweditem)
+                    @if($redund!=$alloweditem->item_group)
+                        <tr style="margin:0px;padding:0px">
+                            <td>
+                                <?php $redund=$alloweditem->item_group?>
+                                <h3 style="margin:0px;padding:0px;color: #000;">{{$alloweditem->item_group}}</h3>
+                            </td>
+                            <td></td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <td><label for="">{{$alloweditem->display_name}}</label></td>
+                        <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->id}}">
+                        <td><input name="item[<?=$i?>][{{$alloweditem->id}}]" type="number" min="0" class="form-control qty" onchange="setTotal();"></td>
+                    </tr>
+                    <?php $i++?>
+                @endforeach
                 <tr>
                     <td><label for=""><strong style="color: #000;">Total</strong></label></td>
-                    <td><input type="text" class="form-control"></td>
+                    <td><input type="number" name="total" id="total" min="0" class="form-control total"></td>
                 </tr>
             </table>
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" name="submit">Purchase</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-warning" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>
     </div>
     <script >
-        {{--$(document).ready(function() {--}}
-        {{--var val = 0;--}}
-        {{--if ($ref == '0')--}}
-        {{--val = 'DOC.000001';--}}
-        {{--else {--}}
-        {{--$part = explode(".","Doc.000001");--}}
-        {{--$no = intval($part[1]);--}}
-        {{--$no++;--}}
-        {{--val = "DOC.".substr("000000", 1, 6 - strlen($no)).$no;--}}
-        {{--}--}}
-        {{--$ref = {!!json_encode($ref)!!};--}}
-        {{--document.getElementById('ref').setAttribute('value', val);--}}
-        {{--});--}}
+
     </script>
 @endsection

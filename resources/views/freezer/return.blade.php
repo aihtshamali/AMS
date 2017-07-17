@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
-        <h3>Return Freezer</h3>
+    <div class="">
+        <h3><Return></Return> Freezer</h3>
 
 
         <form action="{{route('freezer.store')}}" method="post" >
             {{csrf_field()}}
             <div classs="dispatchHeader">
-                <table class="table-responsive table">
+                <table class="table-responsive table table-sm">
                     <tr>
                         <td>  <label for="ftn_no">FTN Number</label> </td>
                         <td>
@@ -19,29 +19,33 @@
                         <td>
                             <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
                         </td>
+                        <td align="center">
+                            <label for="ftn_date">FTN Date</label>
+                        </td>
                         <td>
-                            <label for="ftn_date">FTN Date</label>    </td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="Date"> </td>
+                            <input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="Date">
+                        </td>
 
                     </tr>
                     <tr>
 
                         <td><label for="customer">Customer</label></td>
                         <td>
-                            <select name="customer" class="selectpicker" data-live-search="true"   data-width="" >
+                            <select name="customer" class="form-control" data-live-search="true"   data-width="30%" >
                                 <option selected hidden>Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
                                 @endforeach
                             </select>
                         </td>
-                    </tr>
-                    <tr>
-                        <td><label for="customer">Delivery Address</label></td>
+                        <td><label for="customer">Transfer From</label></td>
                         <td><input type="text" class="form-control" name="delivery_address" data-width="100%"></td>
                     </tr>
+                    <tr>
 
-                    <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="5"><label for="" >Freezer Information</label></td></tr>
+                    </tr>
+
+                    <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="7"><label for="" >Freezer Information</label></td></tr>
                     <tr>
                         <td><label for="ftn_date">Date of Return</label></td>
                         <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="placement_date" id="" placeholder="Date"> </td>
@@ -52,11 +56,14 @@
                                 <option value="repairing">Repairing</option>
                             </select>
                         </td>
+
                     </tr>
                     <tr style="background-color: rgb(160, 17, 78);color: white;">
                         <td width="25px">Sr. No.</td>
-                        <td width="">Transfer From</td>
+                        <td width="">Transfer To</td>
                         <td width="">Freezer Type</td>
+                        <td width="">Model</td>
+                        <td width="">Condition</td>
                         <td width="">Serial No.</td>
                         <td width="">Quantity</td>
                     </tr>
@@ -74,9 +81,19 @@
                             <td>
                                 <select name="type[<?=$i?>]" class="selectpicker " data-live-search="true" id="<?=$i?>type"  data-width="100%" >
                                     <option selected disabled hidden style="color:rgb(0,0,0)">Choose Type</option>
-                                    <option type="text"  value="W-Right Up"  >W-Right Up</option>
-                                    <option type="text"  value="Top Glass"  >Top Glass</option>
+                                    <option type="text"  value="RIGHT UP FREEZER (WAVES)" >RIGHT UP FREEZER (WAVES)</option>
+                                    <option type="text"  value="RIGHT UP FREEZER (WAVES)" >TOP GLASS (WAVES)</option>
 
+                                </select>
+                            </td>
+                            <td>
+                                <input name="model[<?=$i?>]" type="text" class="form-control" id="<?=$i?>model"   >
+                            </td>
+                            <td>
+                                <select name="condition[<?=$i?>]" class="selectpicker " data-live-search="true" id="<?=$i?>condition"  data-width="100%" >
+                                    <option selected disabled hidden style="color:rgb(0,0,0)">Choose Condition</option>
+                                    <option type="text"  value="new"  >New</option>
+                                    <option type="text"  value="used">Used</option>
                                 </select>
                             </td>
                             <td>
@@ -87,14 +104,14 @@
                             </td>
                         </tr>
                     @endfor
-                    <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="5"><label for="" >Authorize Information</label></td></tr>
-                    <tr>
+                    <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="7"><label for="" >Authorize Information</label></td></tr>
+                    <tr style="width:40%">
                         <?php $i=0 ?>
                         @foreach($faculty as $fac)
-                            <td colspan="1">
+                            <td align="center" style="padding: 0px;margin:0px">
                                 <label for="">{{$fac->type}}</label>
                             </td>
-                            <td>
+                            <td style="padding: 0px;margin:0px">
                                 <select class="selectpicker" name="faculty[<?=$i++?>]" id="">
                                     <option selected hidden value="<?=null?>">Select Faculty</option>
                                     <option value="{{$fac->id}}">{{$fac->name}}</option>

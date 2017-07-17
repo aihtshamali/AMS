@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.sidenav')
 @section('content')
-    <div class="container" >
+    <div class="">
         <h3>Create Dispatch</h3>
 
 
@@ -33,18 +33,18 @@
                         <label for="vehicle_id">Vehicle Num.</label>
                     </td>
                     <td>
-                        <select name="vehicle_id" class="selectpicker show-tick">
-                            <option></option>
+                        <select name="vehicle_id"  style="width: 80%;"  class="selectpicker form-control show-tick" required>
+                            <option value="">--Select Vehicle--</option>
                             @foreach($vehicles as $vehicle)
                               <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                             @endforeach
                         </select>
                     </td>
                     <td>
-                    <label for="description">Address</label>    </td>
+                    <label for="description">Driver</label>    </td>
                     <td>
-                        <select name="driver_id" class="selectpicker show-tick">
-                            <option></option>
+                        <select name="driver_id"  style="width: 60%;"  class="selectpicker form-control show-tick" required>
+                            <option value="">--Select Driver--</option>
                             @foreach($drivers as $driver)
                                 <option value="{{$driver->id}}">{{$driver->name}}</option>
                             @endforeach
@@ -64,9 +64,9 @@
                            <label class="col-xs-7" for="name">Customer Information</label>
                     </th>
                  @for($i =0; $i<10 ;$i++)
-                    <td class="col-xs-3" >
+                    <td class="col-xs-3 form-control" style="border: none; padding:5px 0 0 5px;">
                         <select name="customer[]" style="height: 30px;width: 200px">
-                            <option></option>
+                            <option value="">--Select Customer--</option>
                             @foreach($customers as $customer)
                                 <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
                             @endforeach  data-live-search="true" id="<?=$i?>customer"   >
@@ -79,14 +79,13 @@
                         <label for="name">Sales Invoice</label>
                     </th>
                     @for($i =0; $i<10 ;$i++)
-                        <td class="col-xs-5">
+                        <td class="col-xs-5" style="border: none; padding:0 0 5px 5px;">
                             <input type="text" class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" placeholder="Sales Invoice...">
                         </td>
                     @endfor
                 </tr>
                 <?php $j=0; ?>
                 @foreach($items as $item)
-
                     @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                     <tr>
                         <th >
@@ -94,8 +93,7 @@
                         </th>
                         <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                         @for($i=0; $i<10 ;$i++)
-                            <td>
-
+                            <td style="border: none; padding:5px 0 0 5px;">
                                 <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                             </td>
                         @endfor
@@ -122,18 +120,6 @@
         </form>
     </div>
     <script >
-        {{--$(document).ready(function() {--}}
-            {{--var val = 0;--}}
-            {{--if ($ref == '0')--}}
-                {{--val = 'DOC.000001';--}}
-            {{--else {--}}
-                {{--$part = explode(".","Doc.000001");--}}
-                {{--$no = intval($part[1]);--}}
-                {{--$no++;--}}
-                {{--val = "DOC.".substr("000000", 1, 6 - strlen($no)).$no;--}}
-            {{--}--}}
-            {{--$ref = {!!json_encode($ref)!!};--}}
-            {{--document.getElementById('ref').setAttribute('value', val);--}}
-        {{--});--}}
+
     </script>
 @endsection

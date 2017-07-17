@@ -40,7 +40,7 @@
 </div><!--/Page Content-->
 
 <script src="https://code.jquery.com/jquery.js"></script>
-<script src="{{asset('js/parsley.min.js')}}"></script>
+<script src="{{asset('js/utility.js')}}"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -58,8 +58,12 @@
                 $li.addClass("open");
             }
         });
+
+                $('.multiselect-ui').multiselect({
+                    includeSelectAllOption: true
+                });
+
     });
 </script>
-@yield('js')
 </body>
 </html>
