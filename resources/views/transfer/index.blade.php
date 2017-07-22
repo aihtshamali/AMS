@@ -1,13 +1,14 @@
 @extends('layouts.sidenav')
 @section('content')
     <div class="">
-        <span align="center" >
+        <span align="center">
             @if (Session::has('message'))
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
             @endif
         </span>
         <h3 style="float:left  ">Transfers</h3>
-        <a href="{{route('transfer.create')}}"  style="margin-top: 22px"class="btn btn-success pull-right ">Create transfer</a>
+        <a href="{{route('transfer.create')}}" style="margin-top: 22px" class="btn btn-info pull-right ">Create
+            transfer</a>
 
         <table class="table table-striped table-responsive table-hover">
             <tr style="background-color:white;">
@@ -28,11 +29,16 @@
                     <td>{{$transfer->ftn_no}}</td>
                     <td>{{$transfer->ftn_date}}</td>
                     <td>{{$transfer->reference}}</td>
-                    @if($transfer->driver_id)
-                    <td>{{$transfer->driver_id->name}}</td>
-                    @else<td>-</td>
+                    @if(!empty($transfer->driver_id))
+                        <td>{{$transfer->driver_id}}</td>
+                    @else
+                        <td>N/A</td>
                     @endif
-                    <td>{{$transfer->to_}}</td>
+                    @if(!empty($transfer->to_))
+                        <td>{{$transfer->to_}}</td>
+                    @else
+                        <td>{{$transfer->from_}}</td>
+                    @endif
                     <td>{{$transfer->getRegion($transfer->id)->region->name}}</td>
                     <td>
                         <a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>

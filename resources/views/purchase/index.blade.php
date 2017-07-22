@@ -7,7 +7,7 @@
             @endif
         </span>
         <h3 style="float:left  ">Purchases</h3>
-        <a href="{{route('purchase.create')}}"  style="margin-top: 22px"class="btn btn-success pull-right ">Create Purchase</a>
+        <a href="{{route('purchase.create')}}"  style="margin-top: 22px"class="btn btn-info pull-right ">Create Purchase</a>
 
         <table class="table table-striped table-responsive table-hover">
             <tr style="background-color:white;">

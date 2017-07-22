@@ -1,5 +1,26 @@
 @extends('layouts.sidenav')
 @section('content')
+<?php
+
+        $arr[][]=null;
+        $rows=0;$cols=0;
+        foreach ($dispatch_detail as $dd)
+            {
+                $cols=0;
+                if($dd->dispatch->region_id==Auth::user()->region->id)
+                {
+                      $arr[$rows][$cols]=$dd->item_id;   // id in first column and quantity in second column
+                      $cols++;
+                      $arr[$rows][$cols]=$dd->quantity;
+                      $rows++;
+                }
+            }
+?>
+<script type="text/javascript">
+    var a = <?php echo json_encode($arr); ?>;
+</script>
+
+
     <div class="">
         <h3>Create Dispatch</h3>
 
@@ -9,12 +30,12 @@
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
                 <tr>
-                    <td>  <label for="name">Document Num.</label> </td>
+                    <td>  <label for="name">Document Number.</label> </td>
                     <td>
                         <input type="text" class="form-control" name="doc_no" id="ref" value="{{$doc_no}}" readonly>
                     </td>
                     <td>
-                        <label for="reference">Reference num.</label>
+                        <label for="reference">Reference Number.</label>
                     </td>
                     <td>
                         <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
@@ -27,10 +48,10 @@
                 <tr>
                     <td>  <label for="from_">From</label> </td>
                     <td>
-                        <input type="text" class="form-control" name="from_" id="" value="WareHouse" readonly>
+                        <input type="text" class="form-control" name="from_" id="" value="{{Auth::user()->region->name}}" readonly>
                     </td>
                     <td>
-                        <label for="vehicle_id">Vehicle Num.</label>
+                        <label for="vehicle_id">Vehicle Number</label>
                     </td>
                     <td>
                         <select name="vehicle_id"  style="width: 80%;"  class="selectpicker form-control show-tick" required>
@@ -57,7 +78,7 @@
 
 
 
-        <div class="table-wrapper row customer">
+        <div class="table-wrapper row customer" style="margin-right: 0px">
             <table class="table">
              <tr>
                     <th >
@@ -65,11 +86,11 @@
                     </th>
                  @for($i =0; $i<10 ;$i++)
                     <td class="col-xs-3 form-control" style="border: none; padding:5px 0 0 5px;">
-                        <select name="customer[]" style="height: 30px;width: 200px">
+                        <select name="customer[<?=$i?>]" style="height: 30px;width: 200px">
                             <option value="">--Select Customer--</option>
                             @foreach($customers as $customer)
                                 <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                            @endforeach  data-live-search="true" id="<?=$i?>customer"   >
+                            @endforeach
                         </select>
                     </td>
                  @endfor
@@ -80,7 +101,7 @@
                     </th>
                     @for($i =0; $i<10 ;$i++)
                         <td class="col-xs-5" style="border: none; padding:0 0 5px 5px;">
-                            <input type="text" class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" placeholder="Sales Invoice...">
+                            <input type="text"  class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" placeholder="Sales Invoice...">
                         </td>
                     @endfor
                 </tr>
@@ -91,10 +112,10 @@
                         <th >
                             <label  for="name">{{$item->display_name}}</label>
                         </th>
-                        <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
+                        <input type="hidden"  name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                         @for($i=0; $i<10 ;$i++)
                             <td style="border: none; padding:5px 0 0 5px;">
-                                <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
+                                <input type="number"  onblur="checkStock(<?=$i?>,a,{{$item->id}})" class="<?=$i?>qty item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                             </td>
                         @endfor
                     </tr>
@@ -114,7 +135,7 @@
         </div>
 
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" id="submit" name="submit">Submit</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-info" id="submit" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>

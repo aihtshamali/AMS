@@ -12,12 +12,14 @@
                 </a>
                 <!-- Sub menu -->
                 <ul>
-                     <li class="sub-menu"><a href="{{route('permission.create')}}"><i class="glyphicon glyphicon-home"></i>
-                             Add new Permisions</a></li>
+                    <li class="sub-menu"><a href="{{route('permission.create')}}"><i
+                                    class="glyphicon glyphicon-home"></i>
+                            Add new Permisions</a></li>
                 </ul>
                 <!-- Sub menu -->
                 <ul>
-                    <li class="sub-menu"><a href="{{route('permission.index')}}"><i class="glyphicon glyphicon-home"></i>
+                    <li class="sub-menu"><a href="{{route('permission.index')}}"><i
+                                    class="glyphicon glyphicon-home"></i>
                             All Permissions</a></li>
                 </ul>
             </li>
@@ -40,7 +42,6 @@
                 </ul>
 
 
-
             </li>
             <li class="submenu">
                 <a href="#">
@@ -59,6 +60,63 @@
                             All Cities</a></li>
                 </ul>
 
+
+            </li>
+
+            <li class="submenu">
+                <a href="#">
+                    <i class="glyphicon glyphicon-home"></i> Items
+                    <span class="caret pull-right"></span>
+                </a>
+                <!-- Sub menu -->
+
+                <ul>
+                    <li class="sub-menu"><a href="{{route('item.create')}}"><i class="glyphicon glyphicon-home"></i>
+                            Add new Item</a></li>
+                </ul>
+                <!-- Sub menu -->
+                <ul>
+                    <li class="sub-menu"><a href="{{route('item.index')}}"><i class="glyphicon glyphicon-user"></i>
+                            All Items</a></li>
+                </ul>
+
+
+            </li>
+            <li class="submenu">
+                <a href="#">
+                    <i class="glyphicon glyphicon-home"></i> Regions
+                    <span class="caret pull-right"></span>
+                </a>
+                <!-- Sub menu -->
+
+                <ul>
+                    <li class="sub-menu"><a href="{{route('region.create')}}"><i class="glyphicon glyphicon-home"></i>
+                            Add new Region</a></li>
+                </ul>
+                <!-- Sub menu -->
+                <ul>
+                    <li class="sub-menu"><a href="{{route('region.index')}}"><i class="glyphicon glyphicon-user"></i>
+                            All Regions</a></li>
+                </ul>
+
+
+            </li>
+            <li class="submenu">
+                <a href="#">
+                    <i class="glyphicon glyphicon-home"></i> Faculty
+                    <span class="caret pull-right"></span>
+                </a>
+                <!-- Sub menu -->
+
+                <ul>
+                    <li class="sub-menu"><a href="{{route('faculty.create')}}"><i class="glyphicon glyphicon-home"></i>
+                            Add new Faculty</a></li>
+                </ul>
+                <!-- Sub menu -->
+                <ul>
+                    <li class="sub-menu"><a href="{{route('faculty.index')}}"><i class="glyphicon glyphicon-user"></i>
+                            All Faculty</a></li>
+                </ul>
 
 
             </li>
@@ -81,9 +139,5 @@
                 </ul>
             </li>
         </ul>
-        <ul>
-            <li class=""><a href="">Categories</a></li>
-        </ul>
-
     </div>
 </div>

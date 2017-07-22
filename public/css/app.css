@@ -8,6 +8,7 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 
+
 .backgroundimage{
     background: url(../images/loginbg.jpg) no-repeat center center fixed;
 
@@ -24,8 +25,13 @@
 
 .half_body{
     width: 880px;
-    margin-left: 200px;
+    /*margin-left: 200px;*/
 }
+
+.dispatchHeader table tbody tr td label{
+    width:150px;
+}
+
 .table-wrapper {
     overflow-x:scroll;
     overflow-y:visible;

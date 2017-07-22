@@ -39,16 +39,14 @@ class RegionMiddleWare
 //
 
 //        $allowed = true;
-//        //dd(Route::currentRouteName());
 //        if(Auth::check()) {
 //            $user = Auth::user();
 //            $current_route = Route::currentRouteName();
 //            $allowed = false;
-//            $region_id = $user->region->id;
-//            $current_permissions = Permission_Role::where('user_id', $user)->get();
+//            $current_permissions = Permission_Role::where('user_id', $user->id)->get();
 //            foreach ($current_permissions as $userpermission) {
 //
-//                if ($current_route == $userpermission->userpermission->name) {
+//                if ($current_route == $userpermission->permission->name) {
 //                    $allowed = true;
 //                }
 //            }
@@ -59,6 +57,6 @@ class RegionMiddleWare
 //        else {
 //            abort(403, 'Unauthorized action - You are not Authorized for this action');
 //        }
-        return $next($request);
+         return $next($request);
     }
 }

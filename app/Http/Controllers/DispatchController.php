@@ -8,9 +8,11 @@ use App\Dispatches_Detail;
 use App\Driver;
 use App\Faculty;
 use App\Item;
+use App\Returns_Detail;
 use App\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DispatchController extends Controller
 {
@@ -50,7 +52,8 @@ class DispatchController extends Controller
         $customers= Customer::all();
         $drivers=Driver::all();
         $vehicles=Vehicle::all();
-       return view('dispatch.create',compact(['drivers','customers','vehicles','items','doc_no']));
+        $dispatch_detail=Dispatches_Detail::all();
+       return view('dispatch.create',compact(['drivers','customers','vehicles','items','doc_no','dispatch_detail']));
     }
 
     /**
@@ -123,6 +126,9 @@ class DispatchController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function returnedit($id){
+
+    }
     public function edit($id)
     {
         $dispatch=Dispatch::find($id);
@@ -131,6 +137,11 @@ class DispatchController extends Controller
         $drivers=Driver::all();
         $vehicles=Vehicle::all();
         $dispatch_detail=Dispatches_Detail::where('dispatch_id',$dispatch->id)->get();
+//        $dispatch_detail=DB::table('dispatches_detail')
+//            ->select(DB::raw('count(*) as customer_count, dispatch_id'))
+//            ->where('dispatch_id', '=', $dispatch->id)
+//            ->groupBy('customer_id')
+//            ->get();
        return view('dispatch.edit',compact(['drivers','customers','vehicles','items','dispatch','dispatch_detail']));
     }
 
@@ -176,7 +187,12 @@ class DispatchController extends Controller
             }
             $counter++;
         }
-        return redirect()->route('dispatch.index')->withMessage('Data Inserted Successfully');
+        if($i=0) {
+            Dispatch::find($dispatch->id)->delete();
+            return redirect()->route('dispatch.index')->withMessage("Data Updated Failed");
+
+        }else
+            return redirect()->route('dispatch.index')->withMessage('Data Updated Successfully');
     }
 
     /**

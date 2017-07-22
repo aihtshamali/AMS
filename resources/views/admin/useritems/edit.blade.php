@@ -81,6 +81,7 @@
                                 <td><button type="submit" class="btn btn-primary">Save changes
                                     </button></td>
                             </tr>
+                            {{}}
                         </form>
                         </tbody>
                     </table>

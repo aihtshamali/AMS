@@ -1,4 +1,4 @@
-@extends('layouts.sidenav')
+@extends('admin.layout.admin')
 @section('content')
     <div class="" style="width:400px;align:left">
         <form action="{{route('faculty.store')}}" method="POST">

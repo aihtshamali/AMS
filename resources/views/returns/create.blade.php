@@ -9,12 +9,12 @@
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
-                        <td>  <label for="name">Document Num.</label> </td>
+                        <td>  <label for="name">Document Number.</label> </td>
                         <td>
                             <input type="text" class="form-control" name="ftn_no" id="ref" value="{{$doc_no}}" readonly>
                         </td>
                         <td>
-                            <label for="reference">Reference num.</label>
+                            <label for="reference">Reference Number.</label>
                         </td>
                         <td>
                             <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
@@ -30,7 +30,7 @@
                             <input type="text" class="form-control" name="to_" id="" value="{{Auth::user()->region->name}}" readonly>
                         </td>
                         <td>
-                            <label for="vehicle_id">Vehicle Num.</label>
+                            <label for="vehicle_id">Vehicle Number.</label>
                         </td>
                         <td >
                             <select name="vehicle_id" style="width: 80%;" class="selectpicker form-control show-tick">
@@ -57,7 +57,7 @@
 
 
 
-            <div class="table-wrapper row customer">
+            <div class="table-wrapper row customer" style="margin-right: 0px;">
                 <table class="table">
                     <tr>
                         <th >
@@ -116,7 +116,7 @@
             </div>
 
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" id="submit" name="submit">Submit</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-info" id="submit" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>

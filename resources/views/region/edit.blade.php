@@ -1,4 +1,4 @@
-@extends('layouts.sidenav')
+@extends('admin.layout.admin')
 @section('content')
     <div class="">
     <h3>Edit Region:</h3>

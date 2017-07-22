@@ -16,7 +16,7 @@ class UserItemController extends Controller
      */
     public function index()
     {
-        $useritems=UserItem::all();
+        $useritems=UserItem::paginate(5);
         return view('admin.useritems.index',compact('useritems'));
     }
 

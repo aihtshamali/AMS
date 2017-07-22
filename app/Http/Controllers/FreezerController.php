@@ -13,6 +13,7 @@ use App\Transfers_Detail;
 use App\Returns;
 use App\Returns_Detail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FreezerController extends Controller
 {
@@ -21,13 +22,65 @@ class FreezerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $freezers=Transfer::all();
-        $transfer_details=Transfers_Detail::all();
-        $returns=Returns_Detail::where('type','freezer')->get();
-        return view('freezer.index',compact(['freezers','transfer_details','returns']));
+        if ($request->all()){
+            if($request->from && $request->to && $request->region) {
+                $freezers = DB::table('transfers')->select('transfers.*')->where('transfers.ftn_date', '>=', $request['from'])
+                    ->where('transfers.ftn_date', '<=', $request['to'])
+                    ->leftJoin('transfer_details', 'transfer_details.transfer_id', '=', 'transfers.id')
+                    ->where('region_id', $request->region)->distinct()
+                    ->distinct()
+                    ->get();
+                $returns = DB::table('returns')->select('returns.*')->where('returns.ftn_date', '>=', $request['from'])
+                    ->where('returns.ftn_date', '<=', $request['to'])
+                    ->leftJoin('return_details', 'return_details.returns_id', '=', 'returns.id')
+                    ->where('region_id', $request->region)->where('type','FREEZER')
+                    ->distinct()
+                    ->get();
+            }
+            else if($request->from && $request->to) {
+                $freezers = DB::table('transfers')->select('transfers.*')->where('transfers.ftn_date', '>=', $request['from'])
+                    ->leftJoin('transfer_details', 'transfer_details.transfer_id', '=', 'transfers.id')
+                    ->where('transfers.ftn_date', '<=', $request['to'])
+                    ->distinct()
+                    ->get();
+                $returns = DB::table('returns')->select('returns.*')->where('returns.ftn_date', '>=', $request['from'])
+                    ->leftJoin('return_details', 'return_details.returns_id', '=', 'returns.id')
+                    ->where('returns.ftn_date', '<=', $request['to'])
+                    ->distinct()
+                    ->get();
+            }
+            else if($request->region) {
+                $freezers = DB::table('transfers')->select('transfers.*')
+                    ->leftJoin('transfer_details', 'transfer_details.transfer_id', '=', 'transfers.id')
+                    ->where('transfer_details.region_id',$request->region)
+                    ->distinct()
+                    ->get();
+                $returns =  $returns = DB::table('returns')->select('returns.*' , 'return_details.customer_id','return_details.type')
+                    ->leftJoin('return_details', 'return_details.returns_id', '=', 'returns.id')->where('type','FREEZER')
+                    ->where('return_details.region_id', '=', $request['region'])
+                    ->distinct()
+                    ->get();
+
+            }
+
+        }
+        else {
+            $freezers = Transfer::paginate(8);
+            $returns = DB::table('returns')->select('returns.*' , 'return_details.customer_id','return_details.type')
+                ->leftJoin('return_details', 'return_details.returns_id', '=', 'returns.id')->where('type','FREEZER')
+                ->distinct()
+            ->where('type', 'FREEZER')->paginate(8);
+
+        }
+        $counttransfer=DB::table('transfer_details')->select('transfer_id',DB::raw("sum(quantity) as total"))->groupBy('transfer_id')->get();
+        $countreturn=DB::table('return_details')->select('returns_id',DB::raw("sum(quantity) as total"))->groupBy('returns_id')->where('type','FREEZER')->get();
+
+
+        $regions=Region::all();
+        return view('freezer.index',compact(['freezers','counttransfer','returns','countreturn','regions']));
     }
 
     /**
@@ -40,7 +93,9 @@ class FreezerController extends Controller
         $customers= Customer::all();
         $regions= Region::all();
         $faculty= Faculty::all();
-        return view('freezer.create',compact(['customers','regions','faculty']));
+        $transfer_detail=Transfers_Detail::all();
+        $items=Item::where('item_group','FREEZER')->get();
+        return view('freezer.create',compact(['customers','regions','faculty','transfer_detail','items']));
     }
 
 
@@ -48,7 +103,8 @@ class FreezerController extends Controller
         $customers= Customer::all();
         $regions= Region::all();
         $faculty= Faculty::all();
-        return view('freezer.return',compact(['customers','regions','faculty']));
+        $items=Item::where('item_group','FREEZER')->get();
+        return view('freezer.return',compact(['customers','regions','faculty','items']));
     }
 
 
@@ -84,6 +140,7 @@ class FreezerController extends Controller
     }
     public function store(Request $request)
     {
+
         $doc_no = 0;
         $status='';
         if ($request->ftn_no == "RTN.") {
@@ -91,40 +148,42 @@ class FreezerController extends Controller
             $doc_no = $this->getdocNo("Return", $request->ftn_no);
             $freezer->return_date = $request->placement_date;
             $status='Returned';
-        } else {
+            $freezer->from_= $request->delivery_address;
+
+        }
+        else {
             $freezer = new Transfer();
             $doc_no = $this->getdocNo("Transfer", $request->ftn_no);
             $status='Transfered';
-            $freezer->type = "freezer";
+            $freezer->type = "Freezer";
+            $freezer->to_= $request->delivery_address;
             $freezer->placement_date = $request->placement_date;
             $freezer->customer()->associate(Customer::find($request->customer));
         }
 
-        //      Default Value
-
-
-
         $freezer->ftn_no = $doc_no;
         $freezer->reference = $request->reference;
         $freezer->ftn_date = $request->ftn_date;
-        $freezer->to_= $request->delivery_address;
 
         $freezer->purpose = $request->purpose;
 
-        // Loop for finding Faculty Type
-        foreach ($request->faculty as $f) {
-            $fac = Faculty::find($f);
-            if($fac) {
-                if ($fac->type == "TSO") {
-                    $freezer->tso_id = $f;
-                } else if ($fac->type == "NSM") {
-                    $freezer->nsm_id = $f;
-                } else if ($fac->type == "RSM") {
-                    $freezer->rsm_id = $f;
-                }
-            }
-        }
-
+//        // Loop for finding Faculty Type
+//        foreach ($request->faculty as $f) {
+//            $fac = Faculty::find($f);
+//            if($fac) {
+//                if ($fac->type == "TSO") {
+//                    $freezer->tso_id = $f;
+//                } else if ($fac->type == "NSM") {
+//                    $freezer->nsm_id = $f;
+//                } else if ($fac->type == "RSM") {
+//                    $freezer->rsm_id = $f;
+//                }
+//            }
+//        }
+        $freezer->nsm_id=$request->nsm;
+        $freezer->rsm_id=$request->rsm;
+        $freezer->tso_id=$request->tso;
+//dd($request->all());
         $freezer->save();
         $counter = 0;
 //        $item = Item::where('item_group', 'Freezer')->first();
@@ -134,16 +193,14 @@ class FreezerController extends Controller
             if ($request->ftn_no == "RTN.") {
                 $transfer_detail = new Returns_Detail();
                 $transfer_detail->returns()->associate($freezer);
+                $transfer_detail->type="FREEZER";
                 $transfer_detail->customer()->associate(Customer::find($request->customer));
             } else {
                 $transfer_detail = new Transfers_Detail();
                 $transfer_detail->transfer()->associate($freezer);
             }
-
             $transfer_detail->region()->associate($r);
-            $item=Item::where('display_name',$request->type[$counter])->first();
-
-            $transfer_detail->item()->associate($item);
+            $transfer_detail->item()->associate($request->type[$counter]);
             $transfer_detail->fr_model=$request->model[$counter];
             $transfer_detail->fr_condition=$request->condition[$counter];
             $transfer_detail->quantity = 1;
@@ -155,7 +212,10 @@ class FreezerController extends Controller
         if ($counter > 0)
             return redirect()->route('freezer.index')->withMessage('Freezer '+$status+' Successfully');
         else {
-            Transfer::find($freezer->id)->delete();
+            if($status=="Transfered")
+                Transfer::find($freezer->id)->delete();
+            else
+                Returns::find($freezer->id)->delete();
             return redirect()->route('freezer.index')->withMessage('Freezer Does Not '+$status );
         }
     }
@@ -234,6 +294,6 @@ class FreezerController extends Controller
       //  else
         //   Transfers_Detail::find($id)->delete();
 
-        return redirect()->route('freezer.index')->withMessage('Deleted Successfully');
+        return redirect()->back()->withMessage('Deleted Successfully');
     }
 }

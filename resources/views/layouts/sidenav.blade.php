@@ -8,10 +8,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Assets Management System') }}</title>
-
+    <title> AMS BigBird</title>
+    <link rel="icon" href="{{asset('images/logo.jpg')}}">
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    {{--<link href="{{ asset('js/bootstrap-select-master/css/bootstrap-select.css') }}" rel="stylesheet">--}}
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css">
@@ -369,7 +370,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
         <ul class="nav sidebar-nav">
             <li class="sidebar-brand">
-                <a href="#">
+                <a href="{{route('welcome')}}">
                     <img src="{{asset('images/logo.jpg')}}"  class="img-rounded" style=" width:30%;" alt="">
                 </a>
             </li>
@@ -381,8 +382,8 @@
                 <ul class="dropdown-menu" role="menu">
                     <li class="dropdown-header">Dropdown heading</li>
                     <li><a href="{{route('dispatch.create')}}">Create Dispatch</a></li>
-                    <li><a href="{{route('returns.create')}}">Return Disptach</a></li>
-                    <li><a href="{{route('dispatch.index')}}">All Disptaces</a></li>
+                    <li><a href="{{route('returns.create')}}">Return Dispatch</a></li>
+                    <li><a href="{{route('dispatch.index')}}">All Dispatches</a></li>
                     <li><a href="{{route('returns.index')}}">All Return</a></li>
                 </ul>
             </li>
@@ -412,17 +413,17 @@
 {{--                    <li><a href="{{route('returns.index')}}">All Return</a></li>--}}
                 </ul>
             </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li class="dropdown-header">Dropdown heading</li>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                </ul>
-            </li>
+            {{--<li class="dropdown">--}}
+                {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>--}}
+                {{--<ul class="dropdown-menu" role="menu">--}}
+                    {{--<li class="dropdown-header">Dropdown heading</li>--}}
+                    {{--<li><a href="#">Action</a></li>--}}
+                    {{--<li><a href="#">Another action</a></li>--}}
+                    {{--<li><a href="#">Something else here</a></li>--}}
+                    {{--<li><a href="#">Separated link</a></li>--}}
+                    {{--<li><a href="#">One more separated link</a></li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
             <li>
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault();
@@ -449,7 +450,8 @@
 
     </div>
     <div >
-        <div class="col-md-offset-1 col-md-10">
+        <div class="col-md-offset-1 col-md-11">
+            <div align="center" style="position: relative; top:-20px;color: #a0114e"><h3><strong>Asset Management System (BigBird Group)</strong></h3></div>
             @yield('content')
         </div>
 
@@ -460,6 +462,8 @@
 </body>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/utility.js') }}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 {{--<script>--}}
 {{--function openNav() {--}}
 {{--document.getElementById("mySidenav").style.width = "200px";--}}

@@ -1,30 +1,30 @@
 @extends('layouts.sidenav')
 @section('content')
-    <div class="">
+    <div class="half_body" style="">
         <h3>Transfer Shipped</h3>
 
 
         <form action="{{route('transfer.store')}}" method="post" >
             {{csrf_field()}}
-            <div classs="dispatchHeader">
+            <div class="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
-                        <td>  <label for="name">Document Num.</label> </td>
+                        <td>  <label for="name">Document #</label> </td>
                         <td>
                             <input type="text" class="form-control" name="doc_no" id="ref" value="{{$doc_no}}" readonly>
                         </td>
 
                         <td>  <label for="name">Date</label> </td>
                         <td>
-                            <input type="date" class="form-control" name="ftn_date" >
+                            <input type="date" class="form-control" name="ftn_date" required>
                         </td>
 
 
                         <td>
-                            <label for="reference">Reference num.</label>
+                            <label for="reference">Reference Number</label>
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
+                            <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required style="width:200px;">
                         </td>
 
                     </tr>
@@ -37,19 +37,19 @@
                             <label for="region_id">TO</label>
                         </td>
                         <td>
-                            <select name="region_id" class="selectpicker show-tick">
-                                <option selected disabled hidden ></option>
+                            <select name="region_id" class="form-control" required>
+                                <option selected value="" >--Select Region--</option>
                                 @foreach($regions as $region)
                                     <option value="{{$region->id}}">{{$region->name}}</option>
                                 @endforeach
                             </select>
                         </td>
                         <td>
-                            <label for="vehicle_id">Vehicle Num.</label>
+                            <label for="vehicle_id">Vehicle Number</label>
                         </td>
                         <td>
-                            <select name="vehicle_id" class="selectpicker show-tick">
-                                <option selected disabled hidden ></option>
+                            <select name="vehicle_id" class="form-control" required>
+                                <option selected value="">Select Vehicle</option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
                                 @endforeach
@@ -60,14 +60,13 @@
                         <td>
                             <label for="description">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" class="selectpicker show-tick">
-                                <option selected disabled hidden> </option>
+                            <select name="driver_id" class="form-control">
+                                <option selected value=""> Select Driver</option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
                                 @endforeach
                             </select>
                         </td>
-
                     </tr>
                 </table>
             </div>
@@ -97,7 +96,7 @@
                </tr>
            </table>
 
-            <button type="submit" class=" pull-right btn btn-lg btn-warning" name="submit">Submit</button>
+            <button type="submit" class=" pull-right btn btn-lg btn-info" name="submit">Submit</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>

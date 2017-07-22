@@ -20,7 +20,9 @@ class TransferController extends Controller
      */
     public function index()
     {
-        $transfers= Transfer::all();
+
+        $transfers= Transfer::whereNULL('type')->get();
+//        dd($transfers);
         return view('transfer.index',compact('transfers'));
     }
 
@@ -104,7 +106,12 @@ class TransferController extends Controller
      */
     public function edit($id)
     {
-        //
+        $transfers=Transfers_Detail::where('transfer_id',$id)->get();
+        $regions=Region::all();
+        $vehicles =Vehicle::all();
+        $drivers=Driver::all();
+        $useritems=UserItem::where('user_id',Auth::user()->id)->get();
+        return view('transfer.edit',compact(['transfers','regions','vehicles','drivers','useritems']));
     }
 
     /**
@@ -116,7 +123,37 @@ class TransferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+//        dd($request->all());
+        Transfer::find($id)->delete();
+        $transfer = new Transfer();
+        $transfer->customer()->associate(Customer::find($request->customer));
+        $transfer->ftn_no = $request->doc_no;
+        $transfer->reference = $request->reference;
+        $transfer->ftn_date = $request->ftn_date;
+        $transfer->vehicle_id=$request->vehicle_id;
+        $transfer->driver_id=$request->driver_id;
+        $transfer->from_=$request->from_;
+        $transfer->placement_date = $request->placement_date;
+        $transfer->save();
+        $i=0;
+
+        for(;$i<count($request->items);$i++) {
+            if ($request->items[$i] != null) {
+                $transfer_detail = new Transfers_Detail();
+                $transfer_detail->item()->associate($request->getid[$i]);
+                $transfer_detail->region()->associate($request->region_id);
+                $transfer_detail->quantity = $request->items[$i];
+                $transfer_detail->transfer()->associate($transfer);
+                $transfer_detail->save();
+            }
+        }
+        if ($i > 0)
+            return redirect()->route('transfer.index')->withMessage('Items Updated Successfully');
+        else {
+            Transfer::find($transfer->id)->delete();
+            return redirect()->route('transfer.index')->withMessage('Updation Failed');
+        }
     }
 
     /**
@@ -128,6 +165,6 @@ class TransferController extends Controller
     public function destroy($id)
     {
         Transfer::find($id)->delete();
-        return redirect()->route('transfer.index')->withMessage('Deleted Successfully');
+        return redirect()->back()->withMessage('Deleted Successfully');
     }
 }

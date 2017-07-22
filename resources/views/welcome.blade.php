@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
-
+        <title>AMS BigBird</title>
+        <link rel="icon" href="{{asset('images/logo.jpg')}}">
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -81,14 +81,17 @@
                 {{--<div class="title m-b-md">--}}
                     {{--Laravel--}}
                 {{--</div>--}}
-                <div class="backgroundimage">
-                    <div class="container">
+                <div align="center">
+                    <h3>Assets Management System</h3>
+                </div>
+                <div >
+                    <div class="container" style="padding-top:60px;">
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="thumbnail">
                                     <a href="{{route('home')}}" >
-                                        <img src="{{asset('images/bigbird.jpg')}}" alt="Nature" style="width:100%">
+                                        <img src="{{asset('images/freezer.jpg')}}" alt="Nature" style="width:100%;height:190px">
                                         <div class="caption">
                                             <p>Freezer Menu</p>
                                         </div>
@@ -97,39 +100,39 @@
                             </div>
                             <div class=" col-md-offset-0 col-md-3">
                                 <div class="thumbnail">
-                                    <a href="/w3images/nature.jpg" target="_blank">
-                                        <img src="{{asset('images/bigbird.jpg')}}" alt="Nature" style="width:100%">
+                                    <a href="{{route('home')}}">
+                                        <img src="{{asset('images/crates.jpg')}}"  alt="Nature" style="width:100%;height:190px">
                                         <div class="caption">
-                                            <p>Crates Menu</p>
+                                            <p >Crates Menu</p>
                                         </div>
                                     </a>
                                 </div>
 
                             </div>
                         </div>
-                        <div class="row"><div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-3">
                                 <div class="thumbnail">
-                                    <a href="/w3images/nature.jpg" target="_blank">
-                                        <img src="{{asset('images/bigbird.jpg')}}" alt="Nature" style="width:100%">
+                                    <a href="#" >
+                                        <img src="{{asset('images/generator.jpg')}}" alt="Nature" style="width:100%;height:190px">
                                         <div class="caption">
                                             <p>Generator Menu</p>
                                         </div>
                                     </a>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class=" col-md-offset-0 col-md-3">
                                 <div class="thumbnail">
-                                    <a href="/w3images/nature.jpg" target="_blank">
-                                        <img src="{{asset('images/bigbird.jpg')}}" alt="Nature" style="width:100%">
+                                    <a href="#" >
+                                        <img src="{{asset('images/palette.jpg')}}" alt="Nature" style="width:100%;height:190px">
                                         <div class="caption">
-                                            <p>Lorem ipsum donec id elit non mi porta gravida at eget metus.</p>
+                                            <p>Palette Menu</p>
                                         </div>
                                     </a>
                                 </div>
+
                             </div>
                         </div>
-                    </div>
-                </div>
 
                 {{--<div class="links">--}}
                     {{--<a href="https://laravel.com/docs">Documentation</a>--}}
@@ -139,6 +142,9 @@
                     {{--<a href="https://github.com/laravel/laravel">GitHub</a>--}}
                 {{--</div>--}}
             </div>
+                </div>
+            </div>
+
 
     </body>
 </html>

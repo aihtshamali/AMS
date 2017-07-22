@@ -7,7 +7,7 @@
             @endif
         </span>
         <h3 style="float:left  ">Dispatch:</h3>
-        <a href="{{route('dispatch.create')}}"  style="margin-top: 22px"class="btn btn-success pull-right ">Create Dispatch</a>
+        <a href="{{route('dispatch.create')}}"  style="margin-top: 22px"class="btn btn-info pull-right ">Create Dispatch</a>
 
         <table class="table table-striped table-responsive table-hover">
             <tr style="background-color:white;">

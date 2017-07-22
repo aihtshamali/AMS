@@ -107,21 +107,95 @@ function setTotal(){
     });
     $("#total").val(gTotal);
 }
-
-function sendData(item){
-    $.ajax({
-        url: 'dispatch/create',
-        type: "post",
-        data:{ _token: "{{csrf_token()}}", it: item},
-        dataType: 'json',
-    });
-}
+//
+// function sendData(item){
+//     $.ajax({
+//         url: 'dispatch/create',
+//         type: "post",
+//         data:{ _token: "{{csrf_token()}}", it: item},
+//         dataType: 'json',
+//     });
+// }
 
             // Freeezer Total
-function changeFreezerTotal(ctrl,id){
+function changeFreezerTotal(ctrl,id,arr){
     if($(ctrl).val()!="")
         $("."+id+"freezerqty").val(1);
     else
     $("."+id+"freezerqty").val(0);
+checkFreezerStock(ctrl,id,arr);
+}
+
+// checking stock if available stock is lesser than input then
+// submit button will be disabled
+
+function checkStock(obj,arr,id) { // arr is initalized from where the function is called (On the top of File)
+
+    var totalstock=0,gTotal=0;
+    for(i=0;i<arr.length;i++){
+        if(arr[i][0]==id){
+            totalstock+=arr[i][1];
+        }
+    }
+    $(".item").each(function() {
+        if ($(this).hasClass('item') && $(this).val() != '') {
+            gTotal += parseInt($(this).val().replace(/\,/g, ""));
+        }
+    });
+    if(gTotal>totalstock)
+    {
+        alert("Current value is greater than Available Stock");
+        document.getElementById("submit").disabled = true;
+
+    }
+    else{
+        document.getElementById("submit").disabled=false;
+    }
+
+}
+
+
+function  checkFreezerStock(obj,id,arr) {
+    var item = $("#"+id+"type").find("option:selected").val(); //getting the item id
+    var region=$("select#"+id+"region").find("option:selected").val(); // getting region id
+
+    var totalstock=0,gTotal=0;
+    if(region=="" && item!=""){
+        alert("Enter Location First");
+        document.getElementById("submit").disabled = true;
+        $("#"+id+"region").focus();
+    }
+    else if(region=="" && item=="")
+        document.getElementById("submit").disabled = false;
+
+    if(region!="" && item!="") {
+        document.getElementById("submit").disabled = false;
+        for (i = 0; i < arr.length; i++) {       // calculating the total stock of selected item in the selected region
+            if (arr[i][2] == region && arr[i][0] == item) {
+                totalstock += arr[i][1];
+            }
+        }
+      var counter=0;
+        $(".freezer").each(function () {
+
+            if ($(this).val() != 0 && $(this).val() != '' &&
+                ($("#"+counter+"region").val()==region && $("#"+counter+"type").val()==item) ) {
+                    gTotal += parseInt($(this).val().replace(/\,/g, ""));
+            }
+        });
+    }
+     if(gTotal>totalstock)
+     {
+         alert("Current value is greater than Available Stock");
+         document.getElementById("submit").disabled = true;
+    }
+    else if(totalstock==0 && item){
+         alert("Current Region has 0 selected Item");
+         document.getElementById("submit").disabled = true;
+     }
+    else{
+        document.getElementById("submit").disabled=false;
+    }
+
 }
 

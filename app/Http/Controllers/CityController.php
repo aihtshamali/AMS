@@ -14,7 +14,7 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities= City::all();
+        $cities= City::paginate(7);
         $regions=Region::all();
         return view('city.index',compact(['cities']));
     }

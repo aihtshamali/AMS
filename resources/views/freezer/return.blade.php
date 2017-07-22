@@ -1,6 +1,6 @@
 @extends('layouts.sidenav')
 @section('content')
-    <div class="">
+    <div class="container">
         <h3><Return></Return> Freezer</h3>
 
 
@@ -31,7 +31,7 @@
 
                         <td><label for="customer">Customer</label></td>
                         <td>
-                            <select name="customer" class="form-control" data-live-search="true"   data-width="30%" >
+                            <select name="customer" class="selectpicker" data-live-search="true"    >
                                 <option selected hidden>Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
@@ -79,11 +79,11 @@
                                 </select>
                             </td>
                             <td>
-                                <select name="type[<?=$i?>]" class="selectpicker " data-live-search="true" id="<?=$i?>type"  data-width="100%" >
+                                <select name="type[<?=$i?>]" class="form-control " data-live-search="true" id="<?=$i?>type"  data-width="100%" >
                                     <option selected disabled hidden style="color:rgb(0,0,0)">Choose Type</option>
-                                    <option type="text"  value="RIGHT UP FREEZER (WAVES)" >RIGHT UP FREEZER (WAVES)</option>
-                                    <option type="text"  value="RIGHT UP FREEZER (WAVES)" >TOP GLASS (WAVES)</option>
-
+                                    @foreach($items as $item)
+                                        <option type="text" value="{{$item->id}}">{{$item->display_name}}</option>
+                                    @endforeach
                                 </select>
                             </td>
                             <td>
@@ -106,18 +106,48 @@
                     @endfor
                     <tr style="background-color: rgb(160, 17, 78);color: white;" ><td colspan="7"><label for="" >Authorize Information</label></td></tr>
                     <tr style="width:40%">
-                        <?php $i=0 ?>
-                        @foreach($faculty as $fac)
-                            <td align="center" style="padding: 0px;margin:0px">
-                                <label for="">{{$fac->type}}</label>
-                            </td>
-                            <td style="padding: 0px;margin:0px">
-                                <select class="selectpicker" name="faculty[<?=$i++?>]" id="">
-                                    <option selected hidden value="<?=null?>">Select Faculty</option>
+                        <?php $i = 0 ?>
+                        <td align="center" style="padding: 0px;margin:0px">
+                            <label for="">NSM</label>
+                        </td>
+                        <td style="padding: 0px;margin:0px">
+                            <select class="form-control" name="nsm" id="" required>
+                                @foreach($faculty as $fac)
+                                    @if($fac->type=="NSM")
+                                        <option value="{{$fac->id}}" selected>{{$fac->name}}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </td>
+
+                        <td align="center" style="padding: 0px;margin:0px">
+                            <label for="">RSM</label>
+                        </td>
+                        <td style="padding: 0px;margin:0px">
+                            <select class="form-control" name="rsm" id="" required>
+                                @foreach($faculty as $fac)
+                                    @if($fac->type=="RSM" && $fac->region_id==Auth::user()->region_id)
+                                        <option value="{{$fac->id}}" selected>{{$fac->name}}</option>
+                                    @elseif($fac->type=="RSM")
+                                        <option value="{{$fac->id}}">{{$fac->name}}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </td>
+
+                        <td align="center" style="padding: 0px;margin:0px">
+                            <label for="">TSO</label>
+                        </td>
+                        <td style="padding: 0px;margin:0px">
+                            <select class="form-control" name="tso" id="" required>
+                                @foreach($faculty as $fac)
+                                    @if($fac->type=="TSO"))
+                                    <option value="" selected>--Select Faculty--</option>
                                     <option value="{{$fac->id}}">{{$fac->name}}</option>
-                                </select>
-                            </td>
-                        @endforeach
+                                    @endif
+                                @endforeach
+                            </select>
+                        </td>
                     </tr>
                 </table>
             </div>

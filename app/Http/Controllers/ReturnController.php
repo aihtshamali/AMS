@@ -19,7 +19,7 @@ class ReturnController extends Controller
     public function index()
     {
 
-        $returns=Returns_Detail::all();
+        $returns=Returns_Detail::paginate(5);
         return view('returns.index',compact('returns'));
     }
 
@@ -124,7 +124,13 @@ class ReturnController extends Controller
      */
     public function edit($id)
     {
-        //
+        $return=Returns::find($id);
+        $items=Item::all();
+        $customers= Customer::all();
+        $drivers=Driver::all();
+        $vehicles=Vehicle::all();
+        $return_detail=Returns_Detail::where('returns_id',$return->id)->get();
+        return view('returns.edit',compact(['items','customers','drivers','vehicles','return_detail']));
     }
 
     /**
@@ -155,6 +161,6 @@ class ReturnController extends Controller
         }
         else
             Returns_Detail::find($id)->delete();
-        return redirect()->route('returns.index')->withMessage('Deleted Successfully');
+        return redirect()->back()->withMessage('Deleted Successfully');
     }
 }

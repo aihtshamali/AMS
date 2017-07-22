@@ -1,6 +1,6 @@
 @extends('admin.layout.admin')
 @section('content')
-  <h1>Roles</h1>
+  <h1>Permissions</h1>
   <a href="{{route('permission.create')}}" class="btn btn-success pull-right">Create Permission</a>
   <table class="table table-responsive table-hover">
     <tr>
@@ -28,6 +28,6 @@
         <td>No Permissions</td>
       </tr>
     @endforelse
-      <tr><td colspan="4"><?php echo $permissions->render(); ?></td></tr>
+      <tr><td colspan="4">{{ $permissions->links() }}</td></tr>
   </table>
 @endsection

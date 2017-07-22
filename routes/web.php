@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 Route::group(['middleware' => 'web'], function () {
 
     Auth::routes();
@@ -27,11 +27,12 @@ Route::group(['middleware' => 'web'], function () {
             }
         ]);
 
-        Route::get('freezer/{id}/frRetPrint', 'FreezerController@ReturnPrint')->name('freezer.ReturnPrint');
+        Route::get('freezer/{id}/frRetPrint', 'FreezerController@ReturnPrint')->name('freezer.returnPrint');
         Route::get('freezer/{id}/frTranPrint', 'FreezerController@transferPrint')->name('freezer.transferPrint');
-        Route::get('freezer/{id}/gpOutPrint', 'FreezerController@gatePassOutPrint')->name('freezer.GateOutPrint');
-        Route::get('freezer/{id}/gpInPrint', 'FreezerController@gatePassInPrint')->name('freezer.GateInPrint');
+        Route::get('freezer/{id}/gpOutPrint', 'FreezerController@gatePassOutPrint')->name('freezer.gateOutPrint');
+        Route::get('freezer/{id}/gpInPrint', 'FreezerController@gatePassInPrint')->name('freezer.gateInPrint');
         Route::get('freezer/return', 'FreezerController@createReturn')->name('freezer.return');
+        Route::get('freezer/return/{id}/edit', 'FreezerController@returnedit')->name('freezer.return.edit');
         Route::get('admin/users', 'AdminController@users')->name('showusers');
         Route::get('admin/{id}/user', 'AdminController@useredit')->name('useredit');
         Route::post('admin/{id}/user', 'AdminController@updateuser')->name('userupdate');

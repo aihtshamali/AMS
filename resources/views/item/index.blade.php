@@ -1,4 +1,4 @@
-@extends('layouts.sidenav')
+@extends('admin.layout.admin')
 @section('content')
     <div class="">
         <span align="center" >

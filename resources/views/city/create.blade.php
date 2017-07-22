@@ -1,4 +1,4 @@
-@extends('layouts.sidenav')
+@extends('admin.layout.admin')
 @section('content')
     <div class="">
         <form  class="form " action="{{route('city.store')}}" method="post">

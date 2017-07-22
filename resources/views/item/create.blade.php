@@ -1,4 +1,4 @@
-@extends('layouts.sidenav')
+@extends('admin.layout.admin')
 @section('content')
     <div class="">
         <h3>Create Items</h3>
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Item Group</label>
-                <select name="item_group" id="">
+                <select class="form-control"  name="item_group" id="">
                     <option value="Freezer">Freezer</option>
                     <option value="Pallet">Pallet</option>
                     <option value="Crate">Crate</option>
@@ -30,19 +30,19 @@
 
             <div class="form-group">
                 <label for="description">For Customer</label>
-                <input type="number" name="for_customer" placeholder="Enter Cusotmer Number">
+                <input type="number" class="form-control" name="for_customer" placeholder="Enter Cusotmer Number">
             </div>
             <div class="form-group">
                 <label for="department">Department</label>
-                <input type="number" name="department" placeholder="Enter Department Number">
+                <input type="number" class="form-control" name="department" placeholder="Enter Department Number">
             </div>
             <div class="form-group">
                 <label for="description">Color</label>
-                <input type="color" name="color" placeholder="Enter Color : ">
+                <input type="color" class="form-control" name="color" placeholder="Enter Color : ">
             </div>
             <div class="form-group text-left">
                 <label for="description">Status</label>
-                <select name="is_active" id="">
+                <select class="form-control" name="is_active" id="">
                     <option value="1" selected>Active</option>
                     <option value="0">Not Active</option>
                 </select>
