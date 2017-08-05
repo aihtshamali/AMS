@@ -65,14 +65,23 @@
         </style>
     </head>
     <body>
-        <div class="    ">
+    <div class="" >
+        <div class="    " >
             @if (Route::has('login'))
-                <div class="top-right links">
+                <div class="top-right links"  >
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}" >Home</a>
+                        <a href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
                     @else
-                        <a href="{{ url('/login') }}">Login</a>
-                        <a href="{{ url('/register') }}">Register</a>
+                        <a href="{{ url('/login') }}" >Login</a>
+                        {{--<a href="{{ url('/register') }}">Register</a>--}}
                     @endif
                 </div>
             @endif
@@ -81,17 +90,24 @@
                 {{--<div class="title m-b-md">--}}
                     {{--Laravel--}}
                 {{--</div>--}}
-                <div align="center">
-                    <h3>Assets Management System</h3>
+                <div align="center" style="border-bottom: 1px solid #1B1D4D">
+                    <h3 style="padding-left:150px;margin-top: 13px">Assets Management System</h3>
                 </div>
+                </div>
+    </div>
                 <div >
+                    <span align="center" >
+                        @if (Session::has('message'))
+                            <div class="alert alert-info" style ="background-color:red;color:white;font-weight: bolder">{{ Session::get('message') }}</div>
+                        @endif
+                    </span>
                     <div class="container" style="padding-top:60px;">
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="thumbnail">
-                                    <a href="{{route('home')}}" >
-                                        <img src="{{asset('images/freezer.jpg')}}" alt="Nature" style="width:100%;height:190px">
+                                    <a href="{{route('freezer.index')}}" >
+                                        <img src="{{asset('images/freezer.jpg')}}" alt="Freezer-img" style="width:100%;height:190px">
                                         <div class="caption">
                                             <p>Freezer Menu</p>
                                         </div>
@@ -100,8 +116,8 @@
                             </div>
                             <div class=" col-md-offset-0 col-md-3">
                                 <div class="thumbnail">
-                                    <a href="{{route('home')}}">
-                                        <img src="{{asset('images/crates.jpg')}}"  alt="Nature" style="width:100%;height:190px">
+                                    <a href="{{route('dispatch.index')}}">
+                                        <img src="{{asset('images/crates.jpg')}}"  alt="Crates-img" style="width:100%;height:190px">
                                         <div class="caption">
                                             <p >Crates Menu</p>
                                         </div>
@@ -114,17 +130,23 @@
                             <div class="col-md-3">
                                 <div class="thumbnail">
                                     <a href="#" >
-                                        <img src="{{asset('images/generator.jpg')}}" alt="Nature" style="width:100%;height:190px">
+
+                                        <img src="{{asset('images/generator.jpg')}}" alt="Generator-img" style="width:100%;height:190px">
                                         <div class="caption">
                                             <p>Generator Menu</p>
                                         </div>
                                     </a>
+
+                                </div>
+                                <div class="transbox">
+                                    <h2>Coming Soon</h2>
                                 </div>
                             </div>
                             <div class=" col-md-offset-0 col-md-3">
                                 <div class="thumbnail">
-                                    <a href="#" >
-                                        <img src="{{asset('images/palette.jpg')}}" alt="Nature" style="width:100%;height:190px">
+                                    <a href="{{route('transfer.index')}}" >
+                                        <img src="{{asset('images/palette.jpg')}}" alt="Palette-img" style="width:100%;height:190px">
+
                                         <div class="caption">
                                             <p>Palette Menu</p>
                                         </div>
@@ -133,18 +155,29 @@
 
                             </div>
                         </div>
-
-                {{--<div class="links">--}}
-                    {{--<a href="https://laravel.com/docs">Documentation</a>--}}
-                    {{--<a href="https://laracasts.com">Laracasts</a>--}}
-                    {{--<a href="https://laravel-news.com">News</a>--}}
-                    {{--<a href="https://forge.laravel.com">Forge</a>--}}
-                    {{--<a href="https://github.com/laravel/laravel">GitHub</a>--}}
-                {{--</div>--}}
             </div>
                 </div>
             </div>
 
+        <div class="footer-bottom">
+
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="copyright" align="center">
+
+                            © 2017-18, BIGBIRDS GROUP, All rights reserved
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

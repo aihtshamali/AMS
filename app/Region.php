@@ -37,5 +37,8 @@ class Region extends Model
     public function purchase(){
         return $this->hasMany('App\Purchase');
     }
+    public function  stock(){
+        return $this->hasMany('App\Stock');
+    }
 }
 

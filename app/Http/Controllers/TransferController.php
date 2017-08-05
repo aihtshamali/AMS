@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Driver;
 use App\Item;
 use App\Region;
+use App\Stock;
 use App\Transfers_Detail;
 use App\UserItem;
 use App\Vehicle;
@@ -21,8 +22,7 @@ class TransferController extends Controller
     public function index()
     {
 
-        $transfers= Transfer::whereNULL('type')->get();
-//        dd($transfers);
+        $transfers= Transfer::where('status','Received')->get();
         return view('transfer.index',compact('transfers'));
     }
 
@@ -43,11 +43,12 @@ class TransferController extends Controller
         else {
             $doc_no = 'TO.000001';
         }
-        $drivers=Driver::all();
-        $vehicles =Vehicle::all();
+        $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
+        $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
         $regions=Region::all();
         $useritems=UserItem::where('user_id',Auth::user()->id)->get();
-        return view('transfer.shipped',compact(['drivers','vehicles','doc_no','regions','useritems']));
+        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
+        return view('transfer.shipped',compact(['stock','drivers','vehicles','doc_no','regions','useritems']));
     }
 
     /**
@@ -65,7 +66,10 @@ class TransferController extends Controller
         $transfer->ftn_date = $request->ftn_date;
         $transfer->vehicle_id=$request->vehicle_id;
         $transfer->driver_id=$request->driver_id;
-        $transfer->from_=$request->from_;
+        $region_name=explode('/',$request->from_);
+        $region=Region::where('name',$region_name)->first();
+        $transfer->from_=$region->id;
+        $transfer->status="Pending";
         $transfer->placement_date = $request->placement_date;
         $transfer->save();
         $i=0;
@@ -76,6 +80,21 @@ class TransferController extends Controller
                 $transfer_detail->region()->associate($request->region_id);
                 $transfer_detail->quantity = $request->items[$i];
                 $transfer_detail->transfer()->associate($transfer);
+
+
+                $stock=Stock::where('region_id',$transfer->from_)->where('item_id',$transfer_detail->item_id)->first();
+
+                if($stock) {
+                    $quantity=$stock->quantity;
+                    $stock->quantity= $quantity- $transfer_detail->quantity;
+                    if($stock->quantity<0)
+                    {
+                        $stock->quantity=0;
+                        Transfer::find($transfer->id)->delete();
+                        return redirect()->route('transfer.index')->withMessage('Don\'t have much stock to complete this process ');
+                    }
+                    $stock->save();
+                }
                 $transfer_detail->save();
             }
         }
@@ -85,6 +104,40 @@ class TransferController extends Controller
             Transfer::find($transfer->id)->delete();
             return redirect()->route('transfer.index')->withMessage('Items Does Not Dispatched');
         }
+    }
+
+    public function transit(){
+        $transfers= Transfer::where('status','Pending')->get();
+        return view('transfer.transit',compact('transfers'));
+    }
+
+    public function transferReceived(Request $request , $id){
+
+
+
+        $transfer= Transfers_Detail::where('transfer_id',$id)->get();
+//        dd($transfer);
+        $transfer[0]->transfer->status="Received";
+        $transfer[0]->transfer->confirmed_by=Auth::user()->id;
+
+        $reg=Region::find($transfer[0]->region_id);
+
+        foreach($transfer as $t) {
+            $stock=Stock::where('region_id',$reg->id)->where('item_id',$t->item_id)->first();
+
+            if ($stock) {
+                $quantity = $stock->quantity;
+                $stock->quantity = $t->quantity + $quantity;
+            } else {
+                $stock = new Stock();
+                $stock->item()->associate($t->item);
+                $stock->region()->associate($t->region);
+                $stock->quantity = $t->quantity;
+            }
+            $stock->save();
+        }
+            $transfer[0]->transfer->save();
+        return redirect()->back()->withMessage("Transfered Successfully Received");
     }
 
     /**
@@ -108,9 +161,10 @@ class TransferController extends Controller
     {
         $transfers=Transfers_Detail::where('transfer_id',$id)->get();
         $regions=Region::all();
-        $vehicles =Vehicle::all();
-        $drivers=Driver::all();
+        $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
+        $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $useritems=UserItem::where('user_id',Auth::user()->id)->get();
+        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
         return view('transfer.edit',compact(['transfers','regions','vehicles','drivers','useritems']));
     }
 
@@ -125,19 +179,21 @@ class TransferController extends Controller
     {
 
 //        dd($request->all());
-        Transfer::find($id)->delete();
-        $transfer = new Transfer();
+
+        $transfer =  Transfer::find($id);
         $transfer->customer()->associate(Customer::find($request->customer));
         $transfer->ftn_no = $request->doc_no;
         $transfer->reference = $request->reference;
         $transfer->ftn_date = $request->ftn_date;
         $transfer->vehicle_id=$request->vehicle_id;
         $transfer->driver_id=$request->driver_id;
-        $transfer->from_=$request->from_;
+        $region_name=explode('/',$request->from_);
+        $region=Region::where('name',$region_name)->first();
+        $transfer->from_=$region->id;
         $transfer->placement_date = $request->placement_date;
-        $transfer->save();
-        $i=0;
 
+        $i=0;
+        Transfer_details::where('transfer_id',$id)->get()->delete();
         for(;$i<count($request->items);$i++) {
             if ($request->items[$i] != null) {
                 $transfer_detail = new Transfers_Detail();
@@ -146,11 +202,24 @@ class TransferController extends Controller
                 $transfer_detail->quantity = $request->items[$i];
                 $transfer_detail->transfer()->associate($transfer);
                 $transfer_detail->save();
+//                $stock=Stock::where('region_id',$transfer->from_)->where('item_id',$transfer_detail->item_id)->first();
+//
+//                if($stock) {
+//                    $quantity=$stock->quantity;
+//                    $stock->quantity= $quantity- $transfer_detail->quantity;
+//                    if($stock->quantity<0)
+//                    {
+//                        Transfer::find($transfer->id)->delete();
+//                        return redirect()->route('transfer.index')->withMessage('Don\'t have much stock to complete this process ');
+//                    }
+//                    $stock->save();
+//                }
             }
         }
-        if ($i > 0)
+        if ($i > 0) {
+            $transfer->save();
             return redirect()->route('transfer.index')->withMessage('Items Updated Successfully');
-        else {
+        }else {
             Transfer::find($transfer->id)->delete();
             return redirect()->route('transfer.index')->withMessage('Updation Failed');
         }

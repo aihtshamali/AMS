@@ -31,12 +31,15 @@
 
     }
     ?>
-
+    <script type="text/javascript">
+        var a = <?php echo json_encode($stock); ?>;
+    </script>
     <div class="">
-        <h3>Edit Dispatch</h3>
+
+        <h3>Edit Return</h3>
 
 
-        <form action="{{route('dispatch.update',$return->id)}}" method="post" >
+        <form action="{{route('returns.update',$return->id)}}" method="post" >
             {{ method_field('PUT') }}
             {{csrf_field()}}
             <div classs="dispatchHeader">
@@ -44,7 +47,7 @@
                     <tr>
                         <td>  <label for="name">Document Number.</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="doc_no" id="ref" value="{{$return->doc_no}}" readonly>
+                            <input type="text" class="form-control" name="doc_no" id="ref" value="{{$return->ftn_no}}" readonly>
                         </td>
                         <td>
                             <label for="reference">Reference Number.</label>
@@ -54,13 +57,13 @@
                         </td>
                         <td>
                             <label for="description">Date</label>    </td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$return->cdate}}"> </td>
+                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$return->ftn_date}}"> </td>
 
                     </tr>
                     <tr>
-                        <td>  <label for="from_">From</label> </td>
+                        <td>  <label for="to_">To</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="from_" id="" value="{{$return ->from_}}" readonly>
+                            <input type="text" class="form-control" name="to_" id="" value="{{$return_detail[0]->region->name}}/{{$return_detail[0]->region->sub_name}}" readonly>
                         </td>
                         <td>
                             <label for="vehicle_id">Vehicle Number.</label>
@@ -92,6 +95,11 @@
                     </tr>
                 </table>
             </div>
+            <datalist id="customer">
+                @foreach($customers as $customer)
+                    <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
+                @endforeach
+            </datalist>
             <div class="table-wrapper row customer"  style="margin-right: 0px;">
                 <table class="table">
                     <tr>
@@ -101,18 +109,22 @@
                         <?php $col=0;$row=0;?>
                         @for($i=0; $i<10 ;$i++)
                             <td class="col-xs-3" >
+                                @if($i<(count($returndetails)))
+                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control" value="{{$returndetails[$row][$col]}}">
+                                @else
+                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control" name="customer[<?=$i?>]">
+                                @endif
+                                {{--<select name="customer[<=$i?>]" style="height: 30px;width: 200px">--}}
+                                    {{--<option></option>--}}
+                                    {{--@foreach($customers as $customer)--}}
+                                        {{--@if($i<(count($returndetails)) && ($customer->id==$returndetails[$row][$col]))--}}
+                                            {{--<option type="text"  value="{{$customer->id}}" selected >{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
 
-                                <select name="customer[<?=$i?>]" style="height: 30px;width: 200px">
-                                    <option></option>
-                                    @foreach($customers as $customer)
-                                        @if($i<(count($returndetails)) && ($customer->id==$returndetails[$row][$col]))
-                                            <option type="text"  value="{{$customer->id}}" selected >{{$customer->account_name }} / {{$customer-> account_no}}</option>
-
-                                        @else
-                                            <option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                        {{--@else--}}
+                                            {{--<option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
+                                        {{--@endif--}}
+                                    {{--@endforeach--}}
+                                {{--</select>--}}
                                 <?php $row+=1?>
                             </td>
                         @endfor
@@ -146,11 +158,11 @@
                                     <td>
                                         @if($i<count($returndetails))
                                             @if($returndetails[$row][$col]==$item->id)
-                                                <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$returndetails[$row][$col+1]}}">
+                                                <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$returndetails[$row][$col+1]}}">
                                                 <?php $row++;?>
                                             @endif
                                         @else
-                                            <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
+                                            <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                                         @endif
                                     </td>
                                 @endfor

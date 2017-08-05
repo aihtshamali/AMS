@@ -3,19 +3,20 @@
     <div class="">
         <h3 style="color: #000;">Purchase</h3>
 
-        <form action="{{route('purchase.store')}}" method="post" >
+        <form action="{{route('purchase.update',$purchases[0]->purchase->id)}}" method="post" >
+            {{method_field('PATCH')}}
             {{csrf_field()}}
             <div classs="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
                         <td>  <label for="name">Document Number.</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="doc_no" id="ref" value="{{$doc_no}}" readonly>
+                            <input type="text" class="form-control" name="doc_no" id="ref" value="{{$purchases[0]->purchase->doc_no}}" readonly>
                         </td>
 
                         <td>  <label for="name">Date</label> </td>
                         <td>
-                            <input type="date" class="form-control" name="ftn_date" >
+                            <input type="date" class="form-control" name="ftn_date" value="{{$purchases[0]->purchase->cdate}}" required >
                         </td>
 
 
@@ -23,14 +24,14 @@
                             <label for="reference">Reference Number.</label>
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
+                            <input type="text" class="form-control" name="reference" id="" value="{{$purchases[0]->purchase->reference}}" required>
                         </td>
 
                     </tr>
                     <tr>
                         <td>  <label for="to_">To</label> </td>
                         <td>
-                            <input type="text" class="form-control" style="width:inherit" name="region" id="" value="{{Auth::user()->region->name}}" readonly>
+                            <input type="text" class="form-control" style="width:inherit" name="region" id="" value="{{$purchases[0]->purchase->region->name}}" readonly>
                         </td>
                         <td>
                             <label for="vehicle">Vehicle Number.</label>
@@ -39,7 +40,11 @@
                             <select name="vehicle" class="selectpicker">
                                 <option selected value="" ></option>
                                 @foreach($vehicles as $vehicle)
+                                    @if($purchases[0]->purchase->vehicle_id==$vehicle->id)
+                                    <option value="{{$vehicle->id}}"selected>{{$vehicle->name}} </option>
+                                    @else
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </td>
@@ -51,11 +56,14 @@
                             <select name="driver" class="selectpicker" required>
                                 <option selected value =""> </option>
                                 @foreach($drivers as $driver)
+                                    @if($purchases[0]->purchase->driver_id==$driver->id)
+                                    <option value="{{$driver->id}}" selected>{{$driver->name}}</option>
+                                    @else
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </td>
-
                     </tr>
                 </table>
             </div>
@@ -75,7 +83,15 @@
                     <tr>
                         <td><label for="">{{$alloweditem->display_name}}</label></td>
                         <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->id}}">
-                        <td><input name="item[<?=$i?>][{{$alloweditem->id}}]" type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
+                        @if($i<count($purchases))
+                        @if($purchases[$i]->item_id==$alloweditem->id)
+                        <td><input name="item[<?=$i?>][{{$alloweditem->id}}]" value="{{$purchases[$i]->quantity}}" type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
+                            @else
+                        <td><input name="item[<?=$i?>][{{$alloweditem->id}}]"  type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
+                            @endif
+                            @else
+                            <td><input name="item[<?=$i?>][{{$alloweditem->id}}]"  type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
+                            @endif
                     </tr>
                     <?php $i++?>
                 @endforeach
@@ -90,7 +106,5 @@
 
         </form>
     </div>
-    <script >
 
-    </script>
 @endsection

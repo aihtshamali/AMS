@@ -14,22 +14,25 @@
                 <th>FTN Date</th>
                 <th>Reference #</th>
                 <th>Customer Code</th>
-                <th>Delivery Address</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Type</th>
                 <th>Qty</th>
                 <th>Actions</th>
                 <th></th>
 
             </tr>
+            {{--{{dd($returns)}}--}}
             @forelse($returns as $return)
                 <tr>
-                    <td>{{$return->returns->ftn_no}}</td>
-                    <td>{{$return->returns->ftn_date}}</td>
-                    <td>{{$return->returns->reference}}</td>
-                    <td>{{$return->customer->id}}/{{$return->customer->account_name}}</td>
-                    <td>{{$return->region->name}}</td>
+                    <td>{{$return->ftn_no}}</td>
+                    <td>{{$return->ftn_date}}</td>
+                    <td>{{$return->reference}}</td>
+                    <td>{{getCustomer($return->customer_id)}}</td>
+                    <td>Customer</td>
+                    <td>{{getRegionName($return->region_to)}}</td>
                     <td>{{$return->type}}</td>
-                    <td>{{$return->quantity}}</td>
+                    <td>{{$return->id}}</td>
                     <td>
                         <a href="{{route('returns.edit',$return->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
                     </td>

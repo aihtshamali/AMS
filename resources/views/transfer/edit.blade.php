@@ -34,8 +34,13 @@
                     <tr>
                         <td><label for="from_">From</label></td>
                         <td>
+                            @if($transfers[0]->transfer->type!="Freezer")
                             <input type="text" class="form-control" style="width:inherit" name="from_" id=""
                                    value="{{$transfers[0]->transfer->from_}}" readonly>
+                            @else
+                                <input type="text" class="form-control" style="width:220px;" name="from_" id=""
+                                       value="{{$transfers[0]->region->name}}/{{$transfers[0]->region->sub_name}}" readonly>
+                            @endif
                         </td>
                         <td>
                             <label for="region_id">TO</label>
@@ -92,10 +97,10 @@
             <table class="table-responsive table">
                 @foreach($useritems as $alloweditem)
                     @if($redund!=$alloweditem->item->item_group)
-                        <tr style="margin:0px;padding:0px">
+                        <tr style="margin:0px;padding:0px;background-color: #bd2355;color:white;">
                             <td>
                                 <?php $redund = $alloweditem->item->item_group?>
-                                <h3 style="margin:0px;padding:0px;color: #000;">{{$alloweditem->item->item_group}}</h3>
+                                <h3 style="margin:0px;padding:0px;">{{$alloweditem->item->item_group}}</h3>
                             </td>
                             <td></td>
                         </tr>

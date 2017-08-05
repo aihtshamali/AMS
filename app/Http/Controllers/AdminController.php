@@ -36,11 +36,20 @@ class AdminController extends Controller
         return view('admin.user.edit',compact(['user','regions']));
 
     }
-    public function updateuser($request ,$id){
-        $regions=Region::all();
+    public function updateuser(Request $request ,$id){
+        $regions=Region::find($request->region_id);
         $user=User::find($id);
-        return view('admin.user.edit',compact(['user','regions']));
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->region()->associate($regions);
+        $user->password=bcrypt($request['password']);
+        $user->save();
+        return redirect()->route('showusers')->withMessage("User Updated Successfully");
 
+    }
+    public function destroyUser($id){
+        User::destroy($id);
+            return redirect()->route('showusers')->withMessage('User Deleted Successfully');
     }
     /**
      * Show the form for creating a new resource.

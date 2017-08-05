@@ -18,8 +18,8 @@
                 <select name="type" class="form-control" id="" required>
                     <option   value="" >--Select Post--</option>
                     <option value="TSO">TSO</option>
-                    <option value="TSO">RSM</option>
-                    <option value="TSO">NSM</option>
+                    <option value="RSM">RSM</option>
+                    <option value="NSM">NSM</option>
                 </select>
             </div>
             <div class="form-group">

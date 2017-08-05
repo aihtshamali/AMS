@@ -44,7 +44,7 @@ class FacultyController extends Controller
         $faculty->type=$request->type;
         $faculty->region()->associate($request->region);
 //        dd($faculty); TODO : This should not be HardCoded
-        $faculty->user_id=1;
+        $faculty->user_id=5;
         $faculty->is_active=$request->is_active;
         $faculty->save();
         return redirect()->route('faculty.index')->withMessage('Added Successfully');
@@ -69,7 +69,8 @@ class FacultyController extends Controller
      */
     public function edit($id)
     {
-        return view('faculty.edit',compact('faculty'));
+        $regions=Region::all();
+        return view('faculty.edit',compact(['faculty','regions']));
     }
 
     /**
@@ -81,14 +82,14 @@ class FacultyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Faculty::find($id)->delete();
-        $faculty = new Faculty();
+
+        $faculty = Faculty::find($id);
         $faculty->name=$request->name;
         $faculty->father_name=$request->father_name;
         $faculty->type=$request->type;
         $faculty->region()->associate($request->region);
 //        dd($faculty); TODO This should not be HardCoded
-        $faculty->user_id=1;
+        $faculty->user_id=5;
         $faculty->is_active=$request->is_active;
         $faculty->save();
         return redirect()->route('faculty.index')->withMessage('Updated Successfully');

@@ -28,8 +28,8 @@
                     <td>{{$customer->account_no}}</td>
                     <td>{{$customer->account_name}}</td>
                     <td>{{$customer->customer_group}}</td>
-                    {{--<td>{{$customer->city->name}}</td>--}}
-{{--                    <td>{{$customer->region->name}}</td>--}}
+                    {{--<td>{{$customer->city->name}}</td>--}
+                    {{-- <td>{{$customer->region->name}}</td>--}}
                     {{--<td>{{$customer->address}}</td>--}}
                     <td>{{$customer->phone}}</td>
                     <td>{{$customer->is_active=="1" ? "Active" : "Not Active"}}</td>

@@ -1,12 +1,15 @@
 @extends('layouts.sidenav')
 @section('content')
+    <script type="text/javascript">
+        var a = <?php echo json_encode($stock); ?>;
+    </script>
     <div class="">
         <h3>Return Request</h3>
 
 
         <form action="{{route('returns.store')}}" method="post" >
             {{csrf_field()}}
-            <div classs="dispatchHeader">
+            <div style="position: relative;left:-10px;" class="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
                         <td>  <label for="name">Document Number.</label> </td>
@@ -27,13 +30,13 @@
                     <tr>
                         <td>  <label for="from_">To</label> </td>
                         <td>
-                            <input type="text" class="form-control" name="to_" id="" value="{{Auth::user()->region->name}}" readonly>
+                            <input type="text" class="form-control" name="to_" id="" value="{{Auth::user()->region->name}}/{{Auth::user()->region->sub_name}}" readonly>
                         </td>
                         <td>
                             <label for="vehicle_id">Vehicle Number.</label>
                         </td>
                         <td >
-                            <select name="vehicle_id" style="width: 80%;" class="selectpicker form-control show-tick">
+                            <select name="vehicle_id"  class=" form-control ">
                                 <option value="">--Select Vehicle--</option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name}}</option>
@@ -43,7 +46,7 @@
                         <td>
                             <label for="description">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" style="width: 60%;" class="selectpicker form-control show-tick">
+                            <select name="driver_id" style="width: 60%;" class="selectpicker form-control">
                                 <option value="">--Select Driver--</option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
@@ -61,22 +64,25 @@
                 <table class="table">
                     <tr>
                         <th >
-                            <label class="col-xs-7" for="name">From Customer</label>
+                            <label style="font-size:12px;" for="name">From Customer</label>
                         </th>
+
                         @for($i =0; $i<10 ;$i++)
-                            <td class="col-xs-3" >
-                                <select name="customer[]" style="height: 30px;width: 200px">
-                                    <option></option>
+                            <td class="col-xs-3 " style=" padding: 0 0 0 5px; height: 30px;width: 200px">
+                                <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  id="<?=$i?>customer" placeholder="Enter Customer.." class="form-control" name="customer[<?=$i?>]" autocomplete="on">
+                                <datalist id="customer">
                                     @foreach($customers as $customer)
-                                        <option type="text"  value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                                    @endforeach  data-live-search="true" id="<?=$i?>customer"   >
-                                </select>
+                                        <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
+                                    @endforeach
+                                </datalist>
                             </td>
                         @endfor
+
+
                     </tr>
                     <tr>
                         <th>
-                            <label for="name">Sales Invoice</label>
+                            <label style="font-size:12px;" for="name">Sales Invoice</label>
                         </th>
                         @for($i =0; $i<10 ;$i++)
                             <td class="col-xs-5">
@@ -84,19 +90,19 @@
                             </td>
                         @endfor
                     </tr>
+
                     <?php $j=0; ?>
                     @foreach($items as $item)
 
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                             <tr>
                                 <th >
-                                    <label  for="name">{{$item->display_name}}</label>
+                                    <label style="font-size:12px;" for="name">{{$item->display_name}}</label>
                                 </th>
                                 <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                                 @for($i=0; $i<10 ;$i++)
                                     <td>
-
-                                        <input type="number" class="<?=$i?>qty form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
+                                        <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                                     </td>
                                 @endfor
                             </tr>

@@ -1,0 +1,13 @@
+.reportHeader{
+    font-weight:bold;
+    font-family: Arial Black;
+}
+.reportHeadersection {
+    border-bottom: 3px double black;
+    width: 220px;
+}
+.dataTable .table-header td{
+    border: 1px solid black;
+    padding: 0 0 0 10px;
+    background-color: lightgray;
+}

@@ -28,18 +28,19 @@ table{
     padding: 10px 0 5px 0;
 }
 .freezer_information tbody >tr >td{
-    /*border-bottom: 1px dotted black;*/
+    border-bottom: 2px dotted black;
+    border-collapse: collapse;
 }
 .tr_header{
     text-align: center;
 }
 .tdb{
-    border-bottom: 2px dotted lightgray;
+    border-bottom: 2px dotted black;
     text-align: center;
     padding: 5px 0 3px 0;
 }
 .thb{
-    border-bottom: 1.5px solid #000000;
+    border-bottom: 2px solid #000000;
     background-color: #bd2355;
 
 }

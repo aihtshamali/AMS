@@ -17,7 +17,7 @@
                 <th>Driver</th>
                 <th>From</th>
                 <th>To</th>
-                <th>Actions</th>
+                <th >Actions</th>
                 <th></th>
 
             </tr>
@@ -29,8 +29,9 @@
                     <td>{{$dispatch->driver->name}}</td>
                     <td>{{$dispatch->region->name}}</td>
                     <td>{{$dispatch->to_}}</td>
-                   <td>
-                        <a href="{{route('dispatch.edit',$dispatch->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
+                   <td style="width: 110px">
+                       <a href="{{route('returnDispatch',$dispatch->id)}}" type="button" ><img src="{{asset('images\returns.png')}}" class="icon" style="height:30px;width:30px;margin-left:10px;"></a>
+                       <a href="{{route('dispatch.edit',$dispatch->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
                    </td>
 
                     <td>

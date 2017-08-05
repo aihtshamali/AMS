@@ -16,6 +16,9 @@ class Customer extends Model
     public function transfer(){
         return $this->hasMany('App\Transfer');
     }
+    public function stock(){
+        return $this->hasMany('App\Stock');
+    }
     public function returns_detail(){
         return $this->hasMany('App\Returns_Detail');
     }

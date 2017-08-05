@@ -140,9 +140,9 @@
                         </td>
                         <td style="padding: 0px;margin:0px">
                             <select class="form-control" name="tso" id="" required>
+                                <option value="" selected>--Select Faculty--</option>
                                 @foreach($faculty as $fac)
                                     @if($fac->type=="TSO"))
-                                    <option value="" selected>--Select Faculty--</option>
                                     <option value="{{$fac->id}}">{{$fac->name}}</option>
                                     @endif
                                 @endforeach
@@ -151,7 +151,7 @@
                     </tr>
                 </table>
             </div>
-            <button type="submit" class=" pull-right btn btn-md btn-success" name="submit">Save Data</button>
+            <button type="submit" class=" pull-right btn btn-md btn-info" name="submit">Save Data</button>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         </form>

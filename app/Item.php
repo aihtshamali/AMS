@@ -24,4 +24,7 @@ class Item extends Model
     public function  purchase_detail(){
         return $this->hasMany('App\Purchase_Detail');
     }
+    public function  stock(){
+        return $this->hasMany('App\Stock');
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Permission;
+use App\Permission_Role;
 use App\Region;
 use App\User;
 use App\Http\Controllers\Controller;
@@ -28,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/admin/users';
 
     /**
      * Create a new controller instance.
@@ -64,13 +66,21 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
         $users= new User();
         $users->name=$data['name'];
         $users->email=$data['email'];
         $users->password=bcrypt($data['password']);
         $users->region()->associate($data['region']);
         $users->save();
+        $allowedPermissions=['logout','login','welcome'];
+        for($i=0;$i<count($allowedPermissions);$i++) {
+            $per = Permission::where('name',$allowedPermissions[$i])->first();
+            $perm = new Permission_Role();
+            $perm->user()->associate($users);
+            $perm->permission()->associate($per);
+            $perm->save();
+        }
         return $users;
-
     }
 }

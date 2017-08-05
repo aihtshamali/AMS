@@ -15,7 +15,7 @@
     <link rel="icon" href="{{asset('images/logo.jpg')}}">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css">
-
+    
 
     <style>
 
@@ -353,8 +353,8 @@
         }
     </style>
 </head>
-<body>
 
+<body>
 {{--<div id="mySidenav" class="sidenav">--}}
 {{--<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>--}}
 {{--<div  class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</div>--}}
@@ -366,16 +366,20 @@
     @include('includes.sidenav')
     <div >
         <div class="">
+             <span align="center" >
+                @if (Session::has('message'))
+                     <div class="alert alert-info"  style ="background-color:red;color:white;font-weight: bolder;position:relative;z-index: 1;">{{ Session::get('message') }}</div>
+                 @endif
+                </span>
             <div class="">
                 <img src="{{asset('images/loginbg.jpg')}}" id="bg" alt="">
+
             </div>
 
-        </div>
 
+        </div>
     </div>
 </div>
-
-
 </body>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/utility.js') }}"></script>

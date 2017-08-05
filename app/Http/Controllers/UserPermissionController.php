@@ -70,11 +70,14 @@ class UserPermissionController extends Controller
     public function edit($id)
     {
 //        dd($id);
-        $permissions= Permission_Role::where('user_id',$id)->get();
+        $permissions= Permission_Role::where('user_id',$id)->paginate(8);
+        $userpermissions=Permission_Role::where('user_id',$id)->get();
         $user=User::find($id);
         $allpermission=Permission::all();
-        return view('admin.userpermission.edit',compact(['permissions','user','allpermission']));
+        return view('admin.userpermission.edit',compact(['permissions','user','allpermission','userpermissions']));
     }
+
+
 
     /**
      * Update the specified resource in storage.

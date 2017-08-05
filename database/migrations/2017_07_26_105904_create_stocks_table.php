@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserItemsTable extends Migration
+class CreateStocksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,27 +13,29 @@ class CreateUserItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_items', function (Blueprint $table) {
+        Schema::create('stocks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
             $table->integer('item_id')->unsigned();
+            $table->integer('region_id')->unsigned();
+            $table->bigInteger('quantity')->unsigned();
+            $table->timestamps();
 
-
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->foreign('item_id')->references('id')->on('items');
-            $table->foreign('user_id')->references('id')->on('users');
 
             //To drop a foreign key, you may use the dropForeign method.
             // Foreign key constraints use the same naming convention as indexes
 
             $table->dropForeign(['item_id']);
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['region_id']);
+
 
             $table->foreign('item_id')
                 ->references('id')->on('items')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('user_id')
-                ->references('id')->on('users')
+            $table->foreign('region_id')
+                ->references('id')->on('regions')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -46,6 +48,6 @@ class CreateUserItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_items');
+        Schema::dropIfExists('stocks');
     }
 }

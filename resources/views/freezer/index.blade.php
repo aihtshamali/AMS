@@ -8,10 +8,12 @@
         </span>
         <h3>Filter Results</h3>
         <table class="table-responsive table">
-            <tr><form action="{{route('freezer.index')}}">
+            <tr>
+                <form action="{{route('freezer.index')}}" method="get">
                     <td><label for="">From</label></td><td><input class="form-control" type="date" name="from"></td>
                     <td><label for="">to</label></td><td><input class="form-control" type="date" name="to"></td>
-                    <td><label for="">Region</label></td><td>
+                    <td><label for="">Region</label></td>
+                    <td>
                         <select name="region" id="" class="form-control">
                             <option selected value="">--Select Region--</option>
                             @foreach($regions as $region)
@@ -20,7 +22,8 @@
                         </select>
                     </td>
                     <td><button class="btn btn-info" type="submit">Submit</button></td>
-                </form></tr>
+                </form>
+            </tr>
         </table>
         <h3 style="float:left  ">Freezer Dispatched</h3>
         <a href="{{route('freezer.create')}}"  style="margin-top: 22px"class="btn btn-info pull-right ">Dispatch freezer</a>
@@ -47,8 +50,8 @@
                     <td>{{$freezer->reference}}</td>
                     <td>{{$freezer->customer_id}}</td>
                     <td>{{$freezer->to_}}</td>
-                    <td>Freezer</td>
-                    <td>Transfer</td>
+                    <td>{{$freezer->type}}</td>
+                    <td>{{$freezer->status}}</td>
 
                     @foreach($counttransfer as $c)
                         @if($c->transfer_id==$freezer->id)
@@ -82,9 +85,9 @@
                     <td>{{$return->type}}</td>
                     <td>Return</td>
                     @foreach($countreturn as $c)
-                        @if($c->returns_id==$return->id)}}
-                        <td>{{$c->total}}</td>
-                    @endif
+                        @if($c->returns_id==$return->id)
+                            <td>{{$c->total}}</td>
+                        @endif
                     @endforeach
                     <td width="100px">
                         <a href="{{route('freezer.returnPrint',$return->id)}}" title="Print Return Form"><img src="{{asset('images/print.png')}}" class="icon" style="height: 20px;width: auto"></a>

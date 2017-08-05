@@ -39,8 +39,10 @@ class RegionController extends Controller
         $region= new Region();
         $region->name= $request->name;
         $region->type= $request->type;
+        $region->sub_name= $request->sub_name;
+        $region->account= $request->account;
         $region->category= $request->category;
-
+        $region->is_active= $request->is_active;
         $region->save();
         return redirect()->route('region.index')->withMessage('Inserted Successfully');
     }
@@ -77,10 +79,12 @@ class RegionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Region::find($id)->delete();
-        $region= new Region();
+
+        $region= Region::find($id);
         $region->name= $request->name;
-        $region->type = $request->type;
+        $region->type= $request->type;
+        $region->sub_name= $request->sub_name;
+        $region->account= $request->account;
         $region->category= $request->category;
         $region->is_active= $request->is_active;
 

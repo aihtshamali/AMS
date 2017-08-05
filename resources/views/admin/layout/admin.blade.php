@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Admin Area AMS</title>
+    <link rel="icon" href="{{asset('images/logo.jpg')}}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" media="screen" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('css/admin.css')}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 @include('admin.layout.includes.header')
@@ -42,6 +44,7 @@
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="{{asset('js/utility.js')}}"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
         $(".submenu > a").click(function (e) {
@@ -59,11 +62,13 @@
             }
         });
 
-                $('.multiselect-ui').multiselect({
-                    includeSelectAllOption: true
-                });
+
 
     });
+
+</script>
+<script type="text/javascript">
+    $(".js-example-basic-multiple").select2();
 </script>
 </body>
 </html>

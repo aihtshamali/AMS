@@ -17,4 +17,7 @@ class Returns extends Model
     public function getFaculty($id){
         return Faculty::find($id);
     }
+    public function getCustomer($id){
+        return Returns_Detail::where('returns_id',$id)->first();
+    }
 }

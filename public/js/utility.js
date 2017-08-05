@@ -2,8 +2,9 @@
  * Created by Administrator on 6/15/2017.
  */
 $(document).ready(function() {
-
-
+    $( function() {
+        $( "input[type=date]" ).datepicker();
+    } );
 
         var trigger = $('.hamburger'),
             overlay = $('.overlay'),
@@ -131,31 +132,56 @@ checkFreezerStock(ctrl,id,arr);
 
 function checkStock(obj,arr,id) { // arr is initalized from where the function is called (On the top of File)
 
-    var totalstock=0,gTotal=0;
-    for(i=0;i<arr.length;i++){
-        if(arr[i][0]==id){
-            totalstock+=arr[i][1];
-        }
-    }
-    $(".item").each(function() {
-        if ($(this).hasClass('item') && $(this).val() != '') {
+
+    var gTotal=0,quantity=0;
+    $("."+id+"item").each(function() {
+        if ($(this).val() != '') {
             gTotal += parseInt($(this).val().replace(/\,/g, ""));
         }
     });
-    if(gTotal>totalstock)
+    for(i=0;i<arr.length;i++)
     {
-        alert("Current value is greater than Available Stock");
-        document.getElementById("submit").disabled = true;
+        if(arr[i]['item_id']==id){
+            quantity=arr[i]['quantity'];
+        }
+    }
+    if(quantity<gTotal){
+     alert("Given value is greater than current stock");
+        $("."+obj+"qty."+id+"item").val(null);
+    }
 
-    }
-    else{
-        document.getElementById("submit").disabled=false;
-    }
+    // var totalstock=0,gTotal=0;
+    // for(i=0;i<arr.length;i++){
+    //     if(arr[i][0]==id){
+    //         totalstock+=arr[i][1];
+    //     }
+    // }
+    // $(".item").each(function() {
+    //     if ($(this).hasClass('item') && $(this).val() != '') {
+    //         gTotal += parseInt($(this).val().replace(/\,/g, ""));
+    //     }
+    // });
+    // if(gTotal>totalstock)
+    // {
+    //     alert("Current value is greater than Available Stock");
+    //     $("#"+id+"region").val=0;
+    //     document.getElementById("submit").disabled = true;
+    //
+    // }
+    // else{
+    //     document.getElementById("submit").disabled=false;
+    // }
 
 }
 
+// function appendCustomer(id) {
+//     // alert(id);
+//     var data='<datalist id="customer"> <option value="Internet Explorer"> <option value="Firefox"> <option value="Chrome"> <option value="Opera"> <option value="Safari"> </datalist>';
+//              ($("#"+id)).append(data);
+// }
 
 function  checkFreezerStock(obj,id,arr) {
+
     var item = $("#"+id+"type").find("option:selected").val(); //getting the item id
     var region=$("select#"+id+"region").find("option:selected").val(); // getting region id
 
@@ -163,36 +189,44 @@ function  checkFreezerStock(obj,id,arr) {
     if(region=="" && item!=""){
         alert("Enter Location First");
         document.getElementById("submit").disabled = true;
-        $("#"+id+"region").focus();
     }
     else if(region=="" && item=="")
         document.getElementById("submit").disabled = false;
-
     if(region!="" && item!="") {
-        document.getElementById("submit").disabled = false;
-        for (i = 0; i < arr.length; i++) {       // calculating the total stock of selected item in the selected region
-            if (arr[i][2] == region && arr[i][0] == item) {
-                totalstock += arr[i][1];
+
+        var counter = 0;
+
+        for (i = 0; i < arr.length; i++) {
+            if (arr[i]['item_id'] == item && arr[i]['region_id']==region) {
+                totalstock = arr[i]['quantity'];
             }
         }
-      var counter=0;
-        $(".freezer").each(function () {
 
-            if ($(this).val() != 0 && $(this).val() != '' &&
-                ($("#"+counter+"region").val()==region && $("#"+counter+"type").val()==item) ) {
+        if (totalstock == 0) {
+            $("."+id+"freezer").each(function () {
+                $(this).val("");
+            });
+            alert("Current Region has zero selected item");
+        }
+        else {
+
+            $(".freezer").each(function () {
+
+                if ($(this).val() != 0 && $(this).val() != '' &&
+                    ($("#" + counter + "region").val() == region && $("#" + counter + "type").val() == item)) {
                     gTotal += parseInt($(this).val().replace(/\,/g, ""));
-            }
-        });
+                }
+            });
+        }
     }
      if(gTotal>totalstock)
      {
-         alert("Current value is greater than Available Stock");
-         document.getElementById("submit").disabled = true;
+         $("."+id+"freezer").each(function () {
+             $(this).val("");
+         });
+         alert("Current value is greater than available stock "+gTotal);
+
     }
-    else if(totalstock==0 && item){
-         alert("Current Region has 0 selected Item");
-         document.getElementById("submit").disabled = true;
-     }
     else{
         document.getElementById("submit").disabled=false;
     }

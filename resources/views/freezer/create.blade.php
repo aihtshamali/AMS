@@ -15,7 +15,7 @@
 
     ?>
     <script type="text/javascript">
-        var transferarr = <?php echo json_encode($arr); ?>;
+        var transferarr = <?php echo json_encode($stock); ?>;
     </script>
 
 {{--{{dd($arr)}}--}}
@@ -46,7 +46,7 @@
                         </td>
                         <td>
                             <input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date"
-                                   id="" placeholder="Date">
+                                   id="" placeholder="Date" required>
                         </td>
                         <td></td>
 
@@ -65,7 +65,7 @@
                             </select>
                         </td>
                         <td><label for="customer">Delivery Address</label></td>
-                        <td><input type="text" class="form-control" name="delivery_address" data-width="100%"></td>
+                        <td><input type="text" class="form-control" name="delivery_address" data-width="100%" required></td>
                         <td></td><td></td><td></td>
                     </tr>
                     <tr>
@@ -78,10 +78,10 @@
                     <tr>
                         <td><label for="ftn_date">Date of Placement</label></td>
                         <td><input type="date" class="form-control datepicker" data-provide="datepicker"
-                                   name="placement_date" id="" placeholder="Date"></td>
+                                   name="placement_date" id="" placeholder="Date" required></td>
                         <td><label for="ftn_date">Purpose</label></td>
                         <td>
-                            <select name="purpose" class="selectpicker  show-tick" required>
+                            <select name="purpose" class="selectpicker " required>
                                 <option selected value="">--Choose Purpose--</option>
                                 <option value="new">New</option>
                                 <option value="expansion">Expansion</option>
@@ -105,17 +105,17 @@
                             <td><?=$i?></td>
                             <td>
                                     <select onchange="changeFreezerTotal(this,<?=$i?>,transferarr)" name="region[<?=$i?>]"
-                                        class="form-control form-control freezerlocation" data-live-search="true"
+                                        class="form-control <?=$i?>freezer freezerlocation" data-live-search="true"
                                         id="<?=$i?>region"
                                         data-width="100%">
                                     <option selected value="" style="color:rgb(0,0,0)" value="">Choose Location</option>
                                     @foreach($regions as $region)
-                                        <option type="text" value="{{$region->id}}">{{$region->name }}</option>
+                                        <option type="text" value="{{$region->id}}">{{$region->name }}/{{$region->sub_name}}</option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                <select name="type[<?=$i?>]" class=" form-control " onchange="checkFreezerStock(this,<?=$i?>,transferarr)" data-live-search="true"
+                                <select name="type[<?=$i?>]" class="<?=$i?>freezer form-control " onchange="checkFreezerStock(this,<?=$i?>,transferarr)" data-live-search="true"
                                         id="<?=$i?>type" data-width="100%">
                                     <option selected value="" style="color:rgb(0,0,0)">Choose Type</option>
                                     @foreach($items as $item)
@@ -126,11 +126,11 @@
                                 </select>
                             </td>
                             <td>
-                                <input name="model[<?=$i?>]" type="text" class="form-control" id="<?=$i?>model"
+                                <input name="model[<?=$i?>]" type="text" class="<?=$i?>freezer form-control" id="<?=$i?>model"
                                        placeholder="Enter Model...">
                             </td>
                             <td>
-                                <select name="condition[<?=$i?>]" class="selectpicker " data-live-search="true"
+                                <select name="condition[<?=$i?>]" class="<?=$i?>freezer selectpicker " data-live-search="true"
                                         id="<?=$i?>condition" data-width="100%">
                                     <option selected disabled hidden style="color:rgb(0,0,0)">Choose Condition</option>
                                     <option type="text" value="new">New</option>
@@ -138,11 +138,11 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="serial_no[<?=$i?>]"
+                                <input type="text" class="<?=$i?>freezer form-control" name="serial_no[<?=$i?>]"
                                        placeholder="Serial Number... ">
                             </td>
                             <td>
-                                <input type="number" id="<?=$i?>freezerqty" class="form-control <?=$i?>freezerqty freezer" name="qty[<?=$i?>]" readonly
+                                <input type="number" id="<?=$i?>freezerqty" class="<?=$i?>freezer form-control <?=$i?>freezerqty freezer" name="qty[<?=$i?>]" readonly
                                        style="background-color: white; ">
                             </td>
                         </tr>
@@ -184,9 +184,9 @@
                             </td>
                             <td style="padding: 0px;margin:0px">
                                 <select class="form-control" name="tso" id="" required>
+                                    <option value="" selected>--Select Faculty--</option>
                                     @foreach($faculty as $fac)
                                           @if($fac->type=="TSO"))
-                                            <option value="" selected>--Select Faculty--</option>
                                             <option value="{{$fac->id}}">{{$fac->name}}</option>
                                         @endif
                                     @endforeach

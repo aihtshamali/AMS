@@ -1,3 +1,9 @@
+<?php
+
+?>
+
+
+
 <div class="overlay"></div>
 
 <!-- Sidebar -->
@@ -8,6 +14,7 @@
                 <img src="{{asset('images/logo.jpg')}}"  class="img-rounded" style=" width:30%;" alt="">
             </a>
         </li>
+        {{--{{Auth::user()->hasPermission(Auth::id(),"dispatch.create")}}--}}
         <li>
             <a href="{{route('home')}}">Home</a>
         </li>
@@ -15,35 +22,76 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Customers <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li class="dropdown-header">Dropdown heading</li>
-                <li><a href="{{route('dispatch.create')}}">Create Dispatch</a></li>
-                <li><a href="{{route('returns.create')}}">Return Disptach</a></li>
-                <li><a href="{{route('dispatch.index')}}">All Disptaces</a></li>
+                @if(hasPermission("dispatch.create"))
+                    <li><a href="{{route('dispatch.create')}}">Create Dispatch</a></li>
+                @endif
+                @if(hasPermission("returns.create"))
+                <li><a href="{{route('returns.create')}}">Return Dispatch</a></li>
+                @endif
+                @if(hasPermission("dispatch.index"))
+                <li><a href="{{route('dispatch.index')}}">All Dispatches</a></li>
+                @endif
+                @if(hasPermission("returns.index"))
                 <li><a href="{{route('returns.index')}}">All Return</a></li>
+                @endif
             </ul>
         </li>
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">WareHouse <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li class="dropdown-header">Dropdown heading</li>
+                @if(hasPermission("transfer.create"))
                 <li><a href="{{route('transfer.create')}}">Make a Transfer</a></li>
+                @endif
+                @if(hasPermission("transfer.index"))
                 <li><a href="{{route('transfer.index')}}">All Transfer</a></li>
+                @endif
+                @if(hasPermission("transit"))
+                    <li><a href="{{route('transit')}}">Transit</a></li>
+                @endif
             </ul>
         </li>
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Purchase<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li class="dropdown-header">Dropdown heading</li>
+                @if(hasPermission("purchase.create"))
                 <li><a href="{{route('purchase.create')}}">Create Purchase</a></li>
+                @endif
+                @if(hasPermission("purchase.index"))
                 <li><a href="{{route('purchase.index')}}">Show Purchase</a></li>
+                @endif
             </ul>
         </li>
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Freezer <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li class="dropdown-header">Freezer - Menu</li>
+                @if(hasPermission("freezer.create"))
                 <li><a href="{{route('freezer.create')}}">Transfer Freezer</a></li>
+                @endif
+                @if(hasPermission("freezer.return"))
                 <li><a href="{{route('freezer.return')}}">Return Freezer</a></li>
+                @endif
+                @if(hasPermission("freezer.index"))
                 <li><a href="{{route('freezer.index')}}">Show All</a></li>
+                @endif
+                {{--                    <li><a href="{{route('returns.index')}}">All Return</a></li>--}}
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li class="dropdown-header">Reports - Menu</li>
+                @if(hasPermission("pdfview"))
+                <li><a href="{{route('reportsindex')}}">Download Report</a></li>
+                @endif
+                {{--@if(hasPermission("freezer.return"))--}}
+                {{--<li><a href="{{route('freezer.return')}}">Return Freezer</a></li>--}}
+                {{--@endif--}}
+                {{--@if(hasPermission("freezer.index"))--}}
+                {{--<li><a href="{{route('freezer.index')}}">Show All</a></li>--}}
+                {{--@endif--}}
                 {{--                    <li><a href="{{route('returns.index')}}">All Return</a></li>--}}
             </ul>
         </li>
@@ -68,18 +116,27 @@
                 {{ csrf_field() }}
             </form>
         </li>
+<li>
 
+</li>
     </ul>
 </nav>
 <!-- /#sidebar-wrapper -->
+@if(hasPermission("admin.index"))
+    <div class="pull-right" style="position: absolute;
+    top:20px;
+    right: 0;
 
+
+    z-index: 1;"><a href="{{route('admin.index')}}" class="btn btn-small " style="background-color: #bd2355;color:white;">Admin Dashboard</a></div>
+@endif
 <!-- Page Content -->
 <div id="page-content-wrapper">
+
     <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
         <span class="hamb-top"></span>
         <span class="hamb-middle"></span>
         <span class="hamb-bottom"></span>
     </button>
-
 
 </div>

@@ -16,6 +16,14 @@
             <input type="text" class="form-control" name="type" id="" value="{{$region->type}}">
         </div>
         <div class="form-group">
+        <label>Account:</label>
+        <input type="text" name="account" value={{$region->acccount}}>
+        </div>
+        <div class="form-group">
+        <label>Sub-Name:</label>
+        <input type="text" name="sub_name" value="{{$region->sub_name}}">
+        </div>
+        <div class="form-group">
             <label for="Category">Category</label>
             <select name="category" class="selectpicker" id="">
                 <option  value="{{$region->category}}" selected>{{$region->category}}</option>

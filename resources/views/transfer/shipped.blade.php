@@ -1,8 +1,12 @@
 @extends('layouts.sidenav')
 @section('content')
+    <script type="text/javascript">
+        var a = <?php echo json_encode($stock); ?>;
+    </script>
+
+
     <div class="half_body" style="">
         <h3>Transfer Shipped</h3>
-
 
         <form action="{{route('transfer.store')}}" method="post" >
             {{csrf_field()}}
@@ -31,7 +35,7 @@
                     <tr>
                         <td>  <label for="from_">From</label> </td>
                         <td>
-                            <input type="text" class="form-control" style="width:inherit" name="from_" id="" value="{{Auth::user()->region->name}}" readonly>
+                            <input type="text" class="form-control" style="width:220px;" name="from_" id="" value="{{Auth::user()->region->name}}/{{Auth::user()->region->sub_name}}" readonly>
                         </td>
                         <td>
                             <label for="region_id">TO</label>
@@ -40,7 +44,7 @@
                             <select name="region_id" class="form-control" required>
                                 <option selected value="" >--Select Region--</option>
                                 @foreach($regions as $region)
-                                    <option value="{{$region->id}}">{{$region->name}}</option>
+                                    <option value="{{$region->id}}">{{$region->name}}/{{$region->sub_name}}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -75,10 +79,10 @@
            <table class="table-responsive table">
                @foreach($useritems as $alloweditem)
                    @if($redund!=$alloweditem->item->item_group)
-                   <tr style="margin:0px;padding:0px">
-                       <td>
+                   <tr style="margin:0px;padding:0px;background-color: #bd2355;color:white;">
+                       <td colspan="6">
                            <?php $redund=$alloweditem->item->item_group?>
-                           <h3 style="margin:0px;padding:0px;color: #000;">{{$alloweditem->item->item_group}}</h3>
+                           <h3 style="margin:0px;padding:0px;">{{$alloweditem->item->item_group}}</h3>
                        </td>
                        <td></td>
                    </tr>
@@ -86,7 +90,7 @@
                    <tr>
                        <td><label for="">{{$alloweditem->item->display_name}}</label></td>
                        <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
-                       <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty" onchange="setTotal();"></td>
+                       <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty <?=$i?>qty <?=$alloweditem->id?>item " onchange="checkStock(<?=$i?>,a,{{$alloweditem->id}})" onblur="setTotal();"></td>
                    </tr>
                     <?php $i++?>
                @endforeach

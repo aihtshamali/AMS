@@ -22,7 +22,13 @@
                     <a type="button" class="btn btn-info btn-sm" href="{{route('useritem.edit',$user->id)}}">
                         Show & Edit Allowed  Items
                     </a>
-
+                    <span class="pull-right">
+                    <form action="{{route('deleteuser',$user->id)}}" method="post">
+                        {{csrf_field()}}
+                        {{method_field('DELETE')}}
+                        <input type="submit" class="btn btn-sm btn-danger" value="X">
+                    </form>
+                    </span>
 
                 </td>
             </tr>

@@ -8,6 +8,61 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 
+div.top-head{
+    background-color:#bd2355 ;
+    opacity: 0.8;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+}
+
+.footer-bottom {
+    background-color: #1B1D4D;
+    min-height: 30px;
+    width: 100%;
+}
+.copyright {
+    color: white;
+    /*line-height: 30px;*/
+    min-height: 30px;
+    padding-top: 7px;
+    font-weight: bold;
+}
+.design {
+    color: white;
+    line-height: 30px;
+    /*min-height: 30px;*/
+    padding: 7px 0;
+    text-align: right;
+}
+.design a {
+    color: white;
+}
+
+
+
+
+
+
+
+div.transbox {
+    position: relative;
+    top:-220px;
+    -ms-transform: rotate(7deg); /* IE 9 */
+    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+    transform: rotate(7deg);
+    /*margin: 30px;*/
+    background-color: #ffffff;
+    border: 1px solid black;
+    opacity: 0.6;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+}
+
+div.transbox h2{
+    margin: 5%;
+    font-weight: bold;
+    color: #000000;
+}
+
+
 
 .backgroundimage{
     background: url(../images/loginbg.jpg) no-repeat center center fixed;
@@ -37,7 +92,9 @@
     overflow-y:visible;
     /*width:1000px;*/
 }
-
+th label{
+    width: 150px;
+}
 .table-wrapper table tr td {
     background-color: #1e2253;;
 }
@@ -53,7 +110,8 @@ header{
 .label,
 sub,
 sup {
-    vertical-align: baseline
+    vertical-align: baseline;
+
 }
 hr,
 img {
@@ -2426,7 +2484,7 @@ caption {
 .table>tfoot>tr>th,
 .table>thead>tr>td,
 .table>thead>tr>th {
-    padding: 8px;
+    padding: 5px;
     line-height: 1.6;
     /*vertical-align: top;*/
     border-top: 1px solid #ddd
@@ -5044,7 +5102,9 @@ a.badge:hover {
 }
 .thumbnail .caption {
     padding: 9px;
-    color: #636b6f
+    color: #636b6f;
+    font-weight:bold;
+
 }
 a.thumbnail.active,
 a.thumbnail:focus,
