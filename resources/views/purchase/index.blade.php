@@ -6,7 +6,9 @@
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
             @endif
         </span>
-        <h3 style="float:left  ">Purchases</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">AMS =>All Purchases List</h3>
         <a href="{{route('purchase.create')}}"  style="margin-top: 22px"class="btn btn-info pull-right ">Create Purchase</a>
 
         <table class="table table-striped table-responsive table-hover">
@@ -26,8 +28,8 @@
                     <td>{{$purchase->doc_no}}</td>
                     <td>{{$purchase->cdate}}</td>
                     <td>{{$purchase->reference}}</td>
-                    <td>{{$purchase->driver->name}}</td>
-                    <td>{{$purchase->region->name}}</td>
+                    <td>{{getDriver($purchase->driver_id)->name}}</td>
+                    <td>{{getRegion($purchase->region_id)->name}}/{{getRegion($purchase->region_id)->sub_name}}</td>
                     <td>
                         <a href="{{route('purchase.edit',$purchase->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
                     </td>
@@ -36,7 +38,7 @@
                         <form action="{{route('purchase.destroy',$purchase->id)}}" method="post">
                             {{csrf_field()}}
                             {{method_field('DELETE')}}
-                            <input type="submit" class="btn btn-sm btn-danger" value="Delete">
+                            <input type="submit" class="btn btn-sm btn-danger" value="Cancel">
                         </form>
                     </td>
                 </tr>

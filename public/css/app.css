@@ -8,6 +8,13 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 
+ul.dropdown-menu li a{
+    margin-left: 20px;
+}
+
+input[type=text]{
+    text-transform: capitalize;
+}
 div.top-head{
     background-color:#bd2355 ;
     opacity: 0.8;
@@ -1204,10 +1211,10 @@ html {
     -webkit-tap-highlight-color: transparent
 }
 body {
-    font-family: Raleway, sans-serif;
-    font-size: 14px;
+    font-family:   Arial ,Calibri ;
+    font-size: 12px;
     line-height: 1.6;
-    color: #636b6f
+    color: #2f2b2b
 }
 button,
 input,

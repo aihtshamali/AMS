@@ -28,6 +28,6 @@ class Transfer extends Model
         return count(Transfers_Detail::where('transfer_id',$id)->get());
     }
     public function getRegion($id){
-        return Transfers_Detail::where('transfer_id',$id)->first();
+        return Transfers_Detail::where('transfer_id','=',$id)->first();
     }
 }

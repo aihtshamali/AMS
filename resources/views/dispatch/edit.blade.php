@@ -39,7 +39,9 @@
     </script>
 
     <div class="">
-        <h3>Edit Dispatch</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Edit Dispatch</h3>
 
 
         <form action="{{route('dispatch.update',$dispatch->id)}}" method="post" >
@@ -60,7 +62,8 @@
                         </td>
                         <td>
                             <label for="description">Date</label>    </td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$dispatch->cdate}}"> </td>
+                        <td>
+                            <input type="text" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$dispatch->cdate}}"> </td>
 
                     </tr>
                     <tr>
@@ -114,9 +117,9 @@
                         @for($i=0; $i<10 ;$i++)
                             <td class="col-xs-3"  >
                                 @if($i<(count($dispatchdetails)))
-                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control" value="{{$dispatchdetails[$row][$col]}}">
+                                    <input list="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" value="{{getCustomer($dispatchdetails[$row][$col])->account_name}}">
                                 @else
-                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control" name="customer[<?=$i?>]">
+                                    <input list="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" name="customer[<?=$i?>]">
                                 @endif
                                 {{--<select name="customer[<=$i?>]" style="height: 30px;width: 200px">--}}
                                     {{--<option></option>--}}
@@ -154,12 +157,13 @@
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                             <?php $col++; ?>
                             <tr>
-                                <th >
-                                    <label  for="name">{{$item->display_name}}</label>
+                                <th style="background-color: #{{$item->color}};border-right: 1px white solid">
+                                    <label style="font-size:12px; display: inline"  for="name">{{$item->display_name}}</label>
+                                    <span for="" class="totalstock{{$item->id}}" style="color:white;font-weight: bold"></span>
                                 </th>
                                 <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}">
                                 @for($i=0; $i<10 ;$i++)
-                                    <td>
+                                    <td style="background-color: #{{$item->color}};">
                                         @if($i<count($dispatchdetails))
                                             @if($dispatchdetails[$row][$col]==$item->id)
                                                 <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$dispatchdetails[$row][$col+1]}}">
@@ -176,11 +180,11 @@
 
                     @endforeach
                     <tr>
-                        <th >
+                        <th style="background-color: black;border-right: 1px white solid">
                             <label for="name">Total</label>
                         </th>
                         @for($i =0; $i<10 ;$i++)
-                            <td>
+                            <td style="background-color: black">
                                 <input  type="number" class="form-control" min="0" name="total[<?=$i?>]" id="<?=$i?>qtytotal" readonly placeholder="Total...">
                             </td>
                         @endfor
@@ -193,4 +197,51 @@
 
         </form>
     </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script>
+        var searchCusts = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"' . $customer->account_name . '"';
+                else
+                    echo '"' . $customer->account_name . '",';
+                $cnt++;
+            } ?>
+
+        ];
+        var searchCustomer = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"'.$customer->account_no . '"';
+                else
+                    echo '"'.$customer->account_no . '",';
+                $cnt++;
+            } ?>
+        ];
+
+        $(function() {
+            $(".custs").autocomplete({
+                source: searchCusts
+            });
+
+        });
+        function fillCustCode(id,colNo){
+            var customer_name=$("#"+id).val();
+            console.log(searchCusts[0]);
+            for (i = 0; i < searchCusts.length; i++) {
+                if(customer_name==searchCusts[i])
+                {
+                    $(".custsCode"+colNo).val(searchCustomer[i]);
+                    break;
+                }
+                else
+                {
+                    $(".custsCode"+colNo).val("");
+                }
+            }
+        }
+    </script>
 @endsection

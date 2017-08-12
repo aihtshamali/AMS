@@ -1,7 +1,9 @@
 @extends('layouts.sidenav')
 @section('content')
     <div class="container">
-        <h3><Return></Return> Freezer</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Return Freezer</h3>
 
 
         <form action="{{route('freezer.store')}}" method="post" >
@@ -23,7 +25,7 @@
                             <label for="ftn_date">FTN Date</label>
                         </td>
                         <td>
-                            <input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="Date">
+                            <input  class="form-control datepicker" data-provide="datepicker" name="ftn_date" id="" placeholder="dd-mm-yyyy">
                         </td>
 
                     </tr>

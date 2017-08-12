@@ -26,10 +26,11 @@ class ReturnController extends Controller
 
 //        $returns=Returns::paginate(5);
 //        $returns = Returns::paginate(8);
-        $returns = DB::table('returns')->select('returns.*' , 'return_details.customer_id','return_details.type')
+        $returns = DB::table('returns')->select('returns.*' , 'return_details.customer_id',DB::raw('sum(return_details.quantity) as qty') ,'return_details.type')
             ->leftJoin('return_details', 'return_details.returns_id', '=', 'returns.id')
             ->distinct()
-            ->where('type', 'Crate')->paginate(8);
+            ->where('type', 'Crate')->groupBy('customer_id')->get();
+//        dd($returns);
         return view('returns.index',compact('returns'));
     }
 
@@ -58,7 +59,49 @@ class ReturnController extends Controller
         $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $vehicles=Vehicle::where('region_id',Auth::user()->region_id)->get();
         $items=Item::all();
-        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
         return view('returns.create',compact(['stock','drivers','customers','vehicles','doc_no','items']));
     }
 
@@ -90,7 +133,8 @@ class ReturnController extends Controller
                 if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
 
                     $return_detail = new Returns_Detail();
-                    $return_detail->customer()->associate($cust);
+                    $custom=Customer::where('account_name',$cust)->first();
+                    $return_detail->customer()->associate($custom->id);
                     $return_detail->quantity = $it[$request->getid[$i]];
                     $return_detail->item()->associate(Item::find($request->getid[$i]));
                     $return_detail->sales_invoice = $request->sales_invoice[$counter];
@@ -144,7 +188,56 @@ class ReturnController extends Controller
      */
     public function show($id)
     {
-        //
+        $return=Returns::find($id);
+        $items=Item::all();
+        $customers= Customer::all();
+        $drivers=Driver::where('region_id',$return->region_to)->get();
+        $vehicles=Vehicle::where('region_id',$return->region_to)->get();
+        $return_detail=Returns_Detail::where('returns_id',$return->id)->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
+        return view('returns.show',compact(['stock','items','customers','drivers','vehicles','return_detail','return']));
     }
 
     /**
@@ -161,7 +254,49 @@ class ReturnController extends Controller
         $drivers=Driver::where('region_id',$return->region_to)->get();
         $vehicles=Vehicle::where('region_id',$return->region_to)->get();
         $return_detail=Returns_Detail::where('returns_id',$return->id)->get();
-        $stock=Stock::where('region_id',$return->region_to)->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
         return view('returns.edit',compact(['stock','items','customers','drivers','vehicles','return_detail','return']));
     }
 
@@ -220,7 +355,8 @@ class ReturnController extends Controller
             for ($i = 0; $i < count($request->getid); $i++) {
                 if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
                     $return_detail = new Returns_Detail();
-                    $return_detail->customer()->associate($cust);
+                    $custom=Customer::where('account_name',$cust)->first();
+                    $return_detail->customer()->associate($custom->id);
                     $return_detail->quantity = $it[$request->getid[$i]];
                     $return_detail->item()->associate(Item::find($request->getid[$i]));
                     $return_detail->sales_invoice = $request->sales_invoice[$counter];

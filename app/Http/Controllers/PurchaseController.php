@@ -6,10 +6,12 @@ use App\Driver;
 use App\Purchase_Detail;
 use App\Region;
 use App\Stock;
+use App\UserItem;
 use App\Vehicle;
 use Illuminate\Http\Request;
 use App\Item;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseController extends Controller
 {
@@ -20,7 +22,16 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $purchases=Purchase::paginate(5);
+        $purchase=Purchase::all();
+        $purchases=DB::select('SELECT DISTINCT purchases.* FROM purchases
+inner join (
+select purchases_detail.* FROM purchases_detail
+        INNER JOIN(
+        SELECT user_items.* from user_items
+        WHERE user_items.user_id='.Auth::user()->id.'
+        )td on(purchases_detail.item_id=td.item_id)
+    ) v on (v.purchase_id=purchases.id)
+  ');
         return view('purchase.index',compact('purchases'));
     }
 
@@ -46,7 +57,18 @@ class PurchaseController extends Controller
         $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
         $regions= Region::all();
-        $items= Item::all();
+
+        $allowed=UserItem::where('user_id',Auth::user()->id)->get();
+        $items= DB::select('
+        SELECT items.* from items
+INNER JOIN(
+SELECT user_items.user_id,user_items.item_id as item FROM
+    user_items
+    where(user_items.user_id='.Auth::user()->id.')
+)td ON (td.item=items.id)
+        ');
+
+
         return view('purchase.create',compact(['drivers','vehicles','doc_no','regions','items']));
     }
 
@@ -63,14 +85,15 @@ class PurchaseController extends Controller
         $purchase->doc_no=$request->doc_no;
         $purchase->reference=$request->reference;
         $purchase->driver()->associate($request->driver);
-        $region= Region::where('name',$request->region)->first();
+        $region_name = explode('/', $request->region);
+        $region = Region::where('name', $region_name)->first();
         $purchase->region()->associate($region);
         $purchase->vehicle()->associate($request->vehicle);
         $purchase->cdate=$request->ftn_date;
         $purchase->user()->associate(Auth::user());
         $purchase->save();
 
-        for($i=0;$i<count(Item::all());$i++){
+        for($i=0;$i<count($request->item);$i++){
                 $it=$request->item[$i];
                 if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
                     $purchase_detail = new Purchase_Detail();
@@ -110,7 +133,19 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        //
+        $purchases=Purchase_Detail::where('purchase_id',$id)->get();
+        $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
+        $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
+        $regions= Region::all();
+        $items= DB::select('
+        SELECT items.* from items
+INNER JOIN(
+SELECT user_items.user_id,user_items.item_id as item FROM
+    user_items
+    where(user_items.user_id='.Auth::user()->id.')
+)td ON (td.item=items.id)
+        ');
+        return view('purchase.show',compact(['drivers','vehicles','items','regions','purchases']));
     }
 
     /**
@@ -125,7 +160,14 @@ class PurchaseController extends Controller
         $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
         $regions= Region::all();
-        $items= Item::all();
+        $items= DB::select('
+        SELECT items.* from items
+INNER JOIN(
+SELECT user_items.user_id,user_items.item_id as item FROM
+    user_items
+    where(user_items.user_id='.Auth::user()->id.')
+)td ON (td.item=items.id)
+        ');
         return view('purchase.edit',compact(['drivers','vehicles','items','regions','purchases']));
     }
 

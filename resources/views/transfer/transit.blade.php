@@ -6,7 +6,7 @@
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
             @endif
         </span>
-        <h3 style="float:left  ">Transfer's Transit</h3>
+        <h3 style="float:left  ">Transfer Transit</h3>
 
 
         <table class="table table-striped table-responsive table-hover">
@@ -22,27 +22,17 @@
                 <th></th>
 
             </tr>
-
-    {{--{{dd($transfers[0]->status=="Pending" && $transfers[0] ->transfer->region_id==Auth::user()->region_id)}}--}}
+            {{--{{dd($transfers)}}--}}
+    {{--{{dd($transfers[0]->status=="Pending" || $transfers[0] ->transfer->region_id==Auth::user()->region_id)}}--}}
             @forelse($transfers as $transfer)
-                @if($transfer->getRegion($transfer->id)->region_id==Auth::user()->region_id || $transfer->from_==Auth::user()->region->name)
+                @if($transfer->getRegion($transfer->id)->region_id==Auth::user()->region_id || $transfer->from_==Auth::user()->region->id)
                 <tr>
-                    {{--{{dd($transfers)}}--}}
                     <td>{{$transfer->ftn_no}}</td>
                     <td>{{$transfer->ftn_date}}</td>
                     <td>{{$transfer->reference}}</td>
-                    @if(!empty($transfer->driver_id))
-                        <td>{{$transfer->driver_id}}</td>
-                    @else
-                        <td>N/A</td>
-                    @endif
-
-                    @if(!empty($transfer->to_))
-                        <td>{{$transfer->to_}}</td>
-                    @else
-                        <td>{{$transfer->from_}}</td>
-                    @endif
-                    <td>{{$transfer->getRegion($transfer->id)->region->name}}</td>
+                    <td>{{$transfer->driver->name}}</td>
+                    <td>{{getRegion($transfer->from_)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
+                    <td>{{$transfer->getRegion($transfer->id)->region->name}}/{{$transfer->getRegion($transfer->id)->region->sub_name}}</td>
                     <td>{{$transfer->status}}</td>
                     {{--<td>--}}
                         {{--<a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>--}}
@@ -56,12 +46,12 @@
                         </form>
                     </td>
                     @endif
-                    @if($transfer->from_==Auth::user()->region->name)
+                    @if($transfer->from_==Auth::user()->region->id)
                     <td>
                         <form action="{{route('transfer.destroy',$transfer->id)}}" method="post">
                             {{csrf_field()}}
                             {{method_field('DELETE')}}
-                            <input type="submit" class="btn btn-sm btn-danger" value="Delete">
+                            <input type="submit" class="btn btn-sm btn-danger" value="Cancel">
                         </form>
                     </td>
                         @endif

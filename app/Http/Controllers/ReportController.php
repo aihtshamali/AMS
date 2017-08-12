@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Item;
+use App\Region;
 use Illuminate\Http\Request;
 use DB;
 use PDF;
@@ -30,6 +31,7 @@ class ReportController extends Controller
     public function index(){
         $items=Item::all();
         $transfers = DB::table("transfer_details")->get();
-        return view('reports.index',compact(['items','transfers']));
+        $regions=Region::all();
+        return view('reports.index',compact(['regions','transfers']));
     }
 }

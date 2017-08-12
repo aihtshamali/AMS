@@ -18,50 +18,22 @@
 //                }
 //        }
 //
-$arr[][] = null;
-$row = 0;$col = 0;$row = 0;$check=0;
-foreach ($stockpurchase as $p) {
-       $j=0;
-        for ($k = 0; $k < count($stocktransfer); $k++) {
-//            echo ($stocktransfer. '<br>');
-            if ($p->P_region_id == $stocktransfer{$k}->T_from_region  && $p->P_item_id==$stocktransfer{$k}->T_item_id) {
-                $arr[$row][$col] = $p->P_region_id;
-                $col++;
-                $arr[$row][$col] = $p->P_item_id;
-                $col++;
-                $arr[$row][$col] = ($p->P_quantity - $stocktransfer{$k}->T_quantity);
-                $col++;
-                $row++;
-                $check=1;
-            }
 
+//}
 
-        }
-        if($check==0){
-
-            $arr[$row][$col] = $p->P_region_id;
-            $col++;
-            $arr[$row][$col] = $p->P_item_id;
-            $col++;
-            $arr[$row][$col] = $p->P_quantity;
-            $col++;
-            $row++;
-        }
-        $j++;
-
-}
-
-$va=$stockpurchase->toArray();
-print_r(count($stocktransfer));
+//$va=$stockpurchase->toArray();
+//print_r(count($stocktransfer));
 ?>
 <script type="text/javascript">
-    var a = <?php echo json_encode($stockpurchase); ?>;
+    var a = <?php echo json_encode($stock); ?>;
     var customer = <?php echo json_encode($customers);?>;
 </script>
-{{dd($arr)}}
+{{--{{dd($arr)}}--}}
 
     <div class="">
-        <h3>Create Dispatch</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Create Dispatch</h3>
 
         <form action="{{route('dispatch.store')}}" method="post" >
             {{csrf_field()}}
@@ -79,9 +51,12 @@ print_r(count($stocktransfer));
                         <input type="text" class="form-control" name="reference" id="" placeholder="Reference Number.." required>
                     </td>
                     <td>
-                    <label for="description">Date</label>    </td>
-                    <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" placeholder="Date" required> </td>
-
+                        <label for="description">Date</label>
+                    </td>
+                    <td >
+                      {{--<input type="text" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" placeholder="Date" required>--}}
+                        <input type="text" name="cdate" class="form-control datepicker" placeholder="dd-mm-yyyy" required/>
+                    </td>
                 </tr>
                 <tr>
                     <td>  <label for="from_">From</label> </td>
@@ -115,30 +90,29 @@ print_r(count($stocktransfer));
             </div>
 
 
-            {{--<td class="col-xs-3 " style="border: none; padding:5px 0 0 5px;">--}}
-            {{--<select name="customer[<=$i?>]" class="form-control" style="height: 30px;width: 200px">--}}
-            {{--<option value="">--Select Customer--</option>--}}
-            {{--@foreach($customers as $customer)--}}
-            {{--<option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
-            {{--@endforeach--}}
-            {{--</select>--}}
-            {{--</td>--}}
-            <datalist id="customer">
-                @foreach($customers as $customer)
-                    <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                @endforeach
-            </datalist>
         <div class="table-wrapper row customer" style="margin-right: 0px">
             <table class="table">
              <tr>
+
                  <th>
                      <label class="" style="font-size:12px;" for="name">Customer Information</label>
                  </th>
                  @for($i =0; $i<10 ;$i++)
                     <td class="col-xs-3 " style=" padding: 0 0 0 5px; height: 30px;width: 200px">
-                        <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  id="<?=$i?>customer" placeholder="Enter Customer.." class="form-control" name="customer[<?=$i?>]" autocomplete="on">
+                        <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  id="<?=$i?>customer" placeholder="Enter Customer.." class="form-control custs" name=" customer[<?=$i?>]" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" autocomplete="on">
                     </td>
 
+                 @endfor
+             </tr>
+             <tr>
+                 <th>
+                     <label class="" style="font-size:12px;" for="name">Customer Code</label>
+
+                 </th>
+                 @for($i =0; $i<10 ;$i++)
+                    <td class="col-xs-3 " style=" padding: 0 0 0 5px; height: 30px;width: 200px">
+                        <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"   placeholder="Customer Code..." class="form-control custsCode<?=$i?>" name=" customer_code[<?=$i?>]" readonly>
+                    </td>
                  @endfor
              </tr>
                 <tr>
@@ -154,13 +128,14 @@ print_r(count($stocktransfer));
                 <?php $j=0; ?>
                 @foreach($items as $item)
                     @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
-                    <tr>
-                        <th >
-                            <label style="font-size:12px;"  for="name">{{$item->display_name}}</label>
+                    <tr >
+                        <th style="background-color: #{{$item->color}};border-right: 1px white solid">
+                            <label style="font-size:12px; display: inline"  for="name">{{$item->display_name}}</label>
+                            <span for="" class="totalstock{{$item->id}}" style="color:white;font-weight: bold"></span>
                         </th>
                         <input type="hidden"  name="getid[<?=$j++?>]" value="{{$item->id}}"> </input>
                         @for($i=0; $i<10 ;$i++)
-                            <td style="border: none; padding:5px 0 0 5px;">
+                            <td style="border: none; padding:5px 0 0 5px;background-color: #{{$item->color}}">
                                 <input type="number"  onchange="checkStock(<?=$i?>,a,{{$item->id}})" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                             </td>
                         @endfor
@@ -168,11 +143,11 @@ print_r(count($stocktransfer));
                     @endif
                 @endforeach
                 <tr>
-                    <th style="padding:0 0 0 10px;">
+                    <th style="padding:0 0 0 10px; background-color: black;border-right: 1px white solid">
                         <label style="font-size:12px;" for="name">Total</label>
                     </th>
                     @for($i =0; $i<10 ;$i++)
-                        <td>
+                        <td style="background-color: black;">
                             <input  type="number" class="form-control" min="0" name="total[<?=$i?>]" id="<?=$i?>qtytotal" readonly placeholder="Total...">
                         </td>
                     @endfor
@@ -186,7 +161,51 @@ print_r(count($stocktransfer));
 
         </form>
     </div>
-    <script >
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
+    <script>
+        var searchCusts = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"' . $customer->account_name . '"';
+                else
+                    echo '"' . $customer->account_name . '",';
+                $cnt++;
+            } ?>
+
+        ];
+        var searchCustomer = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"'.$customer->account_no . '"';
+                else
+                    echo '"'.$customer->account_no . '",';
+                $cnt++;
+            } ?>
+        ];
+
+        $(function() {
+            $(".custs").autocomplete({
+                source: searchCusts
+            });
+
+        });
+        function fillCustCode(id,colNo){
+            var customer_name=$("#"+id).val();
+            console.log(searchCusts[0]);
+            for (i = 0; i < searchCusts.length; i++) {
+                if(customer_name==searchCusts[i])
+                {
+                    $(".custsCode"+colNo).val(searchCustomer[i]);
+                    break;
+                }
+                else
+                {
+                    $(".custsCode"+colNo).val("");
+                }
+            }
+        }
     </script>
 @endsection

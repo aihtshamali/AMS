@@ -1,7 +1,9 @@
 @extends('layouts.sidenav')
 @section('content')
     <div class="half_body" style="">
-        <h3>Edit Shipped</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Edit Shipped</h3>
 
 
         <form action="{{route('transfer.update',$transfers[0]->transfer->id)}}" method="post">
@@ -18,7 +20,7 @@
 
                         <td><label for="name">Date</label></td>
                         <td>
-                            <input type="date" class="form-control" name="ftn_date" value="{{$transfers[0]->transfer->ftn_date}}">
+                            <input class="form-control datepicker" placeholder="dd-mm-yyyy" name="ftn_date" value="{{$transfers[0]->transfer->ftn_date}}">
                         </td>
 
 

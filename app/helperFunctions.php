@@ -18,11 +18,16 @@
     return false;
 }
 
-function getRegionName($id){
-     return \App\Region::find($id)->name;
+//function getRegionName($id){
+//     return \App\Region::find($id)->name;
+//}
+function getDriver($id){
+     return \App\Driver::find($id);
 }
 function getCustomer($id){
-    return \App\Customer::find($id)->account_name;
+    return \App\Customer::find($id);
 }
-
+function getRegion($id){
+    return \App\Region::find($id);
+}
 ?>

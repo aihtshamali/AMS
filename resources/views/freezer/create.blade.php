@@ -23,7 +23,9 @@
 
     <div class="" style="">
         <div  >
-            <h3>Dispatch Freezer</h3>
+            <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Dispatch Freezer</h3>
         <form action="{{route('freezer.store')}}" method="post">
             {{csrf_field()}}
             <div classs="dispatchHeader">

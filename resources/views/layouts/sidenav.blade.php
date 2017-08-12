@@ -453,7 +453,7 @@
         @include('includes.sidenav')
 
         <div class="col-md-offset-1 col-md-11">
-            <div align="center" style="position: relative; top:-20px;color: #a0114e"><h3><strong>Asset Management System (BigBird Group)</strong></h3></div>
+            {{--<div align="center" style="position: relative; top:-20px;color: #a0114e;margin: 15px 0 0 0;"><h2><strong>Asset Management System </strong></h2></div>--}}
             @yield('content')
         </div>
 
@@ -464,8 +464,27 @@
 </body>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/utility.js') }}"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script   src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"   integrity="sha256-xI/qyl9vpwWFOXz7+x/9WkG5j/SVnSw21viy8fWwbeE="   crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<script type="text/javascript">
+    $(function(){
+        $( ".datepicker" ).datepicker({
+            dateFormat: 'dd-mm-yy'
+        });
+//Pass the user selected date format
+        $( ".format" ).change(function() {
+            $( ".datepicker" ).datepicker( "option", "dateFormat", $(this).val() );
+        });
+    });
+
+
+</script>
+
+
 {{--<script>--}}
 {{--function openNav() {--}}
 {{--document.getElementById("mySidenav").style.width = "200px";--}}

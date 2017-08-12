@@ -25,10 +25,8 @@
         <div  >
             <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">Dispatch Freezer</h3>
-            <form action="{{route('freezer.update',$freezer[0]->transfer->id)}}" method="post">
-                {{ method_field('PUT') }}
-                {{csrf_field()}}
+    font-weight: bold ">AMS=>Show Freezer</h3>
+
                 <div class="dispatchHeader">
                     <table class="table-responsive table table-sm">
                         <tr>
@@ -49,7 +47,7 @@
                             </td>
                             <td>
                                 <input  class="form-control datepicker" data-provide="datepicker" name="ftn_date"
-                                       id="" value="{{$freezer[0]->transfer->ftn_date}}" required>
+                                        id="" value="{{$freezer[0]->transfer->ftn_date}}" required>
                             </td>
                             <td></td>
 
@@ -63,11 +61,11 @@
                                     <option selected value="">Select Customer</option>
                                     @foreach($customers as $customer)
                                         @if($freezer[0]->transfer->customer_id==$customer->id)
-                                        <option type="text" value="{{$customer->id}}" selected>{{$customer->account_name }}
-                                            / {{$customer-> account_no}}</option>
+                                            <option type="text" value="{{$customer->id}}" selected>{{$customer->account_name }}
+                                                / {{$customer-> account_no}}</option>
                                         @else
-                                        <option type="text" value="{{$customer->id}}">{{$customer->account_name }}
-                                            / {{$customer-> account_no}}</option>
+                                            <option type="text" value="{{$customer->id}}">{{$customer->account_name }}
+                                                / {{$customer-> account_no}}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -118,8 +116,8 @@
                                             data-width="100%">
                                         <option  value="" style="color:rgb(0,0,0)" value="">Choose Location</option>
                                         @foreach($regions as $region)
-                                        @if($i<count($freezer)&& $freezer[$i]->region_id==$region->id)
-                                            <option type="text" value="{{$region->id}}" selected>{{$region->name }}/{{$region->sub_name}}</option>
+                                            @if($i<count($freezer)&& $freezer[$i]->region_id==$region->id)
+                                                <option type="text" value="{{$region->id}}" selected>{{$region->name }}/{{$region->sub_name}}</option>
                                             @else
                                                 <option type="text" value="{{$region->id}}">{{$region->name }}/{{$region->sub_name}}</option>
                                             @endif
@@ -132,9 +130,9 @@
                                         <option selected value="" style="color:rgb(0,0,0)">Choose Type</option>
                                         @foreach($items as $item)
                                             @if($i<count($freezer)&& $freezer[$i]->item_id==$item->id)
-                                            <option type="text" value="{{$item->id}}" selected>{{$item->display_name}}</option>
+                                                <option type="text" value="{{$item->id}}" selected>{{$item->display_name}}</option>
                                             @else
-                                            <option type="text" value="{{$item->id}}">{{$item->display_name}}</option>
+                                                <option type="text" value="{{$item->id}}">{{$item->display_name}}</option>
                                             @endif
                                         @endforeach
 
@@ -143,12 +141,12 @@
                                 </td>
                                 <td>
                                     @if($i<count($freezer))
-                                    <input name="model[<?=$i?>]" type="text" class="<?=$i?>freezer form-control" id="<?=$i?>model"
-                                           value="{{$freezer[$i]->fr_model}}">
-                                        @else
                                         <input name="model[<?=$i?>]" type="text" class="<?=$i?>freezer form-control" id="<?=$i?>model"
-                                           placeholder="Enter model..">
-                                        @endif
+                                               value="{{$freezer[$i]->fr_model}}">
+                                    @else
+                                        <input name="model[<?=$i?>]" type="text" class="<?=$i?>freezer form-control" id="<?=$i?>model"
+                                               placeholder="Enter model..">
+                                    @endif
                                 </td>
                                 <td>
                                     <select name="condition[<?=$i?>]" class="<?=$i?>freezer selectpicker " data-live-search="true"
@@ -160,12 +158,12 @@
                                 </td>
                                 <td>
                                     @if($i<count($freezer))
-                                    <input type="text" class="<?=$i?>freezer form-control" name="serial_no[<?=$i?>]"
-                                           value="{{$freezer[$i]->serialNumber}}">
-                                        @else
                                         <input type="text" class="<?=$i?>freezer form-control" name="serial_no[<?=$i?>]"
-                                           placeholder="Serial Number..">
-                                        @endif
+                                               value="{{$freezer[$i]->serialNumber}}">
+                                    @else
+                                        <input type="text" class="<?=$i?>freezer form-control" name="serial_no[<?=$i?>]"
+                                               placeholder="Serial Number..">
+                                    @endif
                                 </td>
                                 <td>
                                     <input type="number" id="<?=$i?>freezerqty" class="<?=$i?>freezer form-control <?=$i?>freezerqty freezer" name="qty[<?=$i?>]" readonly
@@ -221,10 +219,7 @@
                         </tr>
                     </table>
                 </div>
-                <button type="submit" style="position: relative;left: 0px;" class=" pull-right btn btn-md btn-info" id="submit" name="submit">Save Data</button>
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-            </form>
         </div>
     </div>
 @endsection

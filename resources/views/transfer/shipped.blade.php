@@ -6,7 +6,9 @@
 
 
     <div class="half_body" style="">
-        <h3>Transfer Shipped</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Transfer Shipped</h3>
 
         <form action="{{route('transfer.store')}}" method="post" >
             {{csrf_field()}}
@@ -20,7 +22,7 @@
 
                         <td>  <label for="name">Date</label> </td>
                         <td>
-                            <input type="date" class="form-control" name="ftn_date" required>
+                            <input  style="width:200px" class="form-control datepicker" placeholder="dd-mm-yyyy" name="ftn_date" required>
                         </td>
 
 
@@ -88,7 +90,10 @@
                    </tr>
                    @endif
                    <tr>
-                       <td><label for="">{{$alloweditem->item->display_name}}</label></td>
+                       <td><label for="">{{$alloweditem->item->display_name}}</label>
+                           <span for="" class="totalstock{{$alloweditem->id}}" style="color:black;font-weight: bold"></span>
+                       </td>
+
                        <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
                        <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty <?=$i?>qty <?=$alloweditem->id?>item " onchange="checkStock(<?=$i?>,a,{{$alloweditem->id}})" onblur="setTotal();"></td>
                    </tr>

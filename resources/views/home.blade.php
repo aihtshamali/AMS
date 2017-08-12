@@ -373,7 +373,67 @@
                 </span>
             <div class="">
                 <img src="{{asset('images/loginbg.jpg')}}" id="bg" alt="">
+                <div >
+                    <span align="center" >
+                        @if (Session::has('message'))
+                            <div class="alert alert-info" style ="background-color:red;color:white;font-weight: bolder">{{ Session::get('message') }}</div>
+                        @endif
+                    </span>
+                    <div class="container" style="margin: 0 0 0 250px;">
 
+                        <div class="row">
+                            <div class="  col-md-3">
+                                <div class="thumbnail">
+                                    <a href="{{route('dispatch.index')}}">
+                                        <img src="{{asset('images/crates.jpg')}}"  alt="Crates-img" style="width:100%;height:190px">
+                                        <div class="caption">
+                                            <p >Crates Menu</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-md-offset-1 col-md-3">
+                                <div class="thumbnail">
+                                    <a href="{{route('freezer.index')}}" >
+                                        <img src="{{asset('images/freezer.jpg')}}" alt="Freezer-img" style="width:100%;height:190px">
+                                        <div class="caption">
+                                            <p>Freezer Menu</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="thumbnail">
+                                    <a href="#" >
+
+                                        <img src="{{asset('images/generator.jpg')}}" alt="Generator-img" style="width:100%;height:190px">
+                                        <div class="caption">
+                                            <p>Generator Menu</p>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <div class="transbox">
+                                    <h2>Coming Soon</h2>
+                                </div>
+                            </div>
+                            <div class=" col-md-offset-1 col-md-3">
+                                <div class="thumbnail">
+                                    <a href="{{route('transfer.index')}}" >
+                                        <img src="{{asset('images/palette.jpg')}}" alt="Palette-img" style="width:100%;height:190px">
+
+                                        <div class="caption">
+                                            <p>Palette Menu</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
             </div>
 
 

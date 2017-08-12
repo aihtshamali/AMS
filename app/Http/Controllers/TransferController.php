@@ -12,6 +12,8 @@ use App\Transfer;
 use Illuminate\Http\Request;
 use Auth;
 use App\Customer;
+use Illuminate\Support\Facades\DB;
+
 class TransferController extends Controller
 {
     /**
@@ -21,8 +23,31 @@ class TransferController extends Controller
      */
     public function index()
     {
+//        SELECT DISTINCT transfers.* from transfers
+//LEFT JOIN
+//    (
+//        select transfer_details.* FROM transfer_details
+//        INNER JOIN(
+//        SELECT user_items.* from user_items
+//        WHERE user_items.user_id='20'
+//        )td on(transfer_details.item_id=td.item_id)
+//)v on(v.transfer_id==transfers.id)
+//        $transfers=Transfer::all();
+        $transfers= DB::select('SELECT DISTINCT transfers.*,v.region_id as region_to from transfers
+INNER JOIN
+    (
+        select transfer_details.* FROM transfer_details
+        INNER JOIN(
+        SELECT user_items.* from user_items
+        WHERE user_items.user_id=20
+        )td on(transfer_details.item_id=td.item_id)
+       
+)v on(v.transfer_id=transfers.id)
+where(status = \'Received\' AND  type is Null )
+ORDER BY  created_at DESC
 
-        $transfers= Transfer::where('status','Received')->get();
+      ');
+//        dd($transfers);
         return view('transfer.index',compact('transfers'));
     }
 
@@ -33,21 +58,66 @@ class TransferController extends Controller
      */
     public function create()
     {
+
         if (Transfer::all()->last()) {
-            $doc_no = Transfer::all()->last()->pluck('ftn_no');
+            $doc_no = Transfer::where('ftn_no','Like','TO%')->orderBy('ftn_no','desc')->pluck('ftn_no');
             $part = explode(".",$doc_no);
             $no = intval($part[1]);
             $no++;
             $doc_no = "TO.".substr("000000", 1, 6 - strlen($no)).$no;
         }
-        else {
+    else {
             $doc_no = 'TO.000001';
         }
+
         $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
         $regions=Region::all();
         $useritems=UserItem::where('user_id',Auth::user()->id)->get();
-        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
+//        dd($stock);
         return view('transfer.shipped',compact(['stock','drivers','vehicles','doc_no','regions','useritems']));
     }
 
@@ -70,6 +140,7 @@ class TransferController extends Controller
         $region=Region::where('name',$region_name)->first();
         $transfer->from_=$region->id;
         $transfer->status="Pending";
+        $transfer->send_by=Auth::user()->id;
         $transfer->placement_date = $request->placement_date;
         $transfer->save();
         $i=0;
@@ -102,12 +173,12 @@ class TransferController extends Controller
             return redirect()->route('transfer.index')->withMessage('Items Transfered Successfully');
         else {
             Transfer::find($transfer->id)->delete();
-            return redirect()->route('transfer.index')->withMessage('Items Does Not Dispatched');
+            return redirect()->route('transfer.index')->withMessage('Transfer Failed');
         }
     }
 
     public function transit(){
-        $transfers= Transfer::where('status','Pending')->get();
+        $transfers= Transfer::where('status','=','Pending')->whereNull('type')->get();
         return view('transfer.transit',compact('transfers'));
     }
 
@@ -149,6 +220,12 @@ class TransferController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function shipbyUser($id){
+        $transfers= Transfer::where('send_by','=',Auth::user()->id)->whereNull('type')->get();
+//        dd($transfers);
+        return view('transfer.shippedByUser',compact('transfers'));
     }
 
     /**

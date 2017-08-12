@@ -8,7 +8,7 @@
         </span>
         <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">AMS =>All Transfer List</h3>
+    font-weight: bold ">AMS =>All Shipped List by {{Auth::user()->name}}</h3>
         <a href="{{route('transfer.create')}}" style="margin-top: 22px" class="btn btn-info pull-right ">Create
             transfer</a>
 
@@ -36,8 +36,12 @@
                     @else
                         <td>N/A</td>
                     @endif
-                    <td>{{getRegion($transfer->from_)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
-                    <td>{{getRegion($transfer->region_to)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
+                    @if(!empty($transfer->to_))
+                        <td>{{$transfer->to_}}</td>
+                    @else
+                        <td>{{$transfer->from_}}</td>
+                    @endif
+                    <td>{{$transfer->getRegion($transfer->id)->region->name}}</td>
                     <td>{{$transfer->status}}</td>
                     <td>
                         <a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>

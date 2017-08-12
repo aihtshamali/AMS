@@ -36,7 +36,9 @@
     </script>
     <div class="">
 
-        <h3>Edit Return</h3>
+        <h3 style="color: darkgreen;
+    float: left;
+    font-weight: bold ">Edit Return</h3>
 
 
         <form action="{{route('returns.update',$return->id)}}" method="post" >
@@ -57,7 +59,7 @@
                         </td>
                         <td>
                             <label for="description">Date</label>    </td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$return->ftn_date}}"> </td>
+                        <td><input  class="form-control datepicker" placeholder="dd-mm-yyyy" data-provide="datepicker" name="cdate" id="" value="{{$return->ftn_date}}"> </td>
 
                     </tr>
                     <tr>
@@ -95,11 +97,11 @@
                     </tr>
                 </table>
             </div>
-            <datalist id="customer">
-                @foreach($customers as $customer)
-                    <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                @endforeach
-            </datalist>
+            {{--<datalist id="customer">--}}
+                {{--@foreach($customers as $customer)--}}
+                    {{--<option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
+                {{--@endforeach--}}
+            {{--</datalist>--}}
             <div class="table-wrapper row customer"  style="margin-right: 0px;">
                 <table class="table">
                     <tr>
@@ -150,12 +152,13 @@
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
                             <?php $col++; ?>
                             <tr>
-                                <th >
-                                    <label  for="name">{{$item->display_name}}</label>
+                                <th style="background-color: #{{$item->color}};border-right: 1px white solid">
+                                    <label style="font-size:12px; display: inline"  for="name">{{$item->display_name}}</label>
+                                    <span for="" class="totalstock{{$item->id}}" style="color:white;font-weight: bold"></span>
                                 </th>
                                 <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}">
                                 @for($i=0; $i<10 ;$i++)
-                                    <td>
+                                    <td style="background-color: #{{$item->color}};">
                                         @if($i<count($returndetails))
                                             @if($returndetails[$row][$col]==$item->id)
                                                 <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$returndetails[$row][$col+1]}}">
@@ -172,11 +175,11 @@
 
                     @endforeach
                     <tr>
-                        <th >
+                        <th style="background-color: black;border-right: 1px white solid">
                             <label for="name">Total</label>
                         </th>
                         @for($i =0; $i<10 ;$i++)
-                            <td>
+                            <td style="background-color: black;">
                                 <input  type="number" class="form-control" min="0" name="total[<?=$i?>]" id="<?=$i?>qtytotal" readonly placeholder="Total...">
                             </td>
                         @endfor
@@ -189,4 +192,51 @@
 
         </form>
     </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script>
+        var searchCusts = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"' . $customer->account_name . '"';
+                else
+                    echo '"' . $customer->account_name . '",';
+                $cnt++;
+            } ?>
+
+        ];
+        var searchCustomer = [
+            <?php $cnt=1;
+            foreach($customers as $customer) {
+                if($cnt==count($customers))
+                    echo '"'.$customer->account_no . '"';
+                else
+                    echo '"'.$customer->account_no . '",';
+                $cnt++;
+            } ?>
+        ];
+
+        $(function() {
+            $(".custs").autocomplete({
+                source: searchCusts
+            });
+
+        });
+        function fillCustCode(id,colNo){
+            var customer_name=$("#"+id).val();
+            console.log(searchCusts[0]);
+            for (i = 0; i < searchCusts.length; i++) {
+                if(customer_name==searchCusts[i])
+                {
+                    $(".custsCode"+colNo).val(searchCustomer[i]);
+                    break;
+                }
+                else
+                {
+                    $(".custsCode"+colNo).val("");
+                }
+            }
+        }
+    </script>
 @endsection

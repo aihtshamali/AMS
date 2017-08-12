@@ -132,45 +132,30 @@ checkFreezerStock(ctrl,id,arr);
 
 function checkStock(obj,arr,id) { // arr is initalized from where the function is called (On the top of File)
 
+    var gTotal=0,quantity=0,item_id=0;
+    for(i=0;i<arr.length;i++)
+    {
+        if(arr[i]['item_id']==id ){
+            quantity=arr[i]['TOTAL'];
+            item_id=arr[i]['item_id'];
+            break;
+        }
+    }
 
-    var gTotal=0,quantity=0;
     $("."+id+"item").each(function() {
         if ($(this).val() != '') {
             gTotal += parseInt($(this).val().replace(/\,/g, ""));
         }
     });
-    for(i=0;i<arr.length;i++)
-    {
-        if(arr[i]['item_id']==id){
-            quantity=arr[i]['quantity'];
-        }
-    }
+
     if(quantity<gTotal){
      alert("Given value is greater than current stock");
         $("."+obj+"qty."+id+"item").val(null);
     }
-
-    // var totalstock=0,gTotal=0;
-    // for(i=0;i<arr.length;i++){
-    //     if(arr[i][0]==id){
-    //         totalstock+=arr[i][1];
-    //     }
-    // }
-    // $(".item").each(function() {
-    //     if ($(this).hasClass('item') && $(this).val() != '') {
-    //         gTotal += parseInt($(this).val().replace(/\,/g, ""));
-    //     }
-    // });
-    // if(gTotal>totalstock)
-    // {
-    //     alert("Current value is greater than Available Stock");
-    //     $("#"+id+"region").val=0;
-    //     document.getElementById("submit").disabled = true;
-    //
-    // }
-    // else{
-    //     document.getElementById("submit").disabled=false;
-    // }
+    var GrandTotal=quantity-gTotal;
+    if(GrandTotal<0)
+        GrandTotal=0;
+    $(".totalstock"+item_id).text("("+(GrandTotal)+")");
 
 }
 
