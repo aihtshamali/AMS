@@ -55,7 +55,6 @@
                 <th>Customer Name</th>
                 <th>Region</th>
                 <th>City</th>
-                <th>Status</th>
                 <th>Qty</th>
                 <th colspan="2" style="text-align: center">Actions</th>
                 <th></th>
@@ -71,10 +70,9 @@
                     <td>{{getCustomer($freezer->customer_id)->account_name}}</td>
                     <td>{{getRegion($freezer->region)->name}}</td>
                     <td>{{getRegion($freezer->region)->sub_name}}</td>
-                    <td>{{$freezer->status}}</td>
 
                     <td>{{$freezer->qty}}</td>
-                    <td width="100px">
+                    <td width="175px">
                         <a href="{{route('freezer.transferPrint',$freezer->id)}}" title="Print Transfer Form"><img
                                     src="{{asset('images/print.png')}}" class="icon"
                                     style="height: 20px;width: auto"></a>

@@ -1,31 +1,16 @@
 @extends('layouts.sidenav')
 @section('content')
 
-    <?php
-
-    $arr[][]=null;
-    $rows=0;
-    foreach ($transfer_detail as $dd)
-    {
-            $arr[$rows][0]=$dd->item_id;   // id in first column and quantity is in second
-            $arr[$rows][1]=$dd->quantity;
-            $arr[$rows][2]=$dd->region_id;
-            $rows++;
-    }
-
-    ?>
     <script type="text/javascript">
         var transferarr = <?php echo json_encode($stock); ?>;
     </script>
-
-{{--{{dd($arr)}}--}}
-
+{{--{{dd($stock)}}--}}
 
     <div class="" style="">
         <div  >
             <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">Dispatch Freezer</h3>
+    font-weight: bold ">AMS=>Dispatch Freezer</h3>
         <form action="{{route('freezer.store')}}" method="post">
             {{csrf_field()}}
             <div classs="dispatchHeader">
@@ -47,8 +32,8 @@
                             <label for="ftn_date">FTN Date</label>
                         </td>
                         <td>
-                            <input type="date" class="form-control datepicker" data-provide="datepicker" name="ftn_date"
-                                   id="" placeholder="Date" required>
+                            <input  class="form-control datepicker" data-provide="datepicker" name="ftn_date"
+                                   id="" placeholder="dd/mm/yyyy" style="width: 180px" required>
                         </td>
                         <td></td>
 
@@ -79,8 +64,8 @@
                     </tr>
                     <tr>
                         <td><label for="ftn_date">Date of Placement</label></td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker"
-                                   name="placement_date" id="" placeholder="Date" required></td>
+                        <td><input  class="form-control datepicker" data-provide="datepicker"
+                                   name="placement_date" id="" placeholder="dd/mm/yyyy" required></td>
                         <td><label for="ftn_date">Purpose</label></td>
                         <td>
                             <select name="purpose" class="selectpicker " required>

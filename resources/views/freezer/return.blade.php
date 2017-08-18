@@ -3,7 +3,7 @@
     <div class="container">
         <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">Return Freezer</h3>
+    font-weight: bold ">AMS=>Return Freezer</h3>
 
 
         <form action="{{route('freezer.store')}}" method="post" >

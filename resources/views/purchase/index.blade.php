@@ -30,8 +30,12 @@
                     <td>{{$purchase->reference}}</td>
                     <td>{{getDriver($purchase->driver_id)->name}}</td>
                     <td>{{getRegion($purchase->region_id)->name}}/{{getRegion($purchase->region_id)->sub_name}}</td>
-                    <td>
+                    <td style="width: 95px">
                         <a href="{{route('purchase.edit',$purchase->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{route('purchase.show',$purchase->id)}}" >
+                            <img src="{{asset('images/show.png')}}" alt="ShowPage" class="icon"
+                                 style=" margin:0 0 0 7px;height: 30px;width: auto">
+                        </a>
                     </td>
 
                     <td>

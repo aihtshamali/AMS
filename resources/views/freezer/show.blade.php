@@ -83,7 +83,7 @@
                         </tr>
                         <tr>
                             <td><label for="ftn_date">Date of Placement</label></td>
-                            <td><input type="date" class="form-control datepicker" data-provide="datepicker"
+                            <td><input class="form-control datepicker" data-provide="datepicker"
                                        name="placement_date" id="" value="{{$freezer[0]->transfer->placement_date}}" required></td>
                             <td><label for="ftn_date">Purpose</label></td>
                             <td>

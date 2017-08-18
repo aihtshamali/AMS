@@ -3,12 +3,10 @@
     <div class="half_body" style="">
         <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">Edit Shipped</h3>
+    font-weight: bold ">AMS=>Show Shipped</h3>
 
 
-        <form action="{{route('transfer.update',$transfers[0]->transfer->id)}}" method="post">
-            {{ method_field('PUT') }}
-            {{csrf_field()}}
+
             <div class="dispatchHeader">
                 <table class="table-responsive table">
                     <tr>
@@ -37,8 +35,8 @@
                         <td><label for="from_">From</label></td>
                         <td>
                             @if($transfers[0]->transfer->type!="Freezer")
-                            <input type="text" class="form-control" style="width:inherit" name="from_" id=""
-                                   value="{{$transfers[0]->transfer->from_}}" readonly>
+                                <input type="text" class="form-control" style="width:inherit" name="from_" id=""
+                                       value="{{$transfers[0]->transfer->from_}}" readonly>
                             @else
                                 <input type="text" class="form-control" style="width:220px;" name="from_" id=""
                                        value="{{$transfers[0]->region->name}}/{{$transfers[0]->region->sub_name}}" readonly>
@@ -107,46 +105,26 @@
                             <td></td>
                         </tr>
                     @endif
-                {{--{{dd($transfers)}}--}}
-                        <tr>
-                            <td><label for="">{{$alloweditem->item->display_name}}</label></td>
-                            <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
+                    {{--{{dd($transfers)}}--}}
+                    <tr>
+                        <td><label for="">{{$alloweditem->item->display_name}}</label></td>
+                        <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
 
                         @if($it<count($transfers) && $transfers[$it]->item_id==$alloweditem->item->id)
                             <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty"
                                        value="{{$transfers[$it]->quantity}}" onchange="setTotal();"></td>
-                                <?php $it++?>
+                            <?php $it++?>
                         @else
-                                <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty"
-                                            onchange="setTotal();"></td>
-                    @endif
-                        </tr>
-                        <?php $i++;?>
+                            <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty"
+                                       onchange="setTotal();"></td>
+                        @endif
+                    </tr>
+                    <?php $i++;?>
                 @endforeach
                 <tr>
                     <td><label for=""><strong style="color: #000;">Total</strong></label></td>
                     <td><input type="number" name="total" id="total" min="0" class="form-control total"></td>
                 </tr>
             </table>
-
-            <button type="submit" class=" pull-right btn btn-lg btn-info" name="submit">Submit</button>
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-        </form>
     </div>
-    <script>
-        {{--$(document).ready(function() {--}}
-        {{--var val = 0;--}}
-        {{--if ($ref == '0')--}}
-        {{--val = 'DOC.000001';--}}
-        {{--else {--}}
-        {{--$part = explode(".","Doc.000001");--}}
-        {{--$no = intval($part[1]);--}}
-        {{--$no++;--}}
-        {{--val = "DOC.".substr("000000", 1, 6 - strlen($no)).$no;--}}
-        {{--}--}}
-        {{--$ref = {!!json_encode($ref)!!};--}}
-        {{--document.getElementById('ref').setAttribute('value', val);--}}
-        {{--});--}}
-    </script>
 @endsection

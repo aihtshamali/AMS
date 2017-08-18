@@ -170,7 +170,7 @@ function  checkFreezerStock(obj,id,arr) {
     var item = $("#"+id+"type").find("option:selected").val(); //getting the item id
     var region=$("select#"+id+"region").find("option:selected").val(); // getting region id
 
-    var totalstock=0,gTotal=0;
+    var totalstock=0,gTotal=0,item_id=0;
     if(region=="" && item!=""){
         alert("Enter Location First");
         document.getElementById("submit").disabled = true;
@@ -182,8 +182,18 @@ function  checkFreezerStock(obj,id,arr) {
         var counter = 0;
 
         for (i = 0; i < arr.length; i++) {
-            if (arr[i]['item_id'] == item && arr[i]['region_id']==region) {
-                totalstock = arr[i]['quantity'];
+            if(arr[i]['item_id']==item && arr[i]['region']==region){
+                if (totalstock=arr[i]['TOTAL']!=null) {
+                    totalstock = arr[i]['TOTAL'];
+                    item_id = arr[i]['item_id'];
+                    break;
+                }
+                else
+                {
+                    totalstock = arr[i]['totalIn'];
+                    item_id = arr[i]['item_id'];
+                    break;
+                }
             }
         }
 
@@ -191,7 +201,7 @@ function  checkFreezerStock(obj,id,arr) {
             $("."+id+"freezer").each(function () {
                 $(this).val("");
             });
-            alert("Current Region has zero selected item");
+            alert("This Region has zero item");
         }
         else {
 
@@ -209,7 +219,7 @@ function  checkFreezerStock(obj,id,arr) {
          $("."+id+"freezer").each(function () {
              $(this).val("");
          });
-         alert("Current value is greater than available stock "+gTotal);
+         alert("Current value is greater than available stock : "+gTotal);
 
     }
     else{

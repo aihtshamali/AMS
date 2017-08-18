@@ -30,13 +30,17 @@
                     <td>{{getRegion($dispatch->to_)->name}}</td>
                     <td>{{$dispatch->reference}}</td>
                     <td>{{$dispatch->driver->name}}</td>
-                   <td style="width: 110px">
+                   <td style="width: 140px">
                        <a href="{{route('returnDispatch',$dispatch->id)}}" type="button" ><img src="{{asset('images\returns.png')}}" class="icon" style="height:30px;width:30px;margin-left:10px;"></a>
                        <a href="{{route('dispatch.edit',$dispatch->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
+                       <a href="{{route('dispatch.show',$dispatch->id)}}">
+                           <img src="{{asset('images/show.png')}}" alt="ShowPage" class="icon"
+                                style=" margin:0 0 0 7px;height: 29px;width: auto">
+                       </a>
                    </td>
 
                     <td>
-                        <a href="{{route('dispatch.show',$dispatch->id)}}" class="btn btn-toolbar" style="display: inline">Show</a>
+
                         <form action="{{route('dispatch.destroy',$dispatch->id)}}" method="post">
                             {{csrf_field()}}
                             {{method_field('DELETE')}}

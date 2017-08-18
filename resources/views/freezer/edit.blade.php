@@ -1,31 +1,19 @@
 @extends('layouts.sidenav')
 @section('content')
 
-    <?php
 
-    $arr[][]=null;
-    $rows=0;
-    foreach ($transfer_detail as $dd)
-    {
-        $arr[$rows][0]=$dd->item_id;   // id in first column and quantity is in second
-        $arr[$rows][1]=$dd->quantity;
-        $arr[$rows][2]=$dd->region_id;
-        $rows++;
-    }
-
-    ?>
     <script type="text/javascript">
         var transferarr = <?php echo json_encode($stock); ?>;
     </script>
 
-    {{--{{dd($arr)}}--}}
+
 
 
     <div class="" style="">
         <div  >
             <h3 style="color: darkgreen;
     float: left;
-    font-weight: bold ">Dispatch Freezer</h3>
+    font-weight: bold ">AMS=>Edit Dispatched Freezer</h3>
             <form action="{{route('freezer.update',$freezer[0]->transfer->id)}}" method="post">
                 {{ method_field('PUT') }}
                 {{csrf_field()}}
@@ -85,7 +73,7 @@
                         </tr>
                         <tr>
                             <td><label for="ftn_date">Date of Placement</label></td>
-                            <td><input type="date" class="form-control datepicker" data-provide="datepicker"
+                            <td><input  class="form-control datepicker" data-provide="datepicker"
                                        name="placement_date" id="" value="{{$freezer[0]->transfer->placement_date}}" required></td>
                             <td><label for="ftn_date">Purpose</label></td>
                             <td>

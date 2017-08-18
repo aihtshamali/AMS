@@ -154,7 +154,49 @@ GROUP by return_details.returns_id ORDER BY created_at Desc');
         $faculty= Faculty::all();
         $transfer_detail=Transfers_Detail::all();
         $items=Item::where('item_group','Freezer')->get();
-        $stock=Stock::all();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) ');
         return view('freezer.create',compact(['stock','customers','regions','faculty','transfer_detail','items']));
     }
 
@@ -368,8 +410,56 @@ GROUP by return_details.returns_id ORDER BY created_at Desc');
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    { $freezer=Transfers_Detail::where('transfer_id',$id)->get();
+        $customers= Customer::all();
+        $regions= Region::all();
+        $faculty= Faculty::all();
+        $transfer_detail=Transfers_Detail::all();
+        $items=Item::where('item_group','Freezer')->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
+        return view('freezer.show',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items']));
     }
 
     /**
@@ -383,10 +473,52 @@ GROUP by return_details.returns_id ORDER BY created_at Desc');
         $freezer=Transfers_Detail::where('transfer_id',$id)->get();
         $customers= Customer::all();
         $regions= Region::all();
-        $faculty= Faculty::all();
+        $faculty= Faculty::where('region_id',Auth::user()->region_id);
         $transfer_detail=Transfers_Detail::all();
         $items=Item::where('item_group','Freezer')->get();
-        $stock=Stock::all();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
         return view('freezer.edit',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items']));
     }
 

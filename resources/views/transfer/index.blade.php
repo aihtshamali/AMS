@@ -39,8 +39,12 @@
                     <td>{{getRegion($transfer->from_)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
                     <td>{{getRegion($transfer->region_to)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
                     <td>{{$transfer->status}}</td>
-                    <td>
+                    <td style="width:90px">
                         <a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{route('transfer.show',$transfer->id)}}" class="pull-right">
+                            <img src="{{asset('images/show.png')}}" alt="ShowPage" class="icon"
+                                 style=" margin:0 0 0 7px;height: 30px;width: auto">
+                        </a>
                     </td>
                     <td>
                         <form action="{{route('transfer.destroy',$transfer->id)}}" method="post">

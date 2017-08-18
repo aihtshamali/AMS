@@ -8,14 +8,14 @@
                     <select class="form-control" name="region">
                         <option value="">Select Region</option>
                         @foreach ($regions as $r)
-                            <option value="{{$r->id}}">{{$r->name}}/{{$r->sub_name}}</option>
+                            <option value="{{$r->id}}">{{$r->name}}</option>
                         @endforeach
                     </select>
 
                     <select class="form-control" name="sub_region">
                         <option value="">Select Sub-Region</option>
                         @foreach ($regions as $r)
-                            <option value="{{$r->id}}">{{$r->name}}/{{$r->sub_name}}</option>
+                            <option value="{{$r->id}}">{{$r->sub_name}}</option>
                         @endforeach
                     </select>
                     <input type="hidden" name="download" value="pdf">

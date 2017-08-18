@@ -35,8 +35,12 @@
                     <td>{{getCustomer($return->customer_id)->account_name}}</td>
                     <td>{{$return->type}}</td>
                     <td>{{$return->qty}}</td>
-                    <td>
+                    <td style="width:140px;">
                         <a href="{{route('returns.edit',$return->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{route('returns.show',$return->id)}}" class="pull-right">
+                            <img src="{{asset('images/show.png')}}" alt="ShowPage" class="icon"
+                                 style=" margin:0 0 0 7px;height: 30px;width: auto">
+                        </a>
                     </td>
 
                     <td>
@@ -48,7 +52,7 @@
                     </td>
                 </tr>
             @empty
-                <td>No freezer has Dispatched</td>
+                <td>No Item has Returned</td>
             @endforelse
 
         </table>

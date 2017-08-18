@@ -219,7 +219,13 @@ LEFT JOIN
      */
     public function show($id)
     {
-        //
+        $transfers=Transfers_Detail::where('transfer_id',$id)->get();
+        $regions=Region::all();
+        $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
+        $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
+        $useritems=UserItem::where('user_id',Auth::user()->id)->get();
+        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
+        return view('transfer.show',compact(['transfers','regions','vehicles','drivers','useritems']));
     }
 
     public function shipbyUser($id){

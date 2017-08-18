@@ -63,9 +63,9 @@
                             <label for="region" class="col-md-4 control-label">Select Region</label>
 
                             <div class="col-md-6">
-                                <select name="region" class="selectpicker" id="" required>
+                                <select name="region" class="form-control" id="" required>
                                     @foreach($regions as $region)
-                                        <option value="{{$region->id}}">{{$region->name}}</option>
+                                        <option value="{{$region->id}}">{{$region->name}}/{{$region->sub_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
