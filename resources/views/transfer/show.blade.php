@@ -35,8 +35,8 @@
                         <td><label for="from_">From</label></td>
                         <td>
                             @if($transfers[0]->transfer->type!="Freezer")
-                                <input type="text" class="form-control" style="width:inherit" name="from_" id=""
-                                       value="{{$transfers[0]->transfer->from_}}" readonly>
+                                <input type="text" class="form-control" style="width:220px" name="from_" id=""
+                                       value="{{getRegion($transfers[0]->transfer->from_)->name}}/{{getRegion($transfers[0]->transfer->from_)->sub_name}}" readonly>
                             @else
                                 <input type="text" class="form-control" style="width:220px;" name="from_" id=""
                                        value="{{$transfers[0]->region->name}}/{{$transfers[0]->region->sub_name}}" readonly>

@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-
+    protected $fillable = [
+        'id',
+        'account_no',
+        'account_name',
+        'customer_group',
+        'city_id',
+        'region_id',
+    ];
     public function region(){
         return $this->belongsTo('App\Region');
     }

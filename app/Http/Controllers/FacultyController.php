@@ -36,6 +36,44 @@ class FacultyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function excel()
+    {
+        return view('faculty.createThroughExcel');
+    }
+
+    public function import(Request $request)
+    {
+//        dd($request->all())
+        if($request->file('imported-file'))
+        {
+            $path = $request->file('imported-file')->getRealPath();
+//           dd( $path);
+            $data = \Maatwebsite\Excel\Facades\Excel::load($path, function($reader) {
+            })->get();
+//            dd($data);
+            if(!empty($data) && $data->count())
+            {
+                $data = $data->toArray();
+                for($i=0;$i<count($data);$i++)
+                {
+                    $dataImported[] = $data[$i];
+                }
+            }
+//            dd($dataImported[0]);
+            foreach ($dataImported[0] as $d)
+                Customer::insert($d);
+        }
+        return back()->withMessage('Data Added Successfully');
+    }
+
+
     public function store(Request $request)
     {
         $faculty = new Faculty();

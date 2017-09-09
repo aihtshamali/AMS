@@ -23,14 +23,7 @@
         <label>Sub-Name:</label>
         <input type="text" name="sub_name" value="{{$region->sub_name}}">
         </div>
-        <div class="form-group">
-            <label for="Category">Category</label>
-            <select name="category" class="selectpicker" id="">
-                <option  value="{{$region->category}}" selected>{{$region->category}}</option>
-                <option  value="{{$region->category =='internal' ? 'external':'internal'}}">{{$region->category =='internal' ? 'external':'internal'}}</option>
 
-            </select>
-        </div>
         <div class="form-group">
             <label for="description">Status</label>
             <select name="is_active" class="selectpicker" id="">

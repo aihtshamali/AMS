@@ -174,6 +174,11 @@ return [
          */
         Barryvdh\DomPDF\ServiceProvider::class,
         /*
+         * Excel library Service Providers
+         */
+
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
@@ -231,6 +236,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 //        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
     ],
 

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class FreezerController extends Controller
 {
-//    TODO
+
     /**
      * Display a listing of the resource.
      *
@@ -61,11 +61,11 @@ class FreezerController extends Controller
             {
                 $sql.='AND status= "'.$request->status.'" ';
             }
-            if($request->customer_code)
-            {
-                $sql.='AND transfer_details.customer_id = "'.$request->customer_code.'" ';
-                $retsql.='AND return_details.customer_id = "'.$request->customer_code.'" ';
-            }
+//            if($request->customer_code)
+//            {
+//                $sql.='AND transfer_details.customer_id = "'.$request->customer_code.'" ';
+//                $retsql.='AND return_details.customer_id = "'.$request->customer_code.'" ';
+//            }
 
 //            $date=$request->from;
 
@@ -122,10 +122,10 @@ class FreezerController extends Controller
 //                ->where('type','Freezer')->get();
             $freezers=DB::select('SELECT transfers.*,transfer_details.region_id,sum(transfer_details.quantity) as qty ,transfer_details.region_id as region FROM transfers 
   left JOIN transfer_details on transfers.id=transfer_details.transfer_id
-  WHERE type="Freezer " '.$sql.'  GROUP by transfer_details.transfer_id order By created_at Desc');
+  WHERE type="Freezer " '.$sql.' AND region_id="'.Auth::user()->region_id.'" GROUP by transfer_details.transfer_id  order By created_at Desc ');
             $returns=DB::select('SELECT returns.* ,return_details.region_id as region,return_details.customer_id,sum(return_details.quantity) as qty FROM returns 
 left JOIN return_details on returns.id=return_details.returns_id
-WHERE type="Freezer" '.$retsql.' 
+WHERE type="Freezer" '.$retsql.' AND region_id="'.Auth::user()->region_id.'"
 GROUP by return_details.returns_id ORDER BY created_at Desc');
 
 //        $returns = DB::table('returns')->select('returns.*' , 'return_details.customer_id','return_details.type','return_details.region_id as region')
@@ -137,7 +137,7 @@ GROUP by return_details.returns_id ORDER BY created_at Desc');
         $counttransfer=DB::table('transfer_details')->select('transfer_id',DB::raw("sum(quantity) as total"))->groupBy('transfer_id')->get();
         $countreturn=DB::table('return_details')->select('returns_id',DB::raw("sum(quantity) as total"))->groupBy('returns_id')->where('type','FREEZER')->get();
 
-        $stock=$stock=Stock::where('region_id',Auth::user()->region_id)->get();
+//        $stock=$stock=Stock::where('region_id',Auth::user()->region_id)->get();
         $regions=Region::all();
         return view('freezer.index',compact(['freezers','counttransfer','returns','countreturn','regions']));
     }
@@ -151,7 +151,8 @@ GROUP by return_details.returns_id ORDER BY created_at Desc');
     {
         $customers= Customer::all();
         $regions= Region::all();
-        $faculty= Faculty::all();
+        $faculty= Faculty::where('region_id',Auth::user()->region_id)->get();
+        $nsm= Faculty::where('type','NSM')->first();
         $transfer_detail=Transfers_Detail::all();
         $items=Item::where('item_group','Freezer')->get();
         $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
@@ -197,17 +198,18 @@ LEFT JOIN
   GROUP BY region_id,item_id
 	)lftjoin
     ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) ');
-        return view('freezer.create',compact(['stock','customers','regions','faculty','transfer_detail','items']));
+        return view('freezer.create',compact(['stock','customers','regions','faculty','transfer_detail','items','nsm']));
     }
 
 
     public function createReturn(){
         $customers= Customer::all();
         $regions= Region::all();
-        $faculty= Faculty::all();
+        $faculty= Faculty::where('region_id',Auth::user()->region_id)->get();
+        $nsm= Faculty::where('type','NSM')->first();
         $items=Item::where('item_group','Freezer')->get();
         $stock=Stock::where('region_id',Auth::user()->region_id)->get();
-        return view('freezer.return',compact(['stock','customers','regions','faculty','items']));
+        return view('freezer.return',compact(['stock','customers','regions','faculty','items','nsm']));
     }
 
 
@@ -413,8 +415,9 @@ LEFT JOIN
     { $freezer=Transfers_Detail::where('transfer_id',$id)->get();
         $customers= Customer::all();
         $regions= Region::all();
-        $faculty= Faculty::all();
-        $transfer_detail=Transfers_Detail::all();
+        $faculty= Faculty::where('region_id',Auth::user()->region_id)->get();
+        $nsm= Faculty::where('type','NSM')->first();
+        $transfer_detail=Transfers_Detail::where('region_id',Auth::user()->region_id);
         $items=Item::where('item_group','Freezer')->get();
         $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
  SELECT region,item_id,sum(total) as totalIn from (
@@ -459,7 +462,7 @@ LEFT JOIN
   GROUP BY region_id,item_id
 	)lftjoin
     ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
-        return view('freezer.show',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items']));
+        return view('freezer.show',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items','nsm']));
     }
 
     /**
@@ -474,6 +477,7 @@ LEFT JOIN
         $customers= Customer::all();
         $regions= Region::all();
         $faculty= Faculty::where('region_id',Auth::user()->region_id);
+        $nsm= Faculty::where('type','NSM')->first();
         $transfer_detail=Transfers_Detail::all();
         $items=Item::where('item_group','Freezer')->get();
         $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
@@ -519,7 +523,7 @@ LEFT JOIN
   GROUP BY region_id,item_id
 	)lftjoin
     ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
-        return view('freezer.edit',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items']));
+        return view('freezer.edit',compact(['freezer','stock','customers','regions','faculty','transfer_detail','items','nsm']));
     }
 
     /**

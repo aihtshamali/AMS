@@ -24,16 +24,16 @@
                             @endforeach
                         </select>
                     </td>
-                    <td><label for="status">Status</label></td>
-                    <td>
-                        <select name="status" class="form-control" id="">
-                            <option value="" selected>--Select Status--</option>
-                            <option value="Received">Received</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </td>
-                    <td><input type="text" name="customer_code" class="form-control" placeholder="Customer_Code...">
-                    </td>
+                    {{--<td><label for="status">Status</label></td>--}}
+                    {{--<td>--}}
+                        {{--<select name="status" class="form-control" id="">--}}
+                            {{--<option value="" selected>--Select Status--</option>--}}
+                            {{--<option value="Received">Received</option>--}}
+                            {{--<option value="Pending">Pending</option>--}}
+                        {{--</select>--}}
+                    {{--</td>--}}
+                    {{--<td><input type="text" name="customer_code" class="form-control" placeholder="Customer_Code...">--}}
+                    {{--</td>--}}
                     <td>
                         <button class="btn btn-info" type="submit">Submit</button>
                     </td>
@@ -105,7 +105,6 @@
                     <td>{{getCustomer($return->customer_id)->account_name}}</td>
                     <td>{{getRegion($return->region)->name}}</td>
                     <td>{{getRegion($return->region)->sub_name}}</td>
-                    <td>Return</td>
                     <td>{{$return->qty}}</td>
                     <td width="110px">
                         <a href="{{route('freezer.returnPrint',$return->id)}}" title="Print Return Form"><img

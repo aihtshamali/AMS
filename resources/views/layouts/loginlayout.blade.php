@@ -2,7 +2,7 @@
 <html >
 <head>
     <meta charset="UTF-8">
-    <title>Random Login Form</title>
+    <title>AMS-Login</title>
 
 
     <!---->

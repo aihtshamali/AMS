@@ -12,14 +12,18 @@
     <table class="table table-striped table-responsive table-hover">
         <tr style="background-color:white;">
             <th>Name</th>
-            <th>Cateogry</th>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Sub-Name</th>
             <th>Is Active</th>
             <th>Actions</th>
         </tr>
         @forelse($regions as $region)
             <tr>
                 <td>{{$region->name}}</td>
-                <td>{{$region->category}}</td>
+                <td>{{$region->account}}</td>
+                <td>{{$region->type}}</td>
+                <td>{{$region->sub_name}}</td>
                 <td>{{$region->is_active}}</td>
                 <td>
                     <a href="{{route('region.edit',$region->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>

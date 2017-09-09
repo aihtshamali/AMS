@@ -4,7 +4,7 @@
 
     <?php
             $dispatchdetails[][]=null;
-//            print_r ($dispatchdetails);
+//            print_r ($dispatch_detail);
             $row=0;$col=0;
             foreach ($dispatch_detail as $dd)
             {
@@ -36,13 +36,13 @@
 
     <script type="text/javascript">
         var a = <?php echo json_encode($stock); ?>;
+        var disp = <?php echo json_encode($dispatchdetails); ?>;
     </script>
 
     <div class="">
         <h3 style="color: darkgreen;
     float: left;
     font-weight: bold ">Edit Dispatch</h3>
-
 
         <form action="{{route('dispatch.update',$dispatch->id)}}" method="post" >
             {{ method_field('PUT') }}
@@ -63,7 +63,7 @@
                         <td>
                             <label for="description">Date</label>    </td>
                         <td>
-                            <input type="text" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$dispatch->cdate}}"> </td>
+                            <input type="" class="form-control datepicker" data-provide="datepicker" name="cdate" id="" value="{{$dispatch->cdate}}"> </td>
 
                     </tr>
                     <tr>
@@ -75,7 +75,7 @@
                             <label for="vehicle_id">Vehicle Number.</label>
                         </td>
                         <td>
-                            <select name="vehicle_id" class="selectpicker show-tick">
+                            <select name="vehicle_id" class="form-control ">
                                 <option value=""></option>
                                 @foreach($vehicles as $vehicle)
                                     if({{$vehicle->id}}=={{$dispatch->vehicle_id}})
@@ -88,7 +88,7 @@
                         <td>
                             <label for="description">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" class="selectpicker show-tick">
+                            <select name="driver_id" class="form-control ">
                                 <option></option>
                                 @foreach($drivers as $driver)
                                     if({{$driver->id}}=={{$dispatch->driver_id}})
@@ -101,11 +101,7 @@
                     </tr>
                 </table>
             </div>
-            <datalist id="customer">
-                @foreach($customers as $customer)
-                    <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                @endforeach
-            </datalist>
+
             <div class="table-wrapper row customer"  style="margin-right: 0px;">
                 <table class="table">
                     <tr>
@@ -114,24 +110,14 @@
                         </th>
                         {{--{{dd($dispatchdetails)}}--}}
                         <?php $col=0;$row=0;?>
-                        @for($i=0; $i<10 ;$i++)
+                    @for($i=0; $i<10 ;$i++)
                             <td class="col-xs-3"  >
                                 @if($i<(count($dispatchdetails)))
-                                    <input list="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" value="{{getCustomer($dispatchdetails[$row][$col])->account_name}}">
+                                    <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" value="{{getCustomer($dispatchdetails[$row][$col])->account_name}}">
                                 @else
-                                    <input list="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" name="customer[<?=$i?>]">
+                                    <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control custs" onchange="fillCustCode('<?=$i?>customer',<?=$i?>)" name="customer[<?=$i?>]">
                                 @endif
-                                {{--<select name="customer[<=$i?>]" style="height: 30px;width: 200px">--}}
-                                    {{--<option></option>--}}
-                                    {{--@foreach($customers as $customer)--}}
-                                        {{--@if($i<(count($dispatchdetails)) && ($customer->id==$dispatchdetails[$row][$col]))--}}
-                                            {{--<option type="text"  value="{{$customer->id}}" selected >{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
 
-                                        {{--@else--}}
-                                            {{--<option type="text"  value="{{$customer->id}}"  >{{$customer->account_name }} / {{$customer-> account_no}}</option>--}}
-                                        {{--@endif--}}
-                                    {{--@endforeach--}}
-                                {{--</select>--}}
                                 <?php $row+=1?>
                             </td>
                         @endfor
@@ -146,38 +132,30 @@
                                 @if($i<(count($dispatchdetails)))
                                     <input type="text" class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" value="{{$dispatchdetails[$i][$col]}}">
                                 @else
-                                    <input type="text" class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" placeholder="Enter SalesInvoice #...">
+                                    <input type="text" class="form-control" name="sales_invoice[<?=$i?>]" id="<?=$i?>sales" placeholder="Enter SalesInvoice...">
                                 @endif
                             </td>
                             <?php $row+=1;?>
                         @endfor
                     </tr>
-                    <?php $j=0; $row=0;$col=1;?>
+                    {{--{{dd($dispatchdetails)}}--}}
+                    <?php $j=0; ?>
                     @foreach($items as $item)
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
-                            <?php $col++; ?>
+
                             <tr>
-                                <th style="background-color: #{{$item->color}};border-right: 1px white solid">
-                                    <label style="font-size:12px; display: inline"  for="name">{{$item->display_name}}</label>
+                                <th style="background-color: #{{$item->color}};border-right: 1px white solid" >
+                                    <label style="font-size:12px; display: inline" for="name">{{$item->display_name}}</label>
                                     <span for="" class="totalstock{{$item->id}}" style="color:white;font-weight: bold"></span>
                                 </th>
                                 <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}">
                                 @for($i=0; $i<10 ;$i++)
-                                    <td style="background-color: #{{$item->color}};">
-                                        @if($i<count($dispatchdetails))
-                                            @if($dispatchdetails[$row][$col]==$item->id)
-                                                <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$dispatchdetails[$row][$col+1]}}">
-                                                <?php $row++;?>
-                                            @endif
-                                        @else
-                                        <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
-                                        @endif
+                                    <td style="border: none; padding:5px 0 0 5px;background-color: #{{$item->color}}">
+                                        <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0" id="{{$i}}{{$item->id}}"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
                                     </td>
                                 @endfor
-                                <?php $col++;$row=0;?>
                             </tr>
                         @endif
-
                     @endforeach
                     <tr>
                         <th style="background-color: black;border-right: 1px white solid">
@@ -200,6 +178,16 @@
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
     <script>
+
+        $(document).ready(function(){
+            for(var i=0;i<disp.length;i++){
+                for(var j=2;j<disp[i].length;j+=2){
+                    var item_id=disp[i][j];
+                    $( "input[name='item["+i+"]["+item_id+"]']" ).val(disp[i][j+1]);
+                }
+            }
+
+        });
         var searchCusts = [
             <?php $cnt=1;
             foreach($customers as $customer) {

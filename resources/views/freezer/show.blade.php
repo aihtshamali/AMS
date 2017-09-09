@@ -180,11 +180,7 @@
                             </td>
                             <td style="padding: 0px;margin:0px">
                                 <select class="form-control" name="nsm" id="" required>
-                                    @foreach($faculty as $fac)
-                                        @if($fac->type=="NSM")
-                                            <option value="{{$fac->id}}" selected>{{$fac->name}}</option>
-                                        @endif
-                                    @endforeach
+                                    <option value="{{$nsm->id}}" selected>{{$nsm->name}}</option>
                                 </select>
                             </td>
 

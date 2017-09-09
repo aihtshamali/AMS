@@ -47,7 +47,19 @@ Route::group(['middleware' => 'web'], function () {
         Route::resource('admin', 'AdminController');
 //        Route::resource('/admin/user', 'UserController');
         Route::resource('/admin/user/userpermission', 'UserPermissionController');
+        Route::get('Reports/TotalStock','ReportController@all')->name('stockreport');
 
+        // Creating through Excel
+        Route::get('Region/createExcel','RegionController@excel')->name('CreateRegion_Excel');
+        Route::post('Region/createExcel','RegionController@import')->name('CreateRegion_Excel');
+        Route::get('Customer/createExcel','CustomerController@excel')->name('CreateCustomer_Excel');
+        Route::post('Customer/createExcel','CustomerController@import')->name('CreateCustomer_Excel');
+        Route::get('City/createExcel','CityController@excel')->name('CreateCity_Excel');
+        Route::post('City/createExcel','CityController@import')->name('CreateCity_Excel');
+        Route::get('Faculty/createExcel','FacultyController@excel')->name('CreateFaculty_Excel');
+        Route::post('Faculty/createExcel','FacultyController@import')->name('CreateFaculty_Excel');
+
+        //Resource Routes
         Route::resource('permission', 'PermissionController');
         Route::resource('useritem', 'UserItemController');
         Route::resource('category', 'CategoryController');

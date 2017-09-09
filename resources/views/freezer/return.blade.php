@@ -50,7 +50,7 @@
                     <tr style="background-color: rgb(160, 17, 78);color: white;"><td colspan="7"><label for="" >Freezer Information</label></td></tr>
                     <tr>
                         <td><label for="ftn_date">Date of Return</label></td>
-                        <td><input type="date" class="form-control datepicker" data-provide="datepicker" name="placement_date" id="" placeholder="Date"> </td>
+                        <td><input type="" class="form-control datepicker" data-provide="datepicker" name="placement_date" id="" placeholder="Date"> </td>
                         <td><label for="ftn_date">Purpose</label></td>
                         <td>
                             <select name="purpose" class="selectpicker show-tick">
@@ -73,10 +73,14 @@
                         <tr>
                             <td ><?=$i?></td>
                             <td>
+                                <?php $redund='';?>
                                 <select onchange="changeFreezerTotal(this,<?=$i?>)" name="region[<?=$i?>]" class="selectpicker freezerlocation" data-live-search="true" id="<?=$i?>region"  data-width="100%" >
                                     <option selected  hidden style="color:rgb(0,0,0)"value="">Choose Location</option>
                                     @foreach($regions as $region)
-                                        <option type="text"  value="{{$region->id}}"  >{{$region->name }}</option>
+                                        @if($redund!=$region->name)
+                                        <option type="text"  value="{{$region->id}}"  >{{$region->name }}/{{$region->sub_name }}</option>
+                                        <?php $redund=$region->name;?>
+                                        @endif
                                     @endforeach
                                 </select>
                             </td>
@@ -114,11 +118,7 @@
                         </td>
                         <td style="padding: 0px;margin:0px">
                             <select class="form-control" name="nsm" id="" required>
-                                @foreach($faculty as $fac)
-                                    @if($fac->type=="NSM")
-                                        <option value="{{$fac->id}}" selected>{{$fac->name}}</option>
-                                    @endif
-                                @endforeach
+                                 <option value="{{$nsm->id}}" selected>{{$nsm->name}}</option>
                             </select>
                         </td>
 

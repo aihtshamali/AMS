@@ -84,6 +84,7 @@
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 </td>
                                 <td>
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-primary">Save changes
                                     </button>
                                 </td>

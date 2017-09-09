@@ -90,6 +90,9 @@
                 @if(hasPermission("pdfview"))
                 <li><a href="{{route('reportsindex')}}">Download Report</a></li>
                 @endif
+                @if(hasPermission("stockreport"))
+                    <li><a href="{{route('stockreport')}}">View Report</a></li>
+                @endif
                 {{--@if(hasPermission("freezer.return"))--}}
                 {{--<li><a href="{{route('freezer.return')}}">Return Freezer</a></li>--}}
                 {{--@endif--}}

@@ -32,7 +32,7 @@
                     <td>{{$transfer->ftn_date}}</td>
                     <td>{{$transfer->reference}}</td>
                     @if(!empty($transfer->driver_id))
-                        <td>{{$transfer->driver_id}}</td>
+                        <td>{{getDriver($transfer->driver_id)->name}}</td>
                     @else
                         <td>N/A</td>
                     @endif

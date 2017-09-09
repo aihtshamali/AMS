@@ -36,6 +36,7 @@
 
     <script type="text/javascript">
         var a = <?php echo json_encode($stock); ?>;
+        var disp = <?php echo json_encode($dispatchdetails); ?>;
     </script>
 
     <div class="">
@@ -97,11 +98,7 @@
                     </tr>
                 </table>
             </div>
-            <datalist id="customer">
-                @foreach($customers as $customer)
-                    <option value="{{$customer->id}}">{{$customer->account_name }} / {{$customer-> account_no}}</option>
-                @endforeach
-            </datalist>
+
             <div class="table-wrapper row customer"  style="margin-right: 0px;">
                 <table class="table">
                     <tr>
@@ -148,29 +145,23 @@
                             <?php $row+=1;?>
                         @endfor
                     </tr>
-                    <?php $j=0; $row=0;$col=1;?>
+                    <?php $j=0;?>
                     @foreach($items as $item)
                         @if($item->item_group=="CRATE" && ($item->id=="6" ||$item->id=="7"))
-                            <?php $col++; ?>
+
                             <tr>
                                 <th style="background-color: #{{$item->color}};border-right: 1px white solid">
                                     <label style="font-size:12px; display: inline"  for="name">{{$item->display_name}}</label>
                                     <span for="" class="totalstock{{$item->id}}" style="color:white;font-weight: bold"></span>
                                 </th>
                                 <input type="hidden" name="getid[<?=$j++?>]" value="{{$item->id}}">
+{{--                                {{dd($dispatchdetails)}}--}}
                                 @for($i=0; $i<10 ;$i++)
                                     <td style="background-color: #{{$item->color}};">
-                                        @if($i<count($dispatchdetails))
-                                            @if($dispatchdetails[$row][$col]==$item->id)
-                                                <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   value="{{$dispatchdetails[$row][$col+1]}}">
-                                                <?php $row++;?>
-                                            @endif
-                                        @else
                                             <input type="number" class="<?=$i?>qty <?=$item->id?>item form-control" min="0"  name= "item[<?=$i?>][{{$item->id}}]" onchange="checkStock(<?=$i?>,a,{{$item->id}})" onblur="getTotal(this,<?=$i?>,{{$item->id}});"   placeholder="{{$item->name}}">
-                                        @endif
                                     </td>
                                 @endfor
-                                <?php $col++;$row=0;?>
+
                             </tr>
                         @endif
 
@@ -193,6 +184,17 @@
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
     <script>
+        $(document).ready(function(){
+        for(var i=0;i<disp.length;i++){
+
+            for(var j=2;j<disp[i].length;j+=2){
+                var item_id=disp[i][j];
+                $( "input[name='item["+i+"]["+item_id+"]']" ).val(disp[i][j+1]);
+            }
+        }
+
+        });
+
         var searchCusts = [
             <?php $cnt=1;
             foreach($customers as $customer) {
@@ -204,6 +206,7 @@
             } ?>
 
         ];
+
         var searchCustomer = [
             <?php $cnt=1;
             foreach($customers as $customer) {

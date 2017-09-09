@@ -131,22 +131,30 @@ checkFreezerStock(ctrl,id,arr);
 // submit button will be disabled
 
 function checkStock(obj,arr,id) { // arr is initalized from where the function is called (On the top of File)
-
     var gTotal=0,quantity=0,item_id=0;
     for(i=0;i<arr.length;i++)
     {
         if(arr[i]['item_id']==id ){
-            quantity=arr[i]['TOTAL'];
-            item_id=arr[i]['item_id'];
-            break;
+            if(arr[i]['TOTAL']) {
+                quantity = arr[i]['TOTAL'];
+                item_id=arr[i]['item_id'];
+                break;
+            }
+            else {
+                quantity = arr[i]['totalIn'];
+                item_id=arr[i]['item_id'];
+                break;
+            }
+
+
         }
     }
-
     $("."+id+"item").each(function() {
         if ($(this).val() != '') {
             gTotal += parseInt($(this).val().replace(/\,/g, ""));
         }
     });
+    console.log(arr);
 
     if(quantity<gTotal){
      alert("Given value is greater than current stock");

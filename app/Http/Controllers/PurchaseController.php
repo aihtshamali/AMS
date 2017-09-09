@@ -93,29 +93,17 @@ SELECT user_items.user_id,user_items.item_id as item FROM
         $purchase->user()->associate(Auth::user());
         $purchase->save();
 
-        for($i=0;$i<count($request->item);$i++){
-                $it=$request->item[$i];
-                if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
-                    $purchase_detail = new Purchase_Detail();
-                    $purchase_detail->quantity = $it[$request->getid[$i]];
-                    $purchase_detail->item()->associate(Item::find($request->getid[$i]));
-                    $purchase_detail->purchase()->associate($purchase->id);
-                    $stock=Stock::where('region_id',$purchase->region_id)->where('item_id',$purchase_detail->item_id)->first();
-                    if($stock) {
-                        $quantity=$stock->quantity;
-                        $stock->quantity= $purchase_detail->quantity+$quantity;
-                    }
-                    else {
-                        $stock = new Stock();
-                        $stock->item()->associate($purchase_detail->item);
-                        $stock->region()->associate($purchase->region);
-                        $stock->quantity = $purchase_detail->quantity;
-                    }
-                    $stock->save();
-                    $purchase_detail->save();
-                }
+        for($i=0;$i<count($request->item);$i++) {
+            $it = $request->item[$i];
+            if ($it[$request->getid[$i]] && $it[$request->getid[$i]] > 0) {
+                $purchase_detail = new Purchase_Detail();
+                $purchase_detail->quantity = $it[$request->getid[$i]];
+                $purchase_detail->item()->associate(Item::find($request->getid[$i]));
+                $purchase_detail->purchase()->associate($purchase->id);
+                $purchase_detail->save();
 
             }
+        }
         if($i=0) {
             Purchase::find($purchase->id)->delete();
             return redirect()->route('purchase.index')->withMessage("Data Insertion Failed");

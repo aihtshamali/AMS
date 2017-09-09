@@ -54,6 +54,10 @@
                     <li class="sub-menu"><a href="{{route('city.create')}}"><i class="glyphicon glyphicon-home"></i>
                             Add new City</a></li>
                 </ul>
+                <ul>
+                    <li class="sub-menu"><a href="{{route('CreateCity_Excel')}}"><i class="glyphicon glyphicon-home"></i>
+                            Upload Excel</a></li>
+                </ul>
                 <!-- Sub menu -->
                 <ul>
                     <li class="sub-menu"><a href="{{route('city.index')}}"><i class="glyphicon glyphicon-user"></i>
@@ -95,6 +99,10 @@
                 </ul>
                 <!-- Sub menu -->
                 <ul>
+                    <li class="sub-menu"><a href="{{route('CreateRegion_Excel')}}"><i class="glyphicon glyphicon-user"></i>
+                            Upload Excel</a></li>
+                </ul>
+                <ul>
                     <li class="sub-menu"><a href="{{route('region.index')}}"><i class="glyphicon glyphicon-user"></i>
                             All Regions</a></li>
                 </ul>
@@ -111,6 +119,10 @@
                 <ul>
                     <li class="sub-menu"><a href="{{route('faculty.create')}}"><i class="glyphicon glyphicon-home"></i>
                             Add new Faculty</a></li>
+                </ul>
+                <ul>
+                    <li class="sub-menu"><a href="{{route('CreateFaculty_Excel')}}"><i class="glyphicon glyphicon-home"></i>
+                            Upload Excel</a></li>
                 </ul>
                 <!-- Sub menu -->
                 <ul>
@@ -133,6 +145,10 @@
                             Add new Customer</a></li>
                 </ul>
                 <!-- Sub menu -->
+                <ul>
+                    <li class="sub-menu"><a href="{{route('CreateCustomer_Excel')}}"><i class="glyphicon glyphicon-home"></i>
+                            Upload through Excel</a></li>
+                </ul>
                 <ul>
                     <li class="sub-menu"><a href="{{route('customer.index')}}"><i class="glyphicon glyphicon-home"></i>
                             Show All Customers</a></li>

@@ -35,6 +35,56 @@ class CustomerController extends Controller
         return view('customer.create',compact(['regions','cities','categories']));
     }
 
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function excel()
+    {
+        return view('customer.createThroughExcel');
+    }
+
+    public function import(Request $request)
+    {
+//        dd($request->all())
+        if($request->file('imported-file'))
+        {
+            $path = $request->file('imported-file')->getRealPath();
+//           dd( $path);
+            $data = \Maatwebsite\Excel\Facades\Excel::load($path, function($reader) {
+            })->get();
+//            dd($data);
+            if(!empty($data) && $data->count())
+            {
+                $data = $data->toArray();
+                for($i=0;$i<count($data);$i++)
+                {
+                    $dataImported[] = $data[$i];
+                }
+            }
+//            dd($dataImported[0]);
+            foreach ($dataImported[0] as $d)
+                $customer= new customer();
+            $customer->account_name= $d['account_name'];
+            $customer->account_no= $d['account_no'];
+            if($d['address'])
+                $customer->address = $d['address'];
+//            dd($d);
+
+            if($d['phone'])
+                $customer->phone= $d['phone'];
+            $customer->city_id=City::where('name',$d['city_name'])->first()->id;
+            if($d['customer_group'])
+                $customer->customer_group=$d['customer_group'];
+            $customer->region_id=Region::where('name',$d['region_name'])->first()->id;
+            $customer->save();
+//                Customer::insert($d);
+        }
+        return back()->withMessage('Data Added Successfully');
+    }
     /**
      * Store a newly created resource in storage.
      *

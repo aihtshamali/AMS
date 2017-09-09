@@ -32,16 +32,16 @@
                     <td>{{$transfer->ftn_date}}</td>
                     <td>{{$transfer->reference}}</td>
                     @if(!empty($transfer->driver_id))
-                        <td>{{$transfer->driver_id}}</td>
+                        <td>{{getDriver($transfer->driver_id)->name}}</td>
                     @else
                         <td>N/A</td>
                     @endif
                     @if(!empty($transfer->to_))
-                        <td>{{$transfer->to_}}</td>
+                        <td>{{getRegion($transfer->to_)->name}}/{{getRegion($transfer->to_)->sub_name}}</td>
                     @else
-                        <td>{{$transfer->from_}}</td>
+                        <td>{{getRegion($transfer->from_)->name}}/{{getRegion($transfer->from_)->sub_name}}</td>
                     @endif
-                    <td>{{$transfer->getRegion($transfer->id)->region->name}}</td>
+                    <td>{{$transfer->getRegion($transfer->id)->region->name}}/{{$transfer->getRegion($transfer->id)->region->sub_name}}</td>
                     <td>{{$transfer->status}}</td>
                     <td>
                         <a href="{{route('transfer.edit',$transfer->id)}}" type="button" class="btn btn-sm btn-primary">Edit</a>

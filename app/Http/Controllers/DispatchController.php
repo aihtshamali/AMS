@@ -28,7 +28,7 @@ class DispatchController extends Controller
     public function index()
     {
 
-        $dispatches = Dispatch::all();
+        $dispatches = Dispatch::where('region_id',Auth::user()->region_id)->get();
         return view('dispatch.index', compact('dispatches'));
     }
 
@@ -56,51 +56,115 @@ class DispatchController extends Controller
         $drivers = Driver::where('region_id', Auth::user()->region_id)->get();
         $vehicles = Vehicle::where('region_id', Auth::user()->region_id)->get();
 
-        $stockpurchase = DB::table('purchases')->select('purchases.region_id as P_region_id', 'purchases_detail.item_id as P_item_id', 'purchases_detail.quantity as P_quantity')
-            ->leftJoin('purchases_detail', 'purchases_detail.purchase_id', '=', 'purchases.id')
-            ->where('purchases.region_id', Auth::user()->region_id)
-            ->get();
-        $stocktransfer = DB::table('transfers')->select('transfers.from_ as T_from_region', 'transfer_details.region_id as T_to_region', 'transfer_details.item_id as T_item_id', 'transfer_details.quantity as T_quantity')
-            ->leftJoin('transfer_details', 'transfers.id', '=', 'transfer_details.transfer_id')
-            ->where('transfers.from_', Auth::user()->region_id)
-            ->get();
+//        $stockpurchase = DB::table('purchases')->select('purchases.region_id as P_region_id', 'purchases_detail.item_id as P_item_id', 'purchases_detail.quantity as P_quantity')
+//            ->leftJoin('purchases_detail', 'purchases_detail.purchase_id', '=', 'purchases.id')
+//            ->where('purchases.region_id', Auth::user()->region_id)
+//            ->get();
+//        $stocktransfer = DB::table('transfers')->select('transfers.from_ as T_from_region', 'transfer_details.region_id as T_to_region', 'transfer_details.item_id as T_item_id', 'transfer_details.quantity as T_quantity')
+//            ->leftJoin('transfer_details', 'transfers.id', '=', 'transfer_details.transfer_id')
+//            ->where('transfers.from_', Auth::user()->region_id)
+//            ->get();
 
-        $stockout = DB::select('SELECT region,item_id,sum(stock.total) as total from (
- select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
- left join purchases on(purchases.id=purchases_detail.purchase_id)
- GROUP BY purchases_detail.item_id
+//        $stockout = DB::select('SELECT region,item_id,sum(stock.total) as total from (
+// select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+// left join purchases on(purchases.id=purchases_detail.purchase_id)
+// GROUP BY purchases_detail.item_id
+//
+// union
+//
+// select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+// transfer_details.item_id as item_id from transfer_details
+// GROUP BY transfer_details.item_id,transfer_details.region_id
+//
+// union
+//
+//  select return_details.region_id as region , sum(return_details.quantity) as total ,
+//  return_details.item_id as item_id from return_details
+//  GROUP BY return_details.item_id,return_details.region_id
+//  )  stock
+// GROUP BY stock.region,stock.item_id');
 
- union
+//$stockin=DB::select('SELECT region_id,item_id,sum(total) as net from
+//(
+//    SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+//FROM transfers
+//LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+//GROUP BY transfer_details.quantity,transfers.from_
+//
+//UNION
+//
+//SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+//from dispatches
+//LEFT JOIN
+//dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY dispatches.region_id,dispatches_detail.item_id
+//
+// )t
+// GROUP BY region_id,item_id');
+        $stock=DB::select('    SELECT fu.region,fu.item_id,sum(fu.totalIn) as totalIn,sum(fu.totalOut) as totalOut , sum(fu.TOTAL) as TOTAL,fu.cdate from (
+    SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL ,op.cdate from(
 
- select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
- transfer_details.item_id as item_id from transfer_details
- GROUP BY transfer_details.item_id,transfer_details.region_id
+                SELECT region,item_id,sum(total) as totalIn , cdate from (
+            select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id, purchases.cdate from purchases_detail
+         left join purchases on(purchases.id=purchases_detail.purchase_id)
+         GROUP BY purchases_detail.item_id ,purchases.region_id      
+         union
+         select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id, transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
- union
+         union
 
-  select return_details.region_id as region , sum(return_details.quantity) as total ,
-  return_details.item_id as item_id from return_details
-  GROUP BY return_details.item_id,return_details.region_id
-  )  stock
- GROUP BY stock.region,stock.item_id');
+          select return_details.region_id as region , sum(return_details.quantity) as total ,
+          return_details.item_id as item_id, returns.ftn_date as cdate from return_details
+                    left OUTER JOIN returns on returns.id=return_details.returns_id
+          GROUP BY return_details.item_id,return_details.region_id
+          )  stock
+         GROUP BY stock.region,stock.item_id
+        ) op 
 
-$stockin=DB::select('SELECT region_id,item_id,sum(total) as net from
-(
-    SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
-FROM transfers
-LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
-GROUP BY transfer_details.quantity,transfers.from_
+         LEFT OUTER JOIN
 
-UNION
+        (
+            SELECT region_id,item_id,sum(total) as totalOut, cdate from
+        (
+            select transfers.from_ as region_id,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfers.from_
+            UNION
+          select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
-SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
-from dispatches
-LEFT JOIN
-dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY dispatches.region_id,dispatches_detail.item_id
 
- )t
- GROUP BY region_id,item_id');
-        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+        UNION
+
+        SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id ,dispatches.cdate
+        from dispatches
+        LEFT JOIN
+         dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id 
+          )t
+          GROUP BY region_id,item_id
+            )lftjoin
+            ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)
+         )fu
+            LEFT OUTER  JOIN
+             items
+            ON (items.id=fu.item_id) 
+           where region='.Auth::user()->region_id.'
+        GROUP BY items.id,region
+
+        ORDER BY region ASC');
+//        dd($stock);
+        $stock1=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
  SELECT region,item_id,sum(total) as totalIn from (
         select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
  left join purchases on(purchases.id=purchases_detail.purchase_id)
@@ -142,7 +206,7 @@ LEFT JOIN
   )t
   GROUP BY region_id,item_id
 	)lftjoin
-    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region='.Auth::user()->region_id.'');
 
 //
 //
@@ -309,48 +373,69 @@ LEFT JOIN
 //            ->get();
         $regions = Region::all();
 
-        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
- SELECT region,item_id,sum(total) as totalIn from (
-        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
- left join purchases on(purchases.id=purchases_detail.purchase_id)
- GROUP BY purchases_detail.item_id
+        $stock=DB::select('    SELECT fu.region,fu.item_id,sum(fu.totalIn) as totalIn,sum(fu.totalOut) as totalOut , sum(fu.TOTAL) as TOTAL,fu.cdate from (
+    SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL ,op.cdate from(
 
- union
+                SELECT region,item_id,sum(total) as totalIn , cdate from (
+            select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id, purchases.cdate from purchases_detail
+         left join purchases on(purchases.id=purchases_detail.purchase_id)
+         GROUP BY purchases_detail.item_id ,purchases.region_id      
+         union
+         select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id, transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
- select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
- transfer_details.item_id as item_id from transfer_details
- GROUP BY transfer_details.item_id,transfer_details.region_id
+         union
 
- union
+          select return_details.region_id as region , sum(return_details.quantity) as total ,
+          return_details.item_id as item_id, returns.ftn_date as cdate from return_details
+                    left OUTER JOIN returns on returns.id=return_details.returns_id
+          GROUP BY return_details.item_id,return_details.region_id
+          )  stock
+         GROUP BY stock.region,stock.item_id
+        ) op 
 
-  select return_details.region_id as region , sum(return_details.quantity) as total ,
-  return_details.item_id as item_id from return_details
-  GROUP BY return_details.item_id,return_details.region_id
-  )  stock
- GROUP BY stock.region,stock.item_id
-) op 
- 
- LEFT OUTER JOIN 
-    
-(
- SELECT region_id,item_id,sum(total) as totalOut from
-  (
-   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
-FROM transfers
-LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
-GROUP BY transfer_details.quantity,transfers.from_
+         LEFT OUTER JOIN
 
-UNION
+        (
+            SELECT region_id,item_id,sum(total) as totalOut, cdate from
+        (
+            select transfers.from_ as region_id,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfers.from_
+            UNION
+          select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
-SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
-from dispatches
-LEFT JOIN
- dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
 
-  )t
-  GROUP BY region_id,item_id
-	)lftjoin
-    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
+        UNION
+
+        SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id ,dispatches.cdate
+        from dispatches
+        LEFT JOIN
+         dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id 
+          )t
+          GROUP BY region_id,item_id
+            )lftjoin
+            ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)
+         )fu
+            LEFT OUTER  JOIN
+             items
+            ON (items.id=fu.item_id) 
+           
+        GROUP BY items.id,region
+
+        ORDER BY region ASC');
 
         return view('dispatch.show', compact(['regions', 'drivers', 'stock', 'customers', 'vehicles', 'items', 'dispatch', 'dispatch_detail']));
     }
@@ -382,8 +467,69 @@ LEFT JOIN
         $drivers = Driver::where('region_id', $dispatch->region_id)->get();
         $vehicles = Vehicle::where('region_id', $dispatch->region_id)->get();
         $dispatch_detail = Dispatches_Detail::where('dispatch_id', $dispatch->id)->get();
-        $stock = Stock::where('region_id', $dispatch->region_id)->get();
+        $stock=DB::select('    SELECT fu.region,fu.item_id,sum(fu.totalIn) as totalIn,sum(fu.totalOut) as totalOut , sum(fu.TOTAL) as TOTAL,fu.cdate from (
+    SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL ,op.cdate from(
 
+                SELECT region,item_id,sum(total) as totalIn , cdate from (
+            select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id, purchases.cdate from purchases_detail
+         left join purchases on(purchases.id=purchases_detail.purchase_id)
+         GROUP BY purchases_detail.item_id ,purchases.region_id      
+         union
+         select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id, transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
+
+         union
+
+          select return_details.region_id as region , sum(return_details.quantity) as total ,
+          return_details.item_id as item_id, returns.ftn_date as cdate from return_details
+                    left OUTER JOIN returns on returns.id=return_details.returns_id
+          GROUP BY return_details.item_id,return_details.region_id
+          )  stock
+         GROUP BY stock.region,stock.item_id
+        ) op 
+
+         LEFT OUTER JOIN
+
+        (
+            SELECT region_id,item_id,sum(total) as totalOut, cdate from
+        (
+            select transfers.from_ as region_id,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfers.from_
+            UNION
+          select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
+
+
+        UNION
+
+        SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id ,dispatches.cdate
+        from dispatches
+        LEFT JOIN
+         dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id 
+          )t
+          GROUP BY region_id,item_id
+            )lftjoin
+            ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)
+         )fu
+            LEFT OUTER  JOIN
+             items
+            ON (items.id=fu.item_id) 
+           where region='.Auth::user()->region_id.'
+        GROUP BY items.id,region
+
+        ORDER BY region ASC');
         return view('dispatch.returnDispatch', compact(['stock', 'drivers', 'customers', 'vehicles', 'items', 'dispatch', 'doc_no', 'dispatch_detail']));
     }
 
@@ -402,48 +548,69 @@ LEFT JOIN
 //            ->get();
         $regions = Region::all();
 
-        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
- SELECT region,item_id,sum(total) as totalIn from (
-        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
- left join purchases on(purchases.id=purchases_detail.purchase_id)
- GROUP BY purchases_detail.item_id
+        $stock=DB::select('    SELECT fu.region,fu.item_id,sum(fu.totalIn) as totalIn,sum(fu.totalOut) as totalOut , sum(fu.TOTAL) as TOTAL,fu.cdate from (
+    SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL ,op.cdate from(
 
- union
+                SELECT region,item_id,sum(total) as totalIn , cdate from (
+            select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id, purchases.cdate from purchases_detail
+         left join purchases on(purchases.id=purchases_detail.purchase_id)
+         GROUP BY purchases_detail.item_id ,purchases.region_id      
+         union
+         select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id, transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
- select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
- transfer_details.item_id as item_id from transfer_details
- GROUP BY transfer_details.item_id,transfer_details.region_id
+         union
 
- union
+          select return_details.region_id as region , sum(return_details.quantity) as total ,
+          return_details.item_id as item_id, returns.ftn_date as cdate from return_details
+                    left OUTER JOIN returns on returns.id=return_details.returns_id
+          GROUP BY return_details.item_id,return_details.region_id
+          )  stock
+         GROUP BY stock.region,stock.item_id
+        ) op 
 
-  select return_details.region_id as region , sum(return_details.quantity) as total ,
-  return_details.item_id as item_id from return_details
-  GROUP BY return_details.item_id,return_details.region_id
-  )  stock
- GROUP BY stock.region,stock.item_id
-) op 
- 
- LEFT OUTER JOIN 
-    
-(
- SELECT region_id,item_id,sum(total) as totalOut from
-  (
-   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
-FROM transfers
-LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
-GROUP BY transfer_details.quantity,transfers.from_
+         LEFT OUTER JOIN
 
-UNION
+        (
+            SELECT region_id,item_id,sum(total) as totalOut, cdate from
+        (
+            select transfers.from_ as region_id,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is not null
+         GROUP BY transfer_details.item_id,transfers.from_
+            UNION
+          select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+         transfer_details.item_id as item_id , transfers.ftn_date as cdate from transfer_details
+          LEFT OUTER JOIN
+          transfers on transfers.id=transfer_details.transfer_id
+          where transfers.from_ is null
+         GROUP BY transfer_details.item_id,transfer_details.region_id
 
-SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
-from dispatches
-LEFT JOIN
- dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
 
-  )t
-  GROUP BY region_id,item_id
-	)lftjoin
-    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)');
+        UNION
+
+        SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id ,dispatches.cdate
+        from dispatches
+        LEFT JOIN
+         dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id 
+          )t
+          GROUP BY region_id,item_id
+            )lftjoin
+            ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id)
+         )fu
+            LEFT OUTER  JOIN
+             items
+            ON (items.id=fu.item_id) 
+           where region='.Auth::user()->region_id.'
+        GROUP BY items.id,region
+
+        ORDER BY region ASC');
 
         return view('dispatch.edit', compact(['regions', 'drivers', 'stock', 'customers', 'vehicles', 'items', 'dispatch', 'dispatch_detail']));
     }
@@ -460,25 +627,6 @@ LEFT JOIN
 
 //        dd($request->all());
         $dispatch = Dispatch::find($id);
-
-
-        $dd = Dispatches_Detail::where('dispatch_id', $id)->get(); //to Get the Stock Back
-        foreach ($dd as $d) {                                    //and then I'll Subtract it
-            $stock = Stock::where('region_id', $dispatch->region_id)->where('item_id', $d->item_id)->first();
-            if ($stock) {
-                $quantity = $stock->quantity;
-                $stock->quantity = $quantity + $d->quantity;
-                $stock->save();
-            }
-            // For Customer
-            $Custstock = Stock::where('region_id', 1)->where('customer_id', $d->customer_id)->where('item_id', $d->item_id)->first();
-//                           dd($Custstock);
-            if ($Custstock) {
-                $quantity = $Custstock->quantity;
-                $Custstock->quantity = $quantity - $d->quantity;
-                $Custstock->save();
-            }
-        }
 
         Dispatches_Detail::where('dispatch_id', $id)->delete();  // Delete Old Dispatch_Detail of this Dispatch ID
 
@@ -511,32 +659,6 @@ LEFT JOIN
                         $dispatch_detail->sales_invoice = $request->sales_invoice[$counter];
                         $dispatch_detail->dispatch()->associate($dispatch->id);
                         $dispatch_detail->save();
-//                        $stock = Stock::where('region_id', $dispatch->region_id)->where('item_id', $dispatch_detail->item_id)->first();
-//                        if ($stock) {
-//                            $quantity = $stock->quantity;
-//                            $stock->quantity = $quantity - $dispatch_detail->quantity;
-//                            if ($stock->quantity < 0)
-//                                $stock->quantity = 0;
-//                            $stock->save();
-//                        }
-//                        // For Customer
-//                        $customer = Region::where('name', 'Customer')->first();
-//                        $Custstock = Stock::where('region_id', $customer)->where('customer_id', $dispatch_detail->customer_id)->where('item_id', $dispatch_detail->item_id)->first();
-////                           dd($Custstock);
-//                        if ($Custstock) {
-//                            $quantity = $Custstock->quantity;
-//                            $Custstock->quantity = $quantity + $dispatch_detail->quantity;
-//                            $Custstock->save();
-//                        } else {
-//                            $Custstock = new Stock();
-//                            $quantity = $Custstock->quantity;
-//
-//                            $Custstock->region()->associate($customer->id);
-//                            $Custstock->customer()->associate($dispatch_detail->customer_id);
-//                            $Custstock->item()->associate($dispatch_detail->item_id);
-//                            $Custstock->quantity = $quantity + $dispatch_detail->quantity;
-//                            $Custstock->save();
-//                        }
                     }
                 }
             }

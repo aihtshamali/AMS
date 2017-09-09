@@ -6,7 +6,7 @@
                 <div class="alert alert-info">{{ Session::get('message') }}</div>
             @endif
         </span>
-        <h3 style="float:left  ">Transfer Transit</h3>
+        <h3 style="float:left ;color:green  ">Transfer Transit</h3>
 
 
         <table class="table table-striped table-responsive table-hover">

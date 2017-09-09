@@ -5,24 +5,24 @@
                     <form role="form" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 
-                        <div class="{{ $errors->has('email') ? ' has-error' : '' }}">
+                        <div class="{{ $errors->has('email') ? ' has-error' : '' }}" style="z-index: 1">
 
                             <input type="email" placeholder="username" value="{{ old('email') }}" name="email" required autofocus><br>
 
-                                @if ($errors->has('emai l'))
-                                    <span class="help-block">
+                                @if ($errors->has('email'))
+                                    <span class="help-block" style="color: indianred;">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
 
                         </div>
 
-                        <div class="{{ $errors->has('password') ? ' has-error' : '' }}">
+                        <div class="{{ $errors->has('password') ? ' has-error' : '' }}" style="z-index: 1;color: indianred;"        >
 
                             <input type="password" placeholder="password" name="password" required><br>
 
                                 @if ($errors->has('password'))
-                                    <span >
+                                    <span>
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif

@@ -28,7 +28,6 @@
     var a = <?php echo json_encode($stock); ?>;
     var customer = <?php echo json_encode($customers);?>;
 </script>
-{{--{{dd($arr)}}--}}
 
     <div class="">
         <h3 style="color: darkgreen;
@@ -194,7 +193,7 @@
         });
         function fillCustCode(id,colNo){
             var customer_name=$("#"+id).val();
-            console.log(searchCusts[0]);
+//            console.log(searchCusts[0]);
             for (i = 0; i < searchCusts.length; i++) {
                 if(customer_name==searchCusts[i])
                 {

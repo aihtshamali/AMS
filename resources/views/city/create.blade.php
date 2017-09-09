@@ -5,13 +5,21 @@
             {{csrf_field()}}
             <div class="from-group" style="margin: 10px">
                 <label for="">Enter City name</label>
-            <input type="text" name="name" required>
+            <input type="text" class="form-control" name="name" required>
             </div>
+            <div class="from-group" style="margin: 10px">
+                <label for="">Enter City Description</label>
+            <input type="text" class="form-control" name="description" required>
+            </div>
+            <?php $redund='';?>
             <div class="form-group" style="margin: 10px">
                 <label for="">Select Location</label>
-            <select name="regions" id="">
+            <select name="regions" class="form-control" id="">
                 @forelse($regions as $r)
+                    @if($redund!=$r->name && $r->name!="Customer")
                     <option value="{{$r->id}}">{{$r->name}}</option>
+                    <?php $redund=$r->name;?>
+                    @endif
                 @empty
                    <option value="No Location"> No Location Found </option>
                 @endforelse

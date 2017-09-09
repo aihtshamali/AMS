@@ -1,7 +1,7 @@
 @extends('layouts.sidenav')
 @section('content')
     <div class="">
-        <h3 style="color: #000;">Purchase</h3>
+        <h3 style="color: Green;">Purchase</h3>
 
         <form action="{{route('purchase.store')}}" method="post" >
             {{csrf_field()}}

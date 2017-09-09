@@ -29,7 +29,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="" placeholder="Enter Password..." minlength="6">
         </div>
-
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 

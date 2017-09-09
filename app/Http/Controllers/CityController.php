@@ -30,6 +30,49 @@ class CityController extends Controller
        return view('city.create',compact('regions'));
     }
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function excel()
+    {
+        return view('city.createThroughExcel');
+    }
+
+    public function import(Request $request)
+    {
+//        dd($request->all())
+        if($request->file('imported-file'))
+        {
+            $path = $request->file('imported-file')->getRealPath();
+//           dd( $path);
+            $data = \Maatwebsite\Excel\Facades\Excel::load($path, function($reader) {
+            })->get();
+//            dd($data);
+            if(!empty($data) && $data->count())
+            {
+                $data = $data->toArray();
+                for($i=0;$i<count($data);$i++)
+                {
+                    $dataImported[] = $data[$i];
+                }
+            }
+//            dd($dataImported[0]);
+            foreach ($dataImported[0] as $d) {
+                $city= new City();
+                $city->name=$d['name'];
+                $city->description=$d['description'];
+                $city->region()->associate(Region::where('name',$d['region_name'])->first());
+                $city->save();
+
+            }
+//                City::insert($d);
+        }
+        return back()->withMessage('Data Added Successfully');
+    }
+
     /**
      * Store a newly created resource in storage.
      *

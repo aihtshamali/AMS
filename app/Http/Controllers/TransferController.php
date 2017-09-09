@@ -34,20 +34,17 @@ class TransferController extends Controller
 //)v on(v.transfer_id==transfers.id)
 //        $transfers=Transfer::all();
         $transfers= DB::select('SELECT DISTINCT transfers.*,v.region_id as region_to from transfers
-INNER JOIN
+    INNER JOIN
     (
         select transfer_details.* FROM transfer_details
-        INNER JOIN(
+      INNER JOIN(
         SELECT user_items.* from user_items
-        WHERE user_items.user_id=20
+        WHERE user_items.user_id='.Auth::user()->id.'
         )td on(transfer_details.item_id=td.item_id)
-       
-)v on(v.transfer_id=transfers.id)
-where(status = \'Received\' AND  type is Null )
-ORDER BY  created_at DESC
-
+    )v on(v.transfer_id=transfers.id)
+    where(status = \'Received\' AND  type is Null AND (transfers.from_='.Auth::user()->region_id.' OR v.region_id='.Auth::user()->region_id.'))
+    ORDER BY  created_at DESC
       ');
-//        dd($transfers);
         return view('transfer.index',compact('transfers'));
     }
 
@@ -59,8 +56,9 @@ ORDER BY  created_at DESC
     public function create()
     {
 
-        if (Transfer::all()->last()) {
+        if (Transfer::where('ftn_no','Like','TO%')->first()) {
             $doc_no = Transfer::where('ftn_no','Like','TO%')->orderBy('ftn_no','desc')->pluck('ftn_no');
+//            dd(Transfer::where('ftn_no','Like','TO%')->first());
             $part = explode(".",$doc_no);
             $no = intval($part[1]);
             $no++;
@@ -116,7 +114,7 @@ LEFT JOIN
   )t
   GROUP BY region_id,item_id
 	)lftjoin
-    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region_id='.Auth::user()->region_id.'');
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region='.Auth::user()->region_id);
 //        dd($stock);
         return view('transfer.shipped',compact(['stock','drivers','vehicles','doc_no','regions','useritems']));
     }
@@ -151,21 +149,6 @@ LEFT JOIN
                 $transfer_detail->region()->associate($request->region_id);
                 $transfer_detail->quantity = $request->items[$i];
                 $transfer_detail->transfer()->associate($transfer);
-
-
-                $stock=Stock::where('region_id',$transfer->from_)->where('item_id',$transfer_detail->item_id)->first();
-
-                if($stock) {
-                    $quantity=$stock->quantity;
-                    $stock->quantity= $quantity- $transfer_detail->quantity;
-                    if($stock->quantity<0)
-                    {
-                        $stock->quantity=0;
-                        Transfer::find($transfer->id)->delete();
-                        return redirect()->route('transfer.index')->withMessage('Don\'t have much stock to complete this process ');
-                    }
-                    $stock->save();
-                }
                 $transfer_detail->save();
             }
         }
@@ -247,7 +230,49 @@ LEFT JOIN
         $vehicles =Vehicle::where('region_id',Auth::user()->region_id)->get();
         $drivers=Driver::where('region_id',Auth::user()->region_id)->get();
         $useritems=UserItem::where('user_id',Auth::user()->id)->get();
-        $stock=Stock::where('region_id',Auth::user()->region_id)->get();
+        $stock=DB::select('SELECT op.region,op.item_id,op.totalIn,lftjoin.totalOut , (op.totalIn-lftjoin.totalOut) as TOTAL from(
+ SELECT region,item_id,sum(total) as totalIn from (
+        select purchases.region_id as region , sum(purchases_detail.quantity) as total,purchases_detail.item_id as item_id from purchases_detail
+ left join purchases on(purchases.id=purchases_detail.purchase_id)
+ GROUP BY purchases_detail.item_id ,purchases.region_id
+ 
+
+ union
+
+ select transfer_details.region_id as region,sum(transfer_details.quantity) as total,
+ transfer_details.item_id as item_id from transfer_details
+ GROUP BY transfer_details.item_id,transfer_details.region_id
+
+ union
+
+  select return_details.region_id as region , sum(return_details.quantity) as total ,
+  return_details.item_id as item_id from return_details
+  GROUP BY return_details.item_id,return_details.region_id
+  )  stock
+ GROUP BY stock.region,stock.item_id
+) op 
+ 
+ LEFT OUTER JOIN 
+    
+(
+ SELECT region_id,item_id,sum(total) as totalOut from
+  (
+   SELECT transfer_details.item_id,sum(transfer_details.quantity) as total,transfers.from_ as region_id
+FROM transfers
+LEFT JOIN transfer_details on transfer_details.transfer_id=transfers.id
+GROUP BY transfer_details.item_id,transfers.from_
+
+UNION
+
+SELECT dispatches_detail.item_id,SUM(dispatches_detail.quantity) as total,dispatches.region_id
+from dispatches
+LEFT JOIN
+ dispatches_detail ON(dispatches.id = dispatches_detail.dispatch_id) GROUP BY  dispatches.region_id,dispatches_detail.item_id
+
+  )t
+  GROUP BY region_id,item_id
+	)lftjoin
+    ON(lftjoin.region_id=op.region AND lftjoin.item_id=op.item_id) where region='.Auth::user()->region_id);
         return view('transfer.edit',compact(['transfers','regions','vehicles','drivers','useritems']));
     }
 
@@ -285,25 +310,13 @@ LEFT JOIN
                 $transfer_detail->quantity = $request->items[$i];
                 $transfer_detail->transfer()->associate($transfer);
                 $transfer_detail->save();
-//                $stock=Stock::where('region_id',$transfer->from_)->where('item_id',$transfer_detail->item_id)->first();
-//
-//                if($stock) {
-//                    $quantity=$stock->quantity;
-//                    $stock->quantity= $quantity- $transfer_detail->quantity;
-//                    if($stock->quantity<0)
-//                    {
-//                        Transfer::find($transfer->id)->delete();
-//                        return redirect()->route('transfer.index')->withMessage('Don\'t have much stock to complete this process ');
-//                    }
-//                    $stock->save();
-//                }
             }
         }
         if ($i > 0) {
             $transfer->save();
             return redirect()->route('transfer.index')->withMessage('Items Updated Successfully');
         }else {
-            Transfer::find($transfer->id)->delete();
+
             return redirect()->route('transfer.index')->withMessage('Updation Failed');
         }
     }

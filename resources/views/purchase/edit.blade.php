@@ -1,7 +1,7 @@
 @extends('layouts.sidenav')
 @section('content')
     <div class="">
-        <h3 style="color: #000;">Purchase</h3>
+        <h3 style="color: green;">Purchase</h3>
 
         <form action="{{route('purchase.update',$purchases[0]->purchase->id)}}" method="post" >
             {{method_field('PATCH')}}
@@ -37,7 +37,7 @@
                             <label for="vehicle">Vehicle Number.</label>
                         </td>
                         <td>
-                            <select name="vehicle" class="selectpicker">
+                            <select name="vehicle" class="form-control" required>
                                 <option selected value="" ></option>
                                 @foreach($vehicles as $vehicle)
                                     @if($purchases[0]->purchase->vehicle_id==$vehicle->id)
@@ -53,7 +53,7 @@
                         <td>
                             <label for="driver">Driver</label>    </td>
                         <td>
-                            <select name="driver" class="selectpicker" required>
+                            <select name="driver" class="form-control" required>
                                 <option selected value =""> </option>
                                 @foreach($drivers as $driver)
                                     @if($purchases[0]->purchase->driver_id==$driver->id)
@@ -68,10 +68,11 @@
                 </table>
             </div>
 
+        <?php $j=0;?>
         <?php $redund=null; $i=0?>     <!--  Forced to appear header only once. and $i is counter -->
             <table class="table-responsive table">
-                @foreach($items as $alloweditem)
-                    @if($redund!=$alloweditem->item_group)
+            @foreach($items as $alloweditem)
+                @if($redund!=$alloweditem->item_group)
                         <tr style="margin:0px;padding:0px;background-color: #bd2355;color:white;">
                             <td>
                                 <?php $redund=$alloweditem->item_group?>
@@ -80,13 +81,15 @@
                             <td></td>
                         </tr>
                     @endif
-                    <tr>
+                        <tr>
+                        {{--{{dd($alloweditem)}}--}}
                         <td><label for="">{{$alloweditem->display_name}}</label></td>
                         <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->id}}">
-                        @if($i<count($purchases))
-                        @if($purchases[$i]->item_id==$alloweditem->id)
-                        <td><input name="item[<?=$i?>][{{$alloweditem->id}}]" value="{{$purchases[$i]->quantity}}" type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
-                            @else
+                        @if($j<count($purchases))
+                        @if($purchases[$j]->item_id==$alloweditem->id)
+                                <td><input name="item[<?=$i?>][{{$alloweditem->id}}]" value="{{$purchases[$j]->quantity}}" type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
+                                    <?php $j++;?>
+                                @else
                         <td><input name="item[<?=$i?>][{{$alloweditem->id}}]"  type="number" min="0" class="form-control qty" style="width:200px;" onchange="setTotal();"></td>
                             @endif
                             @else

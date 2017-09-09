@@ -3,8 +3,7 @@
     <script type="text/javascript">
         var a = <?php echo json_encode($stock); ?>;
     </script>
-
-
+{{--{{dd($stock)}}--}}
     <div class="half_body" style="">
         <h3 style="color: darkgreen;
     float: left;
@@ -66,7 +65,7 @@
                         <td>
                             <label for="description">Driver</label>    </td>
                         <td>
-                            <select name="driver_id" class="form-control">
+                            <select name="driver_id" class="form-control" required>
                                 <option selected value=""> Select Driver</option>
                                 @foreach($drivers as $driver)
                                     <option value="{{$driver->id}}">{{$driver->name}}</option>
@@ -91,11 +90,11 @@
                    @endif
                    <tr>
                        <td><label for="">{{$alloweditem->item->display_name}}</label>
-                           <span for="" class="totalstock{{$alloweditem->id}}" style="color:black;font-weight: bold"></span>
+                           <span for="" class="totalstock{{$alloweditem->item_id}}" style="color:black;font-weight: bold"></span>
                        </td>
 
                        <input type="hidden" name="getid[<?=$i?>]" value="{{$alloweditem->item_id}}">
-                       <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty <?=$i?>qty <?=$alloweditem->id?>item " onchange="checkStock(<?=$i?>,a,{{$alloweditem->id}})" onblur="setTotal();"></td>
+                       <td><input name="items[<?=$i?>]" type="number" min="0" class="form-control qty <?=$i?>qty <?=$alloweditem->item_id?>item " onchange="checkStock(<?=$i?>,a,{{$alloweditem->item_id}})" onblur="setTotal();"></td>
                    </tr>
                     <?php $i++?>
                @endforeach

@@ -17,6 +17,15 @@ class RegionController extends Controller
         $regions= Region::paginate(5);
         return view('region.index',compact('regions'));
     }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function excel()
+    {
+        return view('region.createThroughExcel');
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -27,6 +36,46 @@ class RegionController extends Controller
     {
         return view('region.create');
     }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+//        dd($request->all())
+        if($request->file('imported-file'))
+        {
+            $path = $request->file('imported-file')->getRealPath();
+//           dd( $path);
+            $data = \Maatwebsite\Excel\Facades\Excel::load($path, function($reader) {
+            })->get();
+//            dd($data);
+            if(!empty($data) && $data->count())
+            {
+                $data = $data->toArray();
+                for($i=0;$i<count($data);$i++)
+                {
+                    $dataImported[] = $data[$i];
+                }
+            }
+//            dd(count($dataImported[0]));
+            foreach ($dataImported[0] as $d)
+//                Region::insert($d);
+                $region= new Region();
+            $region->name= $d['name'];
+            $region->type= $d['type'];
+            $region->sub_name= $d['sub_name'];
+            $region->account= $d['account'];
+            $region->save();
+        }
+        return back()->withMessage('Data Added Successfully');
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -41,8 +90,6 @@ class RegionController extends Controller
         $region->type= $request->type;
         $region->sub_name= $request->sub_name;
         $region->account= $request->account;
-        $region->category= $request->category;
-        $region->is_active= $request->is_active;
         $region->save();
         return redirect()->route('region.index')->withMessage('Inserted Successfully');
     }
@@ -85,7 +132,6 @@ class RegionController extends Controller
         $region->type= $request->type;
         $region->sub_name= $request->sub_name;
         $region->account= $request->account;
-        $region->category= $request->category;
         $region->is_active= $request->is_active;
 
         $region->save();

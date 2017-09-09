@@ -77,14 +77,15 @@
                                 </td>
                             </tr>
                             <tr class="modal-footer">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <td><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></td>
                                 <td><button type="submit" class="btn btn-primary">Save changes
                                     </button></td>
                             </tr>
-                            {{}}
                         </form>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

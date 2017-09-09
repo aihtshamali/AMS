@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
+    protected $fillable=[
+        'id',
+        'name',
+        'description',
+        'region_id',
+        ];
     public function region(){
         return $this->belongsTo('App\Region');
     }

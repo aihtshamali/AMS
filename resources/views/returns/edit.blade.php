@@ -112,9 +112,9 @@
                         @for($i=0; $i<10 ;$i++)
                             <td class="col-xs-3" >
                                 @if($i<(count($returndetails)))
-                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control" value="{{$returndetails[$row][$col]}}">
+                                    <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  name="customer[<?=$i?>]" class="form-control custs" value="{{getCustomer($returndetails[$row][$col])->account_name}}">
                                 @else
-                                    <input list="customer" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control" name="customer[<?=$i?>]">
+                                    <input type="text" style=" padding: 0 0 0 5px; height: 30px;width: 200px"  class="form-control custs" name="customer[<?=$i?>]">
                                 @endif
                                 {{--<select name="customer[<=$i?>]" style="height: 30px;width: 200px">--}}
                                     {{--<option></option>--}}
