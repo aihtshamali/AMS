@@ -73,7 +73,7 @@ class RegisterController extends Controller
         $users->password=bcrypt($data['password']);
         $users->region()->associate($data['region']);
         $users->save();
-        $allowedPermissions=['logout','login','welcome'];
+        $allowedPermissions=['logout','login','welcome','home','unauthorized'];
         for($i=0;$i<count($allowedPermissions);$i++) {
             $per = Permission::where('name',$allowedPermissions[$i])->first();
             $perm = new Permission_Role();

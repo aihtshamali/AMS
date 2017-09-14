@@ -16,7 +16,7 @@
                 </tr>
                 <?php $redund='';?>
                 <tr align="center">
-                    <td><input type=""  class="form-control datepicker" name="cdate" placeholder="Enter Date...(dd-mm-yyyy)"></td>
+                    {{--<td><input type=""  class="form-control datepicker" name="cdate" placeholder="Enter Date...(dd-mm-yyyy)"></td>--}}
                     <td><select class="form-control" name="region">
                         <option value="">Select Region</option>
                         @foreach ($regions as $r)

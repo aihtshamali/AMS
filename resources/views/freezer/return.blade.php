@@ -73,14 +73,14 @@
                         <tr>
                             <td ><?=$i?></td>
                             <td>
-                                <?php $redund='';?>
+
                                 <select onchange="changeFreezerTotal(this,<?=$i?>)" name="region[<?=$i?>]" class="selectpicker freezerlocation" data-live-search="true" id="<?=$i?>region"  data-width="100%" >
                                     <option selected  hidden style="color:rgb(0,0,0)"value="">Choose Location</option>
                                     @foreach($regions as $region)
-                                        @if($redund!=$region->name)
+
                                         <option type="text"  value="{{$region->id}}"  >{{$region->name }}/{{$region->sub_name }}</option>
                                         <?php $redund=$region->name;?>
-                                        @endif
+
                                     @endforeach
                                 </select>
                             </td>

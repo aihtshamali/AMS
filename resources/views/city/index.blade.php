@@ -40,6 +40,9 @@
             @empty
                 <td>No citys</td>
             @endforelse
+            <tr>
+                <td colspan="5">{{ $cities->links() }}</td>
+            </tr>
         </table>
     </div>
 @endsection

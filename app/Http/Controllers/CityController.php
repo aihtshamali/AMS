@@ -62,6 +62,7 @@ class CityController extends Controller
 //            dd($dataImported[0]);
             foreach ($dataImported[0] as $d) {
                 $city= new City();
+//                dd($d);
                 $city->name=$d['name'];
                 $city->description=$d['description'];
                 $city->region()->associate(Region::where('name',$d['region_name'])->first());

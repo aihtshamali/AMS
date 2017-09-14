@@ -59,7 +59,8 @@ class RegionMiddleWare
         }
         else {
            // abort(403, 'Unauthorized action - You are not Authorized for this action');
-            return redirect()->back()->withMessage("You are not Authorized for this Page \n Contact Admin for more Details");
+//            return redirect()->back()->withMessage("You are not Authorized for this Page \n Contact Admin for more Details");
+            return redirect()->route('unauthorized');
         }
         return $next($request);
     }
